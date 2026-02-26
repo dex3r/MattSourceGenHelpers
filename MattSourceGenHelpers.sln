@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattSourceGenHelpers.Abstractions", "MattSourceGenHelpers.Abstractions\MattSourceGenHelpers.Abstractions.csproj", "{D8E107D5-95B1-400C-999A-A13EBC100207}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattSourceGenHelpers.Examples", "MattSourceGenHelpers.Examples\MattSourceGenHelpers.Examples.csproj", "{1F7983BB-7DB2-436A-873E-7143CAE72179}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattSourceGenHelpers.Generators", "MattSourceGenHelpers.Generators\MattSourceGenHelpers.Generators.csproj", "{008C7092-F242-4C22-9E24-ADBFD9F74A79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8E107D5-95B1-400C-999A-A13EBC100207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E107D5-95B1-400C-999A-A13EBC100207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E107D5-95B1-400C-999A-A13EBC100207}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E107D5-95B1-400C-999A-A13EBC100207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F7983BB-7DB2-436A-873E-7143CAE72179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F7983BB-7DB2-436A-873E-7143CAE72179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F7983BB-7DB2-436A-873E-7143CAE72179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F7983BB-7DB2-436A-873E-7143CAE72179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

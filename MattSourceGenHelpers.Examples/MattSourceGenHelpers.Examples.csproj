@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>default</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MattSourceGenHelpers.Abstractions\MattSourceGenHelpers.Abstractions.csproj" />
+      <ProjectReference Include="..\MattSourceGenHelpers.Generators\MattSourceGenHelpers.Generators.csproj" />
+    </ItemGroup>
+
+</Project>
