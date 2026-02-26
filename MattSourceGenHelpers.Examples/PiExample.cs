@@ -1,14 +1,36 @@
 ﻿using MattSourceGenHelpers.Abstractions;
+// ReSharper disable ConvertClosureToMethodGroup
 
 namespace MattSourceGenHelpers.Examples;
 
+public static partial class PiExample
+{
+    public static partial int GetPiDecimal(int decimalNumber);
+
+    [GeneratesMethod(nameof(GetPiDecimal))]
+    [SwitchCase(arg1: 0)]
+    [SwitchCase(arg1: 1)]
+    [SwitchCase(arg1: 2)]
+    static int GetPiDecimal_Generator_Specialized(int decimalNumber) =>
+        SlowMath.CalculatePiDecimal(decimalNumber);
+
+    [GeneratesMethod(nameof(GetPiDecimal))]
+    [SwitchDefault]
+    static Func<int, int> GetPiDecimal_Generator_Fallback() => decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber);
+}
+
+/*
 public static class PiExample
 {
-    /// <summary>
-    /// Returns Nth Pi decimal number. e.g. for 1 return 1, for 2 it returns 4, etc.
-    /// </summary>
-    public partial static int GetPiDecimal(int decimalNumber);
-    
-    [GeneratesMethod(nameof(GetPiDecimal))]
-    static Func<int> GetPiDecimal_Generator(int decimalNumber);
+    public static int GetPiDecimal(int decimalNumber)
+    {
+        switch (decimalNumber)
+        {
+            case 0: return 3;
+            case 1: return 1;
+            case 2: return 4;
+            default: return CalculatePiDecimal(decimalNumber);
+        }
+    }
 }
+*/

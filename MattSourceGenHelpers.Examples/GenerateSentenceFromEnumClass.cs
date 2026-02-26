@@ -15,3 +15,13 @@ public partial class ColorsClass
     static string GetAllColorsString_Generator() =>
         string.Join(", ", Enum.GetNames<ColorsEnum>());
 }
+
+/*
+public class ColorsClass
+{
+    public string GetAllColorsString()
+    {
+        return "Red, Green, Blue";
+    }
+}
+*/
