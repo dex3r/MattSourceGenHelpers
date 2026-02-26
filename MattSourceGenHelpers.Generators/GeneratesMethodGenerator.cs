@@ -669,10 +669,11 @@ public class GeneratesMethodGenerator : IIncrementalGenerator
         // Reference assemblies are often placed in a "ref" subdirectory
         // e.g. .../bin/Debug/net10.0/ref/Foo.dll → try .../bin/Debug/net10.0/Foo.dll
         var dir = Path.GetDirectoryName(path);
-        if (dir != null && string.Equals(Path.GetFileName(dir), "ref", StringComparison.OrdinalIgnoreCase))
+        var parentDir = dir != null ? Path.GetDirectoryName(dir) : null;
+        if (dir != null && parentDir != null &&
+            string.Equals(Path.GetFileName(dir), "ref", StringComparison.OrdinalIgnoreCase))
         {
-            var implPath = Path.Combine(Path.GetDirectoryName(dir)!, Path.GetFileName(path));
-            return implPath; // Caller handles missing file via exception
+            return Path.Combine(parentDir, Path.GetFileName(path));
         }
         return path;
     }
