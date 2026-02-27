@@ -3,13 +3,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
-using System.Threading;
 
 namespace MattSourceGenHelpers.Generators;
+
+#pragma warning disable RS1041 // This generator will only work with dotnet 8 to 10
 
 [Generator]
 public class GeneratesMethodGenerator : IIncrementalGenerator

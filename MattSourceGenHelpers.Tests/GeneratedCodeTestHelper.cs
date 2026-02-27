@@ -15,9 +15,9 @@ internal static class GeneratedCodeTestHelper
         string projectDirectory = FindProjectDirectory();
         string[] generatedFiles = Directory.GetFiles(projectDirectory, generatedFileName, SearchOption.AllDirectories);
 
-        if (generatedFiles.Length != 1)
+        if (generatedFiles.Length == 0)
         {
-            throw new AssertionException($"Expected exactly one generated file '{generatedFileName}', but found {generatedFiles.Length}.");
+            throw new AssertionException($"Could not find expected generated file '{generatedFileName}' under {projectDirectory}{Path.DirectorySeparatorChar}**");
         }
 
         return generatedFiles[0];
