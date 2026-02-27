@@ -41,7 +41,12 @@ public class Tests
         string projectDirectory = FindProjectDirectory();
         string[] generatedFiles = Directory.GetFiles(projectDirectory, "TestColorsClass_GetAllColorsString.g.cs", SearchOption.AllDirectories);
 
-        return generatedFiles.Single();
+        if (generatedFiles.Length != 1)
+        {
+            throw new AssertionException($"Expected exactly one generated file, but found {generatedFiles.Length}.");
+        }
+
+        return generatedFiles[0];
     }
 
     private static string FindProjectDirectory()
