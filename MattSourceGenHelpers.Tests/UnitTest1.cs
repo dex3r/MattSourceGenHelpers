@@ -4,8 +4,6 @@ namespace MattSourceGenHelpers.Tests;
 
 public class Tests
 {
-    private const char UnicodeBom = '\uFEFF';
-
     [Test]
     public void ColorsClassLikeGenerator_ProducesExpectedRuntimeOutput()
     {
@@ -19,8 +17,7 @@ public class Tests
     [Test]
     public void ColorsClassLikeGenerator_ProducesExpectedGeneratedCode()
     {
-        string generatedCodePath = GetGeneratedCodePath();
-        string generatedCode = File.ReadAllText(generatedCodePath).TrimStart(UnicodeBom).ReplaceLineEndings("\n").TrimEnd();
+        string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestColorsClass_GetAllColorsString.g.cs");
         string expectedCode = """
                               namespace MattSourceGenHelpers.Tests;
 
@@ -34,37 +31,6 @@ public class Tests
                               """.ReplaceLineEndings("\n").TrimEnd();
 
         Assert.That(generatedCode, Is.EqualTo(expectedCode));
-    }
-
-    private static string GetGeneratedCodePath()
-    {
-        string projectDirectory = FindProjectDirectory();
-        string[] generatedFiles = Directory.GetFiles(projectDirectory, "TestColorsClass_GetAllColorsString.g.cs", SearchOption.AllDirectories);
-
-        if (generatedFiles.Length != 1)
-        {
-            throw new AssertionException($"Expected exactly one generated file, but found {generatedFiles.Length}.");
-        }
-
-        return generatedFiles[0];
-    }
-
-    private static string FindProjectDirectory()
-    {
-        string? currentDirectory = TestContext.CurrentContext.TestDirectory;
-
-        while (currentDirectory is not null)
-        {
-            string projectFilePath = Path.Combine(currentDirectory, "MattSourceGenHelpers.Tests.csproj");
-            if (File.Exists(projectFilePath))
-            {
-                return currentDirectory;
-            }
-
-            currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate MattSourceGenHelpers.Tests project directory.");
     }
 }
 
