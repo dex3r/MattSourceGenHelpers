@@ -23,4 +23,4 @@ jobs:
         run: dotnet restore MattSourceGenHelpers.sln
 
       - name: Test
-        run: dotnet test MattSourceGenHelpers.sln --verbosity normal
+        run: dotnet test MattSourceGenHelpers.sln --no-restore --verbosity normal
