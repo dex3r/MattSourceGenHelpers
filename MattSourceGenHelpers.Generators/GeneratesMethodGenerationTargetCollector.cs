@@ -56,7 +56,7 @@ internal static class GeneratesMethodGenerationTargetCollector
             }
 
             string? targetMethodName = attribute.ConstructorArguments[0].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(targetMethodName))
+            if (string.IsNullOrEmpty(targetMethodName))
             {
                 continue;
             }

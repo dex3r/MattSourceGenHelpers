@@ -21,8 +21,8 @@ public class GeneratesMethodGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(
                 predicate: IsMethodWithGeneratesMethodAttribute,
                 transform: GetMethodDeclaration)
-                .Where(m => m != null)
-                .Collect();
+            .Where(m => m != null)
+            .Collect();
 
         context.RegisterSourceOutput(
             methodsWithAttribute.Combine(context.CompilationProvider),
