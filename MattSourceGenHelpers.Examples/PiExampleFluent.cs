@@ -17,8 +17,8 @@ public static partial class PiExampleFluent
 }
 
 /*
-public static class PiExampleFluent
-{
+ This will generate the following method:
+
     public static int GetPiDecimal(int decimalNumber)
     {
         switch (decimalNumber)
@@ -32,5 +32,4 @@ public static class PiExampleFluent
             default: return CalculatePiDecimal(decimalNumber);
         }
     }
-}
 */

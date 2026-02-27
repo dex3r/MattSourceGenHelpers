@@ -17,11 +17,10 @@ public partial class ColorsClass
 }
 
 /*
-public class ColorsClass
-{
+ This will generate the following method:
+
     public string GetAllColorsString()
     {
         return "Red, Green, Blue";
     }
-}
 */
