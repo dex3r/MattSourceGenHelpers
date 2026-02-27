@@ -30,10 +30,10 @@ internal static class GeneratesMethodExecutionRuntime
         Compilation compilation)
     {
         IReadOnlyList<IMethodSymbol> allPartials = GetAllUnimplementedPartialMethods(compilation);
-        CSharpCompilation runtimeCompilation = BuildExecutionCompilation(allPartials, compilation);
+        CSharpCompilation executableCompilation = BuildExecutionCompilation(allPartials, compilation);
 
         using MemoryStream stream = new();
-        EmitResult emitResult = runtimeCompilation.Emit(stream);
+        EmitResult emitResult = executableCompilation.Emit(stream);
         if (!emitResult.Success)
         {
             string errors = string.Join("; ", emitResult.Diagnostics
@@ -87,13 +87,13 @@ internal static class GeneratesMethodExecutionRuntime
             currentGeneratorProperty?.SetValue(null, recordingFactory);
 
             string typeName = generatorMethod.ContainingType.ToDisplayString();
-            Type? generatedType = assembly.GetType(typeName);
-            if (generatedType == null)
+            Type? loadedType = assembly.GetType(typeName);
+            if (loadedType == null)
             {
                 return (null, $"Could not find type '{typeName}' in compiled assembly");
             }
 
-            MethodInfo? generatorMethodInfo = generatedType.GetMethod(generatorMethod.Name, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            MethodInfo? generatorMethodInfo = loadedType.GetMethod(generatorMethod.Name, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
             if (generatorMethodInfo == null)
             {
                 return (null, $"Could not find method '{generatorMethod.Name}' in type '{typeName}'");
@@ -126,10 +126,10 @@ internal static class GeneratesMethodExecutionRuntime
         Compilation compilation,
         object?[]? args)
     {
-        CSharpCompilation runtimeCompilation = BuildExecutionCompilation(allPartialMethods, compilation);
+        CSharpCompilation executableCompilation = BuildExecutionCompilation(allPartialMethods, compilation);
 
         using MemoryStream stream = new();
-        EmitResult emitResult = runtimeCompilation.Emit(stream);
+        EmitResult emitResult = executableCompilation.Emit(stream);
         if (!emitResult.Success)
         {
             string errors = string.Join("; ", emitResult.Diagnostics
@@ -156,13 +156,13 @@ internal static class GeneratesMethodExecutionRuntime
 
             Assembly assembly = loadContext.LoadFromStream(stream);
             string typeName = generatorMethod.ContainingType.ToDisplayString();
-            Type? generatedType = assembly.GetType(typeName);
-            if (generatedType == null)
+            Type? loadedType = assembly.GetType(typeName);
+            if (loadedType == null)
             {
                 return (null, $"Could not find type '{typeName}' in compiled assembly");
             }
 
-            MethodInfo? generatorMethodInfo = generatedType.GetMethod(generatorMethod.Name, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            MethodInfo? generatorMethodInfo = loadedType.GetMethod(generatorMethod.Name, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
             if (generatorMethodInfo == null)
             {
                 return (null, $"Could not find method '{generatorMethod.Name}' in type '{typeName}'");
@@ -302,10 +302,10 @@ internal static class GeneratesMethodExecutionRuntime
                     Accessibility.Internal => "internal",
                     Accessibility.ProtectedOrInternal => "protected internal",
                     Accessibility.ProtectedAndInternal => "private protected",
-                    _ => string.Empty
+                    _ => ""
                 };
 
-                string staticModifier = partialMethod.IsStatic ? "static " : string.Empty;
+                string staticModifier = partialMethod.IsStatic ? "static " : "";
                 string returnType = partialMethod.ReturnType.ToDisplayString();
                 string parameters = string.Join(", ", partialMethod.Parameters.Select(parameter => $"{parameter.Type.ToDisplayString()} {parameter.Name}"));
 

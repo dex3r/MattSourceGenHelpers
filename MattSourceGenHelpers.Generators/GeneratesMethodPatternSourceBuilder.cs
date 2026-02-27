@@ -24,7 +24,7 @@ internal static class GeneratesMethodPatternSourceBuilder
         GeneratesMethodGenerationTarget? switchDefaultMethod = methods
             .FirstOrDefault(method => method.Symbol.GetAttributes().Any(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchDefaultAttributeTypeName));
 
-        List<(object key, string value)> cases = new();
+        List<(object key, string value)> switchCases = new();
         foreach (GeneratesMethodGenerationTarget switchMethod in switchCaseMethods)
         {
             IEnumerable<AttributeData> switchCaseAttributes = switchMethod.Symbol.GetAttributes()
@@ -59,7 +59,7 @@ internal static class GeneratesMethodPatternSourceBuilder
                     continue;
                 }
 
-                cases.Add((caseArgument, FormatValueAsCSharpLiteral(result, partialMethod.ReturnType)));
+                switchCases.Add((caseArgument, FormatValueAsCSharpLiteral(result, partialMethod.ReturnType)));
             }
         }
 
@@ -67,7 +67,7 @@ internal static class GeneratesMethodPatternSourceBuilder
             ? ExtractDefaultExpressionFromSwitchDefaultMethod(switchDefaultMethod.Syntax)
             : null;
 
-        return GenerateSwitchMethodSource(containingType, partialMethod, cases, defaultExpression);
+        return GenerateSwitchMethodSource(containingType, partialMethod, switchCases, defaultExpression);
     }
 
     internal static string GenerateFromFluent(
