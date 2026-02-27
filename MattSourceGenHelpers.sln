@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattSourceGenHelpers.Exampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattSourceGenHelpers.Generators", "MattSourceGenHelpers.Generators\MattSourceGenHelpers.Generators.csproj", "{008C7092-F242-4C22-9E24-ADBFD9F74A79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattSourceGenHelpers.Tests", "MattSourceGenHelpers.Tests\MattSourceGenHelpers.Tests.csproj", "{36016792-096D-4F21-B7D1-A95DB6BD350F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{008C7092-F242-4C22-9E24-ADBFD9F74A79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36016792-096D-4F21-B7D1-A95DB6BD350F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36016792-096D-4F21-B7D1-A95DB6BD350F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36016792-096D-4F21-B7D1-A95DB6BD350F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36016792-096D-4F21-B7D1-A95DB6BD350F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
