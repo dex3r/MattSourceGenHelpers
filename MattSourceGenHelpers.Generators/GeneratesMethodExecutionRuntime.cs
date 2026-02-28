@@ -15,6 +15,7 @@ internal sealed record SwitchBodyData(
 
 internal static class GeneratesMethodExecutionRuntime
 {
+// The Abstraction assembly cannot be referenced directly here, even though the IDE makes it look like it could. However, the source generation process will fail if it is.
     private const string AbstractionsAssemblyName = "MattSourceGenHelpers.Abstractions";
     private const string GenerateTypeName = "MattSourceGenHelpers.Abstractions.Generate";
     private const string RecordingGeneratorsFactoryTypeName = "MattSourceGenHelpers.Abstractions.RecordingGeneratorsFactory";
