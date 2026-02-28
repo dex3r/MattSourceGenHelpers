@@ -15,5 +15,14 @@ public class SwitchCase(
     ) 
     : Attribute
 {
-    
+    public object? Arg1 => arg1;
+    public object? Arg2 => arg2;
+    public object? Arg3 => arg3;
+    public object? Arg4 => arg4;
+    public object? Arg5 => arg5;
+    public object? Arg6 => arg6;
+    public object? Arg7 => arg7;
+    public object? Arg8 => arg8;
+    public object? Arg9 => arg9;
+    public object? Arg10 => arg10;
 }
