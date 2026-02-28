@@ -142,7 +142,7 @@ internal static class GeneratesMethodPatternSourceBuilder
             }
 
             string methodName = memberAccessExpression.Name.Identifier.Text;
-            if (methodName is not ("RuntimeBody" or "CompileTimeBody"))
+            if (methodName is not ("RuntimeBody" or "CompileTimeBody" or "WithBody"))
             {
                 continue;
             }
@@ -181,7 +181,16 @@ internal static class GeneratesMethodPatternSourceBuilder
         StringBuilder builder = new();
         AppendNamespaceAndTypeHeader(builder, containingType, partialMethod);
 
-        string switchParameterName = partialMethod.Parameters.Length > 0 ? partialMethod.Parameters[0].Name : "arg";
+        if (partialMethod.Parameters.Length == 0)
+        {
+            string fallbackExpression = defaultExpression ?? "default";
+            builder.AppendLine($"        return {fallbackExpression};");
+            builder.AppendLine("    }");
+            builder.AppendLine("}");
+            return builder.ToString();
+        }
+
+        string switchParameterName = partialMethod.Parameters[0].Name;
         builder.AppendLine($"        switch ({switchParameterName})");
         builder.AppendLine("        {");
 
