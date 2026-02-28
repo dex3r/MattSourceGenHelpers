@@ -15,12 +15,6 @@ internal sealed record SwitchBodyData(
 
 internal static class GeneratesMethodExecutionRuntime
 {
-    private const string AbstractionsAssemblyName = "MattSourceGenHelpers.Abstractions";
-    private const string GenerateTypeName = "MattSourceGenHelpers.Abstractions.Generate";
-    private const string RecordingGeneratorsFactoryTypeName = "MattSourceGenHelpers.Abstractions.RecordingGeneratorsFactory";
-    private const string CurrentGeneratorPropertyName = "CurrentGenerator";
-    private const string LastRecordPropertyName = "LastRecord";
-
     internal static (string? value, string? error) ExecuteSimpleGeneratorMethod(
         IMethodSymbol generatorMethod,
         IMethodSymbol partialMethod,
@@ -71,27 +65,27 @@ internal static class GeneratesMethodExecutionRuntime
             PortableExecutableReference? abstractionsReference = compilation.References
                 .OfType<PortableExecutableReference>()
                 .FirstOrDefault(reference => reference.FilePath is not null && string.Equals(
-                    Path.GetFileNameWithoutExtension(reference.FilePath),
-                    AbstractionsAssemblyName,
-                    StringComparison.OrdinalIgnoreCase));
+                        Path.GetFileNameWithoutExtension(reference.FilePath),
+                        Consts.AbstractionsAssemblyName,
+                        StringComparison.OrdinalIgnoreCase));
 
             if (abstractionsReference?.FilePath == null)
             {
-                return (null, $"Could not find {AbstractionsAssemblyName} reference in compilation");
+                return (null, $"Could not find {Consts.AbstractionsAssemblyName} reference in compilation");
             }
 
             string abstractionsAssemblyPath = ResolveImplementationAssemblyPath(abstractionsReference.FilePath);
             Assembly abstractionsAssembly = loadContext.LoadFromAssemblyPath(abstractionsAssemblyPath);
             
-            Type? generatorStaticType = abstractionsAssembly.GetType(GenerateTypeName);
-            Type? recordingFactoryType = abstractionsAssembly.GetType(RecordingGeneratorsFactoryTypeName);
+            Type? generatorStaticType = abstractionsAssembly.GetType(Consts.GenerateTypeFullName);
+            Type? recordingFactoryType = abstractionsAssembly.GetType(Consts.RecordingGeneratorsFactoryTypeFullName);
             if (generatorStaticType == null || recordingFactoryType == null)
             {
-                return (null, $"Could not find {GenerateTypeName} or {RecordingGeneratorsFactoryTypeName} types in Abstractions assembly");
+                return (null, $"Could not find {Consts.GenerateTypeFullName} or {Consts.RecordingGeneratorsFactoryTypeFullName} types in Abstractions assembly");
             }
 
             object? recordingFactory = Activator.CreateInstance(recordingFactoryType);
-            PropertyInfo? currentGeneratorProperty = generatorStaticType.GetProperty(CurrentGeneratorPropertyName, BindingFlags.Public | BindingFlags.Static);
+            PropertyInfo? currentGeneratorProperty = generatorStaticType.GetProperty(Consts.CurrentGeneratorPropertyName, BindingFlags.Public | BindingFlags.Static);
             currentGeneratorProperty?.SetValue(null, recordingFactory);
 
             string typeName = generatorMethod.ContainingType.ToDisplayString();
@@ -109,7 +103,7 @@ internal static class GeneratesMethodExecutionRuntime
 
             generatorMethodInfo.Invoke(null, null);
 
-            PropertyInfo? lastRecordProperty = recordingFactoryType.GetProperty(LastRecordPropertyName);
+            PropertyInfo? lastRecordProperty = recordingFactoryType.GetProperty(Consts.LastRecordPropertyName);
             object? lastRecord = lastRecordProperty?.GetValue(recordingFactory);
             if (lastRecord == null)
             {
