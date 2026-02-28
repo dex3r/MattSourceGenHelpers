@@ -6,5 +6,5 @@ public class SwitchCase(
     ) 
     : Attribute
 {
-    
+    public object? Arg1 { get; } = arg1;
 }

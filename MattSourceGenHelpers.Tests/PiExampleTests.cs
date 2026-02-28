@@ -6,6 +6,14 @@ namespace MattSourceGenHelpers.Tests;
 [TestFixture]
 public class PiExampleTests
 {
+    [Test]
+    public void SwitchCaseAttribute_StoresArg1Value()
+    {
+        SwitchCase switchCase = new(arg1: 7);
+
+        Assert.That(switchCase.Arg1, Is.EqualTo(7));
+    }
+
     [TestCase(0, 3)]
     [TestCase(1, 1)]
     [TestCase(2, 4)]
