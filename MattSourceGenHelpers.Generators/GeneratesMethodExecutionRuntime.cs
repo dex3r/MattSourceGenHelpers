@@ -51,7 +51,7 @@ internal static class GeneratesMethodExecutionRuntime
             {
                 PortableExecutableReference? match = compilation.References
                     .OfType<PortableExecutableReference>()
-                    .FirstOrDefault(reference => string.Equals(
+                    .FirstOrDefault(reference => reference.FilePath is not null && string.Equals(
                         Path.GetFileNameWithoutExtension(reference.FilePath),
                         assemblyName.Name,
                         StringComparison.OrdinalIgnoreCase));
@@ -62,7 +62,7 @@ internal static class GeneratesMethodExecutionRuntime
 
             PortableExecutableReference? abstractionsReference = compilation.References
                 .OfType<PortableExecutableReference>()
-                .FirstOrDefault(reference => string.Equals(
+                .FirstOrDefault(reference => reference.FilePath is not null && string.Equals(
                     Path.GetFileNameWithoutExtension(reference.FilePath),
                     "MattSourceGenHelpers.Abstractions",
                     StringComparison.OrdinalIgnoreCase));
@@ -147,7 +147,7 @@ internal static class GeneratesMethodExecutionRuntime
             {
                 PortableExecutableReference? match = compilation.References
                     .OfType<PortableExecutableReference>()
-                    .FirstOrDefault(reference => string.Equals(
+                    .FirstOrDefault(reference => reference.FilePath is not null && string.Equals(
                         Path.GetFileNameWithoutExtension(reference.FilePath),
                         assemblyName.Name,
                         StringComparison.OrdinalIgnoreCase));
