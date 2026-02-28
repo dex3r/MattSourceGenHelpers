@@ -83,6 +83,66 @@ public class PiExampleFluentTests
 
         Assert.That(generatedCode, Is.EqualTo(expectedCode));
     }
+    [TestCase(TestFourLeggedAnimal.Dog, TestMammalAnimal.Dog)]
+    [TestCase(TestFourLeggedAnimal.Cat, TestMammalAnimal.Cat)]
+    public void MapperFluentEnumGenerator_ProducesExpectedRuntimeOutput(TestFourLeggedAnimal source, TestMammalAnimal expected)
+    {
+        TestMammalAnimal result = TestMapperFluentEnum.MapToMammal(source);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void MapperFluentEnumGenerator_ThrowsForUnmappableValue()
+    {
+        Assert.Throws<ArgumentException>(() => TestMapperFluentEnum.MapToMammal(TestFourLeggedAnimal.Lizard));
+    }
+
+    [Test]
+    public void MapperFluentEnumGenerator_ProducesExpectedGeneratedCode()
+    {
+        string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestMapperFluentEnum_MapToMammal.g.cs");
+        string expectedCode = """
+                              namespace MattSourceGenHelpers.Tests;
+
+                              static partial class TestMapperFluentEnum
+                              {
+                                  public static partial MattSourceGenHelpers.Tests.TestMammalAnimal MapToMammal(MattSourceGenHelpers.Tests.TestFourLeggedAnimal fourLeggedAnimal)
+                                  {
+                                      switch (fourLeggedAnimal)
+                                      {
+                                          case MattSourceGenHelpers.Tests.TestFourLeggedAnimal.Dog: return MattSourceGenHelpers.Tests.TestMammalAnimal.Dog;
+                                          case MattSourceGenHelpers.Tests.TestFourLeggedAnimal.Cat: return MattSourceGenHelpers.Tests.TestMammalAnimal.Cat;
+                                          default: throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a mammal");
+                                      }
+                                  }
+                              }
+                              """.ReplaceLineEndings("\n").TrimEnd();
+
+        Assert.That(generatedCode, Is.EqualTo(expectedCode));
+    }
+}
+
+public enum TestFourLeggedAnimal { Dog, Cat, Lizard }
+
+public enum TestMammalAnimal { Dog, Cat }
+
+public static partial class TestMapperFluentEnum
+{
+    public static partial TestMammalAnimal MapToMammal(TestFourLeggedAnimal fourLeggedAnimal);
+
+    [GeneratesMethod(nameof(MapToMammal))]
+    static IMethodImplementationGenerator MapToMammal_Generator() =>
+        Generate
+            .Method().WithParameter<TestFourLeggedAnimal>().WithReturnType<TestMammalAnimal>()
+            .WithSwitchBody()
+            .ForCases(GetFourLeggedAnimalsThatAreAlsoMammal()).ReturnConstantValue(a => Enum.Parse<TestMammalAnimal>(a.ToString(), true))
+            .ForDefaultCase().UseBody(fourLeggedAnimal => () => throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a mammal"));
+
+    static TestFourLeggedAnimal[] GetFourLeggedAnimalsThatAreAlsoMammal() =>
+        Enum.GetValues<TestFourLeggedAnimal>()
+            .Where(a => Enum.TryParse(typeof(TestMammalAnimal), a.ToString(), true, out _))
+            .ToArray();
 }
 
 public static partial class TestPiFluentClass
