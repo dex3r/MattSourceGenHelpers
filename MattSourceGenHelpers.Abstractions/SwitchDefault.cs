@@ -1,7 +1,4 @@
 ﻿namespace MattSourceGenHelpers.Abstractions;
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public class SwitchDefault : Attribute
-{
-    
-}
+[AttributeUsage(AttributeTargets.Method)]
+public class SwitchDefault : Attribute;
