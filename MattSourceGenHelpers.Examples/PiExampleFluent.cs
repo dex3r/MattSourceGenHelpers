@@ -10,7 +10,7 @@ public static partial class PiExampleFluent
     [GeneratesMethod(nameof(GetPiDecimal))]
     static IMethodImplementationGenerator GetPiDecimal_Generator_Specialized() =>
         Generate
-            .MethodImplementation<int, int>()
+            .Method().WithParameter<int>().WithReturnType<int>()
             .WithSwitchBody()
             .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber))
             .ForDefaultCase().WithBody(decimalNumber => () => SlowMath.CalculatePiDecimal(decimalNumber));
