@@ -56,12 +56,16 @@ internal static class GeneratesMethodGenerationTargetCollector
             }
 
             ImmutableArray<IParameterSymbol> constructorParameters = attribute.AttributeConstructor?.Parameters ?? [];
-            int targetMethodNameArgumentIndex = constructorParameters
-                .Select((parameter, index) => new { parameter, index })
-                .Where(value => value.parameter.Name.Equals(nameof(GeneratesMethod.SameClassMethodName), StringComparison.OrdinalIgnoreCase))
-                .Select(value => value.index)
-                .DefaultIfEmpty(-1)
-                .First();
+            int targetMethodNameArgumentIndex = -1;
+            for (int parameterIndex = 0; parameterIndex < constructorParameters.Length; parameterIndex++)
+            {
+                IParameterSymbol constructorParameter = constructorParameters[parameterIndex];
+                if (constructorParameter.Name.Equals(nameof(GeneratesMethod.SameClassMethodName), StringComparison.OrdinalIgnoreCase))
+                {
+                    targetMethodNameArgumentIndex = parameterIndex;
+                    break;
+                }
+            }
             if (targetMethodNameArgumentIndex < 0 || targetMethodNameArgumentIndex >= attribute.ConstructorArguments.Length)
             {
                 continue;
