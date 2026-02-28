@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using static MattSourceGenHelpers.Generators.Consts;
 
 namespace MattSourceGenHelpers.Generators;
 
@@ -13,8 +14,6 @@ internal sealed record GeneratesMethodGenerationTarget(
 
 internal static class GeneratesMethodGenerationTargetCollector
 {
-    private const string GeneratesMethodAttributeTypeName = "MattSourceGenHelpers.Abstractions.GeneratesMethod";
-
     internal static List<GeneratesMethodGenerationTarget> Collect(
         SourceProductionContext context,
         ImmutableArray<MethodDeclarationSyntax?> generatorMethods,
@@ -48,7 +47,7 @@ internal static class GeneratesMethodGenerationTargetCollector
 
             AttributeData? attribute = methodSymbol
                 .GetAttributes()
-                .FirstOrDefault(attributeData => attributeData.AttributeClass?.ToDisplayString() == GeneratesMethodAttributeTypeName);
+                .FirstOrDefault(attributeData => attributeData.AttributeClass?.ToDisplayString() == GeneratesMethodAttributeFullName);
 
             if (attribute is null || attribute.ConstructorArguments.Length == 0)
             {

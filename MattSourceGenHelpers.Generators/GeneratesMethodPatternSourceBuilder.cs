@@ -2,14 +2,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
+using static MattSourceGenHelpers.Generators.Consts;
 
 namespace MattSourceGenHelpers.Generators;
 
 internal static class GeneratesMethodPatternSourceBuilder
 {
-    private const string SwitchCaseAttributeTypeName = "MattSourceGenHelpers.Abstractions.SwitchCase";
-    private const string SwitchDefaultAttributeTypeName = "MattSourceGenHelpers.Abstractions.SwitchDefault";
-
     internal static string GenerateFromSwitchAttributes(
         SourceProductionContext context,
         List<GeneratesMethodGenerationTarget> methods,
@@ -19,16 +17,16 @@ internal static class GeneratesMethodPatternSourceBuilder
         Compilation compilation)
     {
         List<GeneratesMethodGenerationTarget> switchCaseMethods = methods
-            .Where(method => method.Symbol.GetAttributes().Any(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchCaseAttributeTypeName))
+            .Where(method => method.Symbol.GetAttributes().Any(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchCaseAttributeFullName))
             .ToList();
         GeneratesMethodGenerationTarget? switchDefaultMethod = methods
-            .FirstOrDefault(method => method.Symbol.GetAttributes().Any(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchDefaultAttributeTypeName));
+            .FirstOrDefault(method => method.Symbol.GetAttributes().Any(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchDefaultAttributeFullName));
 
         List<(object key, string value)> switchCases = new();
         foreach (GeneratesMethodGenerationTarget switchMethod in switchCaseMethods)
         {
             IEnumerable<AttributeData> switchCaseAttributes = switchMethod.Symbol.GetAttributes()
-                .Where(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchCaseAttributeTypeName);
+                .Where(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchCaseAttributeFullName);
 
             foreach (AttributeData switchCaseAttribute in switchCaseAttributes)
             {

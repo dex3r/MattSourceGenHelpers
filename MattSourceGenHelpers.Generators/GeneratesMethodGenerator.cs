@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using MattSourceGenHelpers.Abstractions;
 
 namespace MattSourceGenHelpers.Generators;
 
@@ -29,10 +30,10 @@ public sealed class GeneratesMethodGenerator : IIncrementalGenerator
         {
             return false;
         }
-
+        
         return method.AttributeLists
             .SelectMany(attributeList => attributeList.Attributes)
-            .Any(attribute => attribute.Name.ToString() is "GeneratesMethod" or "GeneratesMethodAttribute");
+            .Any(attribute => attribute.Name.ToString() is nameof(GeneratesMethod));
     }
 
     private static MethodDeclarationSyntax? GetMethodDeclaration(GeneratorSyntaxContext context, CancellationToken _)

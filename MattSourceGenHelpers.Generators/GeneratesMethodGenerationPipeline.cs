@@ -1,15 +1,12 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using static MattSourceGenHelpers.Generators.Consts;
 
 namespace MattSourceGenHelpers.Generators;
 
 internal static class GeneratesMethodGenerationPipeline
 {
-    private const string SwitchCaseAttributeTypeName = "MattSourceGenHelpers.Abstractions.SwitchCase";
-    private const string SwitchDefaultAttributeTypeName = "MattSourceGenHelpers.Abstractions.SwitchDefault";
-    private const string FluentGeneratorTypeName = "MattSourceGenHelpers.Abstractions.IMethodImplementationGenerator";
-
     internal static void Execute(
         SourceProductionContext context,
         ImmutableArray<MethodDeclarationSyntax?> generatorMethods,
@@ -49,9 +46,9 @@ internal static class GeneratesMethodGenerationPipeline
         IReadOnlyList<IMethodSymbol> allPartials,
         Compilation compilation)
     {
-        bool hasSwitchCase = methods.Any(method => HasAttribute(method.Symbol, SwitchCaseAttributeTypeName));
-        bool hasSwitchDefault = methods.Any(method => HasAttribute(method.Symbol, SwitchDefaultAttributeTypeName));
-        bool isFluentPattern = methods.Count == 1 && methods[0].Symbol.ReturnType.ToDisplayString() == FluentGeneratorTypeName;
+        bool hasSwitchCase = methods.Any(method => HasAttribute(method.Symbol, SwitchCaseAttributeFullName));
+        bool hasSwitchDefault = methods.Any(method => HasAttribute(method.Symbol, SwitchDefaultAttributeFullName));
+        bool isFluentPattern = methods.Count == 1 && methods[0].Symbol.ReturnType.ToDisplayString() == IMethodImplementationGeneratorFullName;
 
         if (hasSwitchCase || hasSwitchDefault)
         {
