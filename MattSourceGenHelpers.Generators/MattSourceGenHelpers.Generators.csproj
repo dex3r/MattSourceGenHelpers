@@ -7,6 +7,12 @@
         <IsRoslynAnalyzer>true</IsRoslynAnalyzer>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.1.0</Version>
+        <Title>Matt Source Generation Helpers</Title>
+        <Authors>Matt Krzaczek</Authors>
+        <PackageProjectUrl>https://github.com/dex3r/MattSourceGenHelpers</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dex3r/MattSourceGenHelpers</RepositoryUrl>
     </PropertyGroup>
     
     <ItemGroup>
