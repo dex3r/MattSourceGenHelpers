@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MattSourceGenHelpers.Abstractions;
 using System.Text;
 using static MattSourceGenHelpers.Generators.Consts;
 
@@ -35,7 +36,24 @@ internal static class GeneratesMethodPatternSourceBuilder
                     continue;
                 }
 
-                object? caseArgument = switchCaseAttribute.ConstructorArguments[0].Value;
+                IMethodSymbol? attributeConstructor = switchCaseAttribute.AttributeConstructor;
+                if (attributeConstructor is null)
+                {
+                    continue;
+                }
+
+                int switchCaseArgIndex = attributeConstructor.Parameters
+                    .Select((parameter, index) => (parameter, index))
+                    .Where(tuple => string.Equals(tuple.parameter.Name, nameof(SwitchCase.Arg1), StringComparison.OrdinalIgnoreCase))
+                    .Select(tuple => tuple.index)
+                    .DefaultIfEmpty(-1)
+                    .First();
+                if (switchCaseArgIndex < 0 || switchCaseArgIndex >= switchCaseAttribute.ConstructorArguments.Length)
+                {
+                    continue;
+                }
+
+                object? caseArgument = switchCaseAttribute.ConstructorArguments[switchCaseArgIndex].Value;
                 if (caseArgument is null)
                 {
                     continue;
