@@ -1,5 +1,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MattSourceGenHelpers.Abstractions;
 using System.Collections.Immutable;
 using static MattSourceGenHelpers.Generators.Consts;
 
@@ -54,7 +55,23 @@ internal static class GeneratesMethodGenerationTargetCollector
                 continue;
             }
 
-            string? targetMethodName = attribute.ConstructorArguments[0].Value?.ToString();
+            ImmutableArray<IParameterSymbol> constructorParameters = attribute.AttributeConstructor?.Parameters ?? [];
+            int targetMethodNameArgumentIndex = -1;
+            for (int parameterIndex = 0; parameterIndex < constructorParameters.Length; parameterIndex++)
+            {
+                IParameterSymbol constructorParameter = constructorParameters[parameterIndex];
+                if (constructorParameter.Name.Equals(nameof(GeneratesMethod.SameClassMethodName), StringComparison.OrdinalIgnoreCase))
+                {
+                    targetMethodNameArgumentIndex = parameterIndex;
+                    break;
+                }
+            }
+            if (targetMethodNameArgumentIndex < 0 || targetMethodNameArgumentIndex >= attribute.ConstructorArguments.Length)
+            {
+                continue;
+            }
+
+            string? targetMethodName = attribute.ConstructorArguments[targetMethodNameArgumentIndex].Value?.ToString();
             if (string.IsNullOrEmpty(targetMethodName))
             {
                 continue;
