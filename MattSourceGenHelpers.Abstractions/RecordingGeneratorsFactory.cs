@@ -55,7 +55,7 @@ public class RecordingMethodImplementationGeneratorTyped<TReturnType> : IMethodI
         _record = record;
     }
 
-    public IMethodImplementationGenerator WithBody(Func<object> body) => this;
+    public IMethodImplementationGenerator UseBody(Func<object> body) => this;
 }
 
 public class RecordingMethodImplementationGenerator<TArg1, TReturnType>
@@ -163,13 +163,13 @@ public class RecordingMethodImplementationGeneratorSwitchBodyDefaultCase<TArg1, 
         _record = record;
     }
 
-    public IMethodImplementationGenerator<TArg1, TReturnType> CompileTimeBody(Func<TArg1, TReturnType> func)
+    public IMethodImplementationGenerator<TArg1, TReturnType> ReturnConstantValue(Func<TArg1, TReturnType> func)
     {
         _record.HasDefaultCase = true;
         return new RecordingMethodImplementationGenerator<TArg1, TReturnType>(_record);
     }
 
-    public IMethodImplementationGenerator<TArg1, TReturnType> WithBody(Func<TArg1, Func<TReturnType>> func)
+    public IMethodImplementationGenerator<TArg1, TReturnType> UseBody(Func<TArg1, Func<TReturnType>> func)
     {
         _record.HasDefaultCase = true;
         return new RecordingMethodImplementationGenerator<TArg1, TReturnType>(_record);

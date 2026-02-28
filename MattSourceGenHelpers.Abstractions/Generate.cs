@@ -59,7 +59,7 @@ public class EmptyMethodImplementationGenerator : IMethodImplementationGenerator
 
 public class EmptyMethodImplementationGenerator<TReturnType> : IMethodImplementationGenerator<TReturnType>
 {
-    public IMethodImplementationGenerator WithBody(Func<object> body) => this;
+    public IMethodImplementationGenerator UseBody(Func<object> body) => this;
 }
 
 public class EmptyMethodImplementationGenerator<TArg1, TReturnType> : IMethodImplementationGenerator<TArg1, TReturnType>

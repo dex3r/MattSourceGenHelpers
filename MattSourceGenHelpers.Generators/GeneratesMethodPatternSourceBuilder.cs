@@ -142,7 +142,7 @@ internal static class GeneratesMethodPatternSourceBuilder
             }
 
             string methodName = memberAccessExpression.Name.Identifier.Text;
-            if (methodName is not ("RuntimeBody" or "CompileTimeBody" or "WithBody"))
+            if (methodName is not ("ReturnConstantValue" or "UseBody"))
             {
                 continue;
             }

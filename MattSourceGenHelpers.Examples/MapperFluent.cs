@@ -21,8 +21,8 @@
 //         Generate
 //             .Method().WithParameter<FourLeggedAnimal>().WithReturnType<MammalAnimal>()
 //             .WithSwitchBody()
-//             .ForCases(GetFourLeggedAnimalsThatHasMatchInMammalAnimal()).CompileTimeBody(fourLeggedAnimal => Enum.Parse<MammalAnimal>(fourLeggedAnimal.ToString(), true))
-//             .ForDefaultCase().RuntimeBody(fourLeggedAnimal => () => throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a MammalAnimal"));
+//             .ForCases(GetFourLeggedAnimalsThatHasMatchInMammalAnimal()).ReturnConstantValue(fourLeggedAnimal => Enum.Parse<MammalAnimal>(fourLeggedAnimal.ToString(), true))
+//             .ForDefaultCase().UseBody(fourLeggedAnimal => () => throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a MammalAnimal"));
 //
 //     static FourLeggedAnimal[] GetFourLeggedAnimalsThatHasMatchInMammalAnimal() =>
 //         Enum
@@ -31,16 +31,16 @@
 //             .ToArray();
 // }
 //
-// /*
-//  This will generate the following method:
-//
-//     public static Animal MapToAnimal(FourLeggedAnimal fourLeggedAnimal);
-//     {
-//         switch (fourLeggedAnimal)
-//         {
-//             case FourLeggedAnimal.Dog: return MammalAnimal.Dog;
-//             case FourLeggedAnimal.Cat: return MammalAnimal.Cat;
-//             default: throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a MammalAnimal");
-//         }
-//     }
-// */
+// // /*
+// //  This will generate the following method:
+// //
+// //     public static Animal MapToAnimal(FourLeggedAnimal fourLeggedAnimal);
+// //     {
+// //         switch (fourLeggedAnimal)
+// //         {
+// //             case FourLeggedAnimal.Dog: return MammalAnimal.Dog;
+// //             case FourLeggedAnimal.Cat: return MammalAnimal.Cat;
+// //             default: throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a MammalAnimal");
+// //         }
+// //     }
+// // */

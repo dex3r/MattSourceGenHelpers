@@ -2,7 +2,7 @@
 
 public interface IMethodImplementationGenerator<TReturnType> : IMethodImplementationGenerator
 {
-    IMethodImplementationGenerator WithBody(Func<object> body);
+    IMethodImplementationGenerator UseBody(Func<object> body);
 }
 
 public interface IMethodImplementationGenerator<TArg1, TReturnType> : IMethodImplementationGenerator

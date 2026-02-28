@@ -13,7 +13,7 @@ public static partial class PiExampleFluent
             .Method().WithParameter<int>().WithReturnType<int>()
             .WithSwitchBody()
             .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber))
-            .ForDefaultCase().WithBody(decimalNumber => () => SlowMath.CalculatePiDecimal(decimalNumber));
+            .ForDefaultCase().UseBody(decimalNumber => () => SlowMath.CalculatePiDecimal(decimalNumber));
 }
 
 /*

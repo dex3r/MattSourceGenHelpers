@@ -95,7 +95,7 @@ public static partial class TestPiFluentClass
             .Method().WithParameter<int>().WithReturnType<int>()
             .WithSwitchBody()
             .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
-            .ForDefaultCase().WithBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
+            .ForDefaultCase().UseBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
 }
 
 public static partial class TestMapperFluent
@@ -109,5 +109,5 @@ public static partial class TestMapperFluent
             .WithSwitchBody()
             .ForCases(1).ReturnConstantValue(_ => "Dog")
             .ForCases(2).ReturnConstantValue(_ => "Cat")
-            .ForDefaultCase().WithBody(_ => () => "Unknown");
+            .ForDefaultCase().UseBody(_ => () => "Unknown");
 }
