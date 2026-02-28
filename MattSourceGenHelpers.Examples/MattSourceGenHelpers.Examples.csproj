@@ -7,10 +7,11 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);$(MSBuildThisFileDirectory)..\MattSourceGenHelpers.Generators\bin\$(Configuration)</RestoreAdditionalProjectSources>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\MattSourceGenHelpers.Generators\MattSourceGenHelpers.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <PackageReference Include="MattSourceGenHelpers.Generators" Version="0.1.0" PrivateAssets="all" />
     </ItemGroup>
     
     <ItemGroup>

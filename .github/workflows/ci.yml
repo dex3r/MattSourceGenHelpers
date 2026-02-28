@@ -19,6 +19,9 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Build generators package
+        run: dotnet build MattSourceGenHelpers.Generators/MattSourceGenHelpers.Generators.csproj --configuration Debug
+
       - name: Restore dependencies
         run: dotnet restore MattSourceGenHelpers.sln
 
