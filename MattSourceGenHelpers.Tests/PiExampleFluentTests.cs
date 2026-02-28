@@ -69,9 +69,9 @@ public class PiExampleFluentTests
 
                               static partial class TestMapperFluent
                               {
-                                  public static partial string MapToMammal(int fourLeggedAnimal)
+                                  public static partial string MapToMammal(int animalCode)
                                   {
-                                      switch (fourLeggedAnimal)
+                                      switch (animalCode)
                                       {
                                           case 1: return "Dog";
                                           case 2: return "Cat";
@@ -100,7 +100,7 @@ public static partial class TestPiFluentClass
 
 public static partial class TestMapperFluent
 {
-    public static partial string MapToMammal(int fourLeggedAnimal);
+    public static partial string MapToMammal(int animalCode);
 
     [GeneratesMethod(nameof(MapToMammal))]
     static IMethodImplementationGenerator MapToMammal_Generator() =>
