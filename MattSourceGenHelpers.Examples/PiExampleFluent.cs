@@ -9,11 +9,11 @@ public static partial class PiExampleFluent
 
     [GeneratesMethod(nameof(GetPiDecimal))]
     static IMethodImplementationGenerator GetPiDecimal_Generator_Specialized() =>
-        Generator
+        Generate
             .MethodImplementation<int, int>()
             .WithSwitchBody()
-            .ForCases(0, 1, 2, Integer.Range(300, 303)).CompileTimeBody(decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber))
-            .ForDefaultCase().RuntimeBody(decimalNumber => () => SlowMath.CalculatePiDecimal(decimalNumber));
+            .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber))
+            .ForDefaultCase().WithBody(decimalNumber => () => SlowMath.CalculatePiDecimal(decimalNumber));
 }
 
 /*

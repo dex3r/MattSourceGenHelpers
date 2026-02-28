@@ -57,9 +57,9 @@ public static partial class TestPiFluentClass
 
     [GeneratesMethod(nameof(GetPiDecimal))]
     static IMethodImplementationGenerator GetPiDecimal_Generator() =>
-        Generator
+        Generate
             .MethodImplementation<int, int>()
             .WithSwitchBody()
-            .ForCases(0, 1, 2, Integer.Range(300, 303)).CompileTimeBody(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
-            .ForDefaultCase().RuntimeBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
+            .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
+            .ForDefaultCase().WithBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
 }

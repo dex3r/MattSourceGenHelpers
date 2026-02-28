@@ -131,18 +131,18 @@ public class RecordingMethodImplementationGeneratorSwitchBodyCase<TArg1, TReturn
         _cases = cases;
     }
 
-    public IMethodImplementationGeneratorSwitchBody<TArg1, TReturnType> CompileTimeBody(Func<TArg1, TReturnType> func)
+    public IMethodImplementationGeneratorSwitchBody<TArg1, TReturnType> ReturnConstantValue(Func<TArg1, TReturnType> constantValueFactory)
     {
         foreach (var caseValue in _cases)
         {
-            var result = func(caseValue);
+            var result = constantValueFactory(caseValue);
             _record.CaseKeys.Add((object)caseValue ?? throw new InvalidOperationException("Switch case value cannot be null"));
             _record.CaseValues.Add(result);
         }
         return new RecordingMethodImplementationGeneratorSwitchBody<TArg1, TReturnType>(_record);
     }
 
-    public IMethodImplementationGeneratorSwitchBody<TArg1, TReturnType> RuntimeBody(Func<TArg1, Action<TReturnType>> func)
+    public IMethodImplementationGeneratorSwitchBody<TArg1, TReturnType> UseBody(Func<TArg1, Action<TReturnType>> body)
     {
         foreach (var caseValue in _cases)
         {
@@ -169,7 +169,7 @@ public class RecordingMethodImplementationGeneratorSwitchBodyDefaultCase<TArg1, 
         return new RecordingMethodImplementationGenerator<TArg1, TReturnType>(_record);
     }
 
-    public IMethodImplementationGenerator<TArg1, TReturnType> RuntimeBody(Func<TArg1, Func<TReturnType>> func)
+    public IMethodImplementationGenerator<TArg1, TReturnType> WithBody(Func<TArg1, Func<TReturnType>> func)
     {
         _record.HasDefaultCase = true;
         return new RecordingMethodImplementationGenerator<TArg1, TReturnType>(_record);

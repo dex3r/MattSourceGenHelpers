@@ -1,6 +1,6 @@
 ﻿namespace MattSourceGenHelpers.Abstractions;
 
-public static class Generator
+public static class Generate
 {
     public static IGeneratorsFactory CurrentGenerator { get; set; } = new RecordingGeneratorsFactory();
 

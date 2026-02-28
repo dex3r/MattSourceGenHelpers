@@ -291,7 +291,7 @@ public class GeneratesMethodGenerator : IIncrementalGenerator
 
         var cases = record!;
 
-        // Extract default expression from the RuntimeBody or CompileTimeBody call in the method syntax
+        // Extract default expression from the UseBody or ReturnConstantValue call in the method syntax
         string? defaultExpression = null;
         if (cases.HasDefaultCase)
             defaultExpression = ExtractDefaultExpressionFromFluentMethod(methodInfo.Syntax);
@@ -300,19 +300,19 @@ public class GeneratesMethodGenerator : IIncrementalGenerator
     }
 
     /// <summary>
-    /// Finds RuntimeBody(...) or CompileTimeBody(...) in the ForDefaultCase() chain
+    /// Finds UseBody(...) or ReturnConstantValue(...) in the ForDefaultCase() chain
     /// and extracts the innermost lambda body expression string.
     /// </summary>
     private static string? ExtractDefaultExpressionFromFluentMethod(MethodDeclarationSyntax method)
     {
-        // Walk all InvocationExpressionSyntax nodes; find the one named RuntimeBody or CompileTimeBody
+        // Walk all InvocationExpressionSyntax nodes; find the one named UseBody or ReturnConstantValue
         // that follows a ForDefaultCase() call.
         var invocations = method.DescendantNodes().OfType<InvocationExpressionSyntax>();
         foreach (var inv in invocations)
         {
             if (inv.Expression is not MemberAccessExpressionSyntax ma) continue;
             var name = ma.Name.Identifier.Text;
-            if (name is not ("RuntimeBody" or "CompileTimeBody")) continue;
+            if (name is not ("UseBody" or "ReturnConstantValue")) continue;
 
             var arg = inv.ArgumentList.Arguments.FirstOrDefault()?.Expression;
             return ExtractInnermostLambdaBody(arg);
