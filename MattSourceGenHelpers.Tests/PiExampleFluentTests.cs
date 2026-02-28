@@ -49,6 +49,40 @@ public class PiExampleFluentTests
 
         Assert.That(generatedCode, Is.EqualTo(expectedCode));
     }
+
+    [TestCase(1, "Dog")]
+    [TestCase(2, "Cat")]
+    [TestCase(3, "Unknown")]
+    public void MapperFluentLikeGenerator_ProducesExpectedRuntimeOutput(int source, string expected)
+    {
+        string result = TestMapperFluent.MapToMammal(source);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void MapperFluentLikeGenerator_ProducesExpectedGeneratedCode()
+    {
+        string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestMapperFluent_MapToMammal.g.cs");
+        string expectedCode = """
+                              namespace MattSourceGenHelpers.Tests;
+
+                              static partial class TestMapperFluent
+                              {
+                                  public static partial string MapToMammal(int fourLeggedAnimal)
+                                  {
+                                      switch (fourLeggedAnimal)
+                                      {
+                                          case 1: return "Dog";
+                                          case 2: return "Cat";
+                                          default: return "Unknown";
+                                      }
+                                  }
+                              }
+                              """.ReplaceLineEndings("\n").TrimEnd();
+
+        Assert.That(generatedCode, Is.EqualTo(expectedCode));
+    }
 }
 
 public static partial class TestPiFluentClass
@@ -58,8 +92,22 @@ public static partial class TestPiFluentClass
     [GeneratesMethod(nameof(GetPiDecimal))]
     static IMethodImplementationGenerator GetPiDecimal_Generator() =>
         Generate
-            .MethodImplementation<int, int>()
+            .Method().WithParameter<int>().WithReturnType<int>()
             .WithSwitchBody()
             .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
             .ForDefaultCase().WithBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
+}
+
+public static partial class TestMapperFluent
+{
+    public static partial string MapToMammal(int fourLeggedAnimal);
+
+    [GeneratesMethod(nameof(MapToMammal))]
+    static IMethodImplementationGenerator MapToMammal_Generator() =>
+        Generate
+            .Method().WithParameter<int>().WithReturnType<string>()
+            .WithSwitchBody()
+            .ForCases(1).ReturnConstantValue(_ => "Dog")
+            .ForCases(2).ReturnConstantValue(_ => "Cat")
+            .ForDefaultCase().WithBody(_ => () => "Unknown");
 }
