@@ -29,4 +29,4 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           directory: ./coverage
-          fail_ci_if_error: false
+          fail_ci_if_error: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
