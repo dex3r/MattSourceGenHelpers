@@ -1,10 +1,14 @@
 # About this project
-This is a dotnet 10 solution. The goal is to make using Roslyn Source Generators much easier.
+This is a dotnet 8 solution. The goal is to make using Roslyn Source Generators much easier.
+With this tool, you can write your generator as a normal method, and it will be converted to a Source Generator.
+This allows you to write your generator in a more natural way, without having to deal with the complexities of Roslyn Source Generators.
 
-# Project structure
+# Projects
  - .Examples - illustrative example of what this tool should do and how it's useful
  - .Generators - the actual Source Generators code
  - .Abstractions - things like attributes etc.; this should allow to leave generating code in the binaries after generation is done
+ - .Tests - tests with Generators as Roslyn Source Generators
+ - .GeneratorTests - tests with Generators as assembly references, to cover tests that would be impossible in .Tests
 
 # Simple example
 

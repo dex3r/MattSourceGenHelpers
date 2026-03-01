@@ -13,7 +13,7 @@ public static partial class PiExample
     [SwitchCase(arg1: 2)]
     static int GetPiDecimal_Generator_Specialized(int decimalNumber) =>
         SlowMath.CalculatePiDecimal(decimalNumber);
-
+    
     [GeneratesMethod(nameof(GetPiDecimal))]
     [SwitchDefault]
     static Func<int, int> GetPiDecimal_Generator_Fallback() => decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber);
