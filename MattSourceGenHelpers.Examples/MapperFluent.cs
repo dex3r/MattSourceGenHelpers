@@ -2,45 +2,45 @@
 
 namespace MattSourceGenHelpers.Examples;
 
-public enum FourLeggedAnimal
+public enum FourLegged
 {
     Dog, Cat, Lizard
 }
 
-public enum MammalAnimal
+public enum Mammal
 {
     Dog, Cat
 }
 
 public static partial class MapperFluent
 {
-    public static partial MammalAnimal MapToMammal(FourLeggedAnimal fourLeggedAnimal);
+    public static partial Mammal MapToMammal(FourLegged fourLegged);
 
     [GeneratesMethod(nameof(MapToMammal))]
     static IMethodImplementationGenerator MapToAnimal_Generator() =>
         Generate
-            .Method().WithParameter<FourLeggedAnimal>().WithReturnType<MammalAnimal>()
+            .Method().WithParameter<FourLegged>().WithReturnType<Mammal>()
             .WithSwitchBody()
-            .ForCases(GetFourLeggedAnimalsThatHasMatchInMammalAnimal()).ReturnConstantValue(fourLeggedAnimal => Enum.Parse<MammalAnimal>(fourLeggedAnimal.ToString(), true))
-            .ForDefaultCase().UseBody(fourLeggedAnimal => () => throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a MammalAnimal"));
+            .ForCases(GetFourLeggedAnimalsThatHasMatchInMammalAnimal()).ReturnConstantValue(fourLegged => Enum.Parse<Mammal>(fourLegged.ToString(), true))
+            .ForDefaultCase().UseBody(fourLegged => () => throw new ArgumentException($"Cannot map {fourLegged} to a Mammal"));
 
-    static FourLeggedAnimal[] GetFourLeggedAnimalsThatHasMatchInMammalAnimal() =>
+    static FourLegged[] GetFourLeggedAnimalsThatHasMatchInMammalAnimal() =>
         Enum
-            .GetValues<FourLeggedAnimal>()
-            .Where(fourLeggedAnimal => Enum.TryParse(typeof(MammalAnimal), fourLeggedAnimal.ToString(), true, out _))
+            .GetValues<FourLegged>()
+            .Where(fourLeggedAnimal => Enum.TryParse(typeof(Mammal), fourLeggedAnimal.ToString(), true, out _))
             .ToArray();
 }
 
 /*
  This will generate the following method:
 
-    public static partial MattSourceGenHelpers.Examples.MammalAnimal MapToMammal(MattSourceGenHelpers.Examples.FourLeggedAnimal fourLeggedAnimal)
+    public static partial Mammal MapToMammal(FourLegged fourLegged)
     {
-        switch (fourLeggedAnimal)
+        switch (fourLegged)
         {
-            case MattSourceGenHelpers.Examples.FourLeggedAnimal.Dog: return MattSourceGenHelpers.Examples.MammalAnimal.Dog;
-            case MattSourceGenHelpers.Examples.FourLeggedAnimal.Cat: return MattSourceGenHelpers.Examples.MammalAnimal.Cat;
-            default: throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a MammalAnimal");
+            case FourLegged.Dog: return Mammal.Dog;
+            case FourLegged.Cat: return Mammal.Cat;
+            default: throw new ArgumentException($"Cannot map {fourLegged} to a Mammal");
         }
     }
 */
