@@ -1,5 +1,7 @@
 # MattSourceGenHelpers
 
+[![codecov](https://codecov.io/gh/dex3r/MattSourceGenHelpers/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/MattSourceGenHelpers)
+
 MattSourceGenHelpers is a set of helpers for building Roslyn Source Generator scenarios with less boilerplate.
 
 The project is split into:
