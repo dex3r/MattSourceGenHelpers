@@ -9,7 +9,6 @@
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);$(MSBuildThisFileDirectory)..\MattSourceGenHelpers.Generators\bin\$(Configuration)</RestoreAdditionalProjectSources>
-        <GeneratorsPackagePath>$(MSBuildThisFileDirectory)..\MattSourceGenHelpers.Generators\bin\$(Configuration)\MattSourceGenHelpers.Generators.0.1.0.nupkg</GeneratorsPackagePath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +19,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="5.0.0"/>
     </ItemGroup>
 
-    <ItemGroup Condition="Exists('$(GeneratorsPackagePath)')">
+    <ItemGroup>
         <PackageReference Include="MattSourceGenHelpers.Generators" Version="0.1.0" PrivateAssets="all" />
     </ItemGroup>
 
@@ -28,9 +27,6 @@
         <ProjectReference Include="..\MattSourceGenHelpers.Abstractions\MattSourceGenHelpers.Abstractions.csproj" />
     </ItemGroup>
 
-    <ItemGroup Condition="!Exists('$(GeneratorsPackagePath)')">
-        <ProjectReference Include="..\MattSourceGenHelpers.Generators\MattSourceGenHelpers.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
 
     <ItemGroup>
         <Using Include="NUnit.Framework"/>
