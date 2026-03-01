@@ -210,14 +210,21 @@ internal static class GeneratesMethodPatternSourceBuilder
         builder.AppendLine($"        switch ({switchParameterName})");
         builder.AppendLine("        {");
 
+        ITypeSymbol? parameterType = partialMethod.Parameters.Length > 0 ? partialMethod.Parameters[0].Type : null;
         foreach ((object key, string value) in cases)
         {
-            builder.AppendLine($"            case {key}: return {value};");
+            string formattedKey = parameterType?.TypeKind == TypeKind.Enum
+                ? $"{parameterType.ToDisplayString()}.{key}"
+                : key.ToString()!;
+            builder.AppendLine($"            case {formattedKey}: return {value};");
         }
 
         if (defaultExpression != null)
         {
-            builder.AppendLine($"            default: return {defaultExpression};");
+            string defaultStatement = defaultExpression.TrimStart().StartsWith("throw ", StringComparison.Ordinal)
+                ? $"            default: {defaultExpression};"
+                : $"            default: return {defaultExpression};";
+            builder.AppendLine(defaultStatement);
         }
 
         builder.AppendLine("        }");
@@ -279,6 +286,7 @@ internal static class GeneratesMethodPatternSourceBuilder
             SpecialType.System_String => SyntaxFactory.Literal(value).Text,
             SpecialType.System_Char when value.Length == 1 => SyntaxFactory.Literal(value[0]).Text,
             SpecialType.System_Boolean => value.ToLowerInvariant(),
+            _ when returnType.TypeKind == TypeKind.Enum => $"{returnType.ToDisplayString()}.{value}",
             _ => value
         };
     }
