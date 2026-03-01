@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(TargetDir)MattSourceGenHelpers.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs/" Visible="false" />
-        <None Include="$(TargetDir)MattSourceGenHelpers.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs/" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)bin\$(Configuration)\net8.0\MattSourceGenHelpers.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs/" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)bin\$(Configuration)\net8.0\MattSourceGenHelpers.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs/" Visible="false" />
     </ItemGroup>
 </Project>
