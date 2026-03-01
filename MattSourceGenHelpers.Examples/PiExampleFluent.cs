@@ -26,9 +26,10 @@ public static partial class PiExampleFluent
             case 0: return 3;
             case 1: return 1;
             case 2: return 4;
-            case 300: return 2;
-            case 302: return 9;
-            case 303: return 8;
+            case 300: return 3;
+            case 301: return 7;
+            case 302: return 2;
+            case 303: return 4;
             default: return CalculatePiDecimal(decimalNumber);
         }
     }

@@ -16,5 +16,9 @@
     <ItemGroup>
       <ProjectReference Include="..\MattSourceGenHelpers.Abstractions\MattSourceGenHelpers.Abstractions.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="ExtendedNumerics.BigDecimal" Version="3003.0.0.346" />
+    </ItemGroup>
 
 </Project>

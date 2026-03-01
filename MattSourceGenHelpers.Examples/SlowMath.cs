@@ -1,34 +1,20 @@
-﻿namespace MattSourceGenHelpers.Examples;
+﻿using System.Globalization;
+using ExtendedNumerics;
 
-public class SlowMath
+namespace MattSourceGenHelpers.Examples;
+
+public static class SlowMath
 {
-    // Pi digits string (0-indexed: position 0 = '3', position 1 = '1', position 2 = '4', ...)
-    private static readonly string PiDigits =
-        "31415926535897932384626433832795028841971693993751" +
-        "05820974944592307816406286208998628034825342117067" +
-        "98214808651328230664709384460955058223172535940812" +
-        "84811174502841027019385211055596446229489549303819" +
-        "64428810975665933446128475648233786783165271201909" +
-        "14564856692346034861045432664821339360726024914127" +
-        "37245870066063155881748815209209628292540917153643" +
-        "67892590360011330530548820466521384146951941511609" +
-        "43305727036575959195309218611738193261179310511854" +
-        "80744623799627495673518857527248912279381830119491" +
-        "29833673362440656643086021394946395224737190702179" +
-        "86094370277053921717629317675238467481846766940513" +
-        "20005681271452635608277857713427577896091736371787" +
-        "21468440901224953430146549585371050792279689258923" +
-        "54201995611212902196086403441815981362977477130996" +
-        "05187072113499999983729780499510597317328160963185" +
-        "95024459455346908302642522308253344685035261931188" +
-        "17101000313783875288658753320838142061717766914730" +
-        "35982534904287554687311595628638823537875937519577" +
-        "81857780532171226806613001927876611195909216420198";
-
     public static int CalculatePiDecimal(int decimalNumber)
     {
-        if (decimalNumber >= 0 && decimalNumber < PiDigits.Length)
-            return PiDigits[decimalNumber] - '0';
-        return 0;
+        if (decimalNumber < 0) throw new ArgumentOutOfRangeException(nameof(decimalNumber), "Decimal number must be non-negative.");
+        if (decimalNumber == 0) return 3;
+        
+        BigDecimal pi = BigDecimal.ApproximatePi(decimalNumber + 1);
+
+        if(pi.DecimalPlaces < decimalNumber) throw new ArgumentException($"Failed to calculate pi to {decimalNumber} decimal places.");
+
+        string piString = pi.ToString(CultureInfo.InvariantCulture);
+        return int.Parse(piString.Substring(decimalNumber + 1, 1));
     }
 }
