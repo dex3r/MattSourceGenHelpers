@@ -82,22 +82,32 @@ internal static class GeneratesMethodExecutionRuntime
             }
 
             PortableExecutableReference[] peMatchingReferences = abstractionsMatchingReferences.OfType<PortableExecutableReference>().ToArray();
+            CompilationReference[] csharpCompilationReference = abstractionsMatchingReferences.OfType<CompilationReference>().ToArray();
             
-            if(peMatchingReferences.Length == 0)
+            Assembly abstractionsAssembly;
+            
+            if (peMatchingReferences.Length > 0)
+            {
+                PortableExecutableReference abstractionsReference = peMatchingReferences.First();
+                
+                if (string.IsNullOrEmpty(abstractionsReference.FilePath))
+                {
+                    return (null, $"The reference matching '{Consts.AbstractionsAssemblyName}' does not have a valid file path.");
+                }
+                
+                string abstractionsAssemblyPath = ResolveImplementationAssemblyPath(abstractionsReference.FilePath);
+                abstractionsAssembly = loadContext.LoadFromAssemblyPath(abstractionsAssemblyPath);
+            }
+            else if(csharpCompilationReference.Length > 0)
+            {
+                //TODO: Fix
+                return (null, $"Found reference matching '{Consts.AbstractionsAssemblyName}' as a CompilationReference, but executing generator methods currently requires a PortableExecutableReference with a valid file path to load the assembly.");
+            }
+            else
             {
                 string matchesString = string.Join(", ", abstractionsMatchingReferences.Select(reference => $"{reference.Display} (type: {reference.GetType().Name})"));
-                return (null, $"Found references matching '{Consts.AbstractionsAssemblyName}' but none were PortableExecutableReference with valid file paths. \nMatching references: {matchesString}");
+                return (null, $"Found references matching '{Consts.AbstractionsAssemblyName}' but none were PortableExecutableReference or CompilationReference with valid file paths. \nMatching references: {matchesString}");
             }
-
-            PortableExecutableReference abstractionsReference = peMatchingReferences.First();
-
-            if (string.IsNullOrEmpty(abstractionsReference.FilePath))
-            {
-                return (null, $"The reference matching '{Consts.AbstractionsAssemblyName}' does not have a valid file path.");
-            }
-            
-            string abstractionsAssemblyPath = ResolveImplementationAssemblyPath(abstractionsReference.FilePath);
-            Assembly abstractionsAssembly = loadContext.LoadFromAssemblyPath(abstractionsAssemblyPath);
             
             Type? generatorStaticType = abstractionsAssembly.GetType(Consts.GenerateTypeFullName);
             Type? recordingFactoryType = abstractionsAssembly.GetType(Consts.RecordingGeneratorsFactoryTypeFullName);
