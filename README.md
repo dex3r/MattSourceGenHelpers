@@ -1,5 +1,7 @@
 # MattSourceGenHelpers
 
+[![codecov](https://codecov.io/gh/dex3r/MattSourceGenHelpers/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/MattSourceGenHelpers)
+
 With MattSourceGenHelpers, you can write your generator code as a normal method, in the same assembly as the output.
 This allows you to write your generator in a more natural way, without having to deal with the complexities of Roslyn Source Generators and a separate Project.
 
