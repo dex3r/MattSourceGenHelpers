@@ -26,6 +26,16 @@ internal static class GeneratesMethodPatternSourceBuilder
         List<(object key, string value)> switchCases = new();
         foreach (GeneratesMethodGenerationTarget switchMethod in switchCaseMethods)
         {
+            if (switchMethod.Symbol.Parameters.Length > 1)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    GeneratesMethodGeneratorDiagnostics.GeneratorMethodTooManyParametersError,
+                    switchMethod.Syntax.GetLocation(),
+                    switchMethod.Symbol.Name,
+                    switchMethod.Symbol.Parameters.Length));
+                continue;
+            }
+
             IEnumerable<AttributeData> switchCaseAttributes = switchMethod.Symbol.GetAttributes()
                 .Where(attribute => attribute.AttributeClass?.ToDisplayString() == SwitchCaseAttributeFullName);
 
