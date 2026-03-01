@@ -7,3 +7,4 @@ MSGH002 | GeneratesMethodGenerator | Error | GeneratesMethodGenerator
 MSGH003 | GeneratesMethodGenerator | Disabled | GeneratesMethodGenerator
 MSGH004 | GeneratesMethodGenerator | Error | GeneratesMethodGenerator
 MSGH005 | GeneratesMethodGenerator | Error | GeneratesMethodGenerator
+MSGH006 | GeneratesMethodGenerator | Error | GeneratesMethodGenerator

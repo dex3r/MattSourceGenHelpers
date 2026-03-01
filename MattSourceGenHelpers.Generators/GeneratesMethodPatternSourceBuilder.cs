@@ -69,6 +69,24 @@ internal static class GeneratesMethodPatternSourceBuilder
                     continue;
                 }
 
+                if (partialMethod.Parameters.Length > 0)
+                {
+                    ITypeSymbol? switchArgType = switchCaseAttribute.ConstructorArguments[switchCaseArgIndex].Type;
+                    ITypeSymbol partialMethodParamType = partialMethod.Parameters[0].Type;
+
+                    if (switchArgType != null && !SymbolEqualityComparer.Default.Equals(switchArgType, partialMethodParamType))
+                    {
+                        Location attributeLocation = switchCaseAttribute.ApplicationSyntaxReference?.GetSyntax()?.GetLocation()
+                            ?? switchMethod.Syntax.GetLocation();
+                        context.ReportDiagnostic(Diagnostic.Create(
+                            GeneratesMethodGeneratorDiagnostics.SwitchCaseArgumentTypeMismatchError,
+                            attributeLocation,
+                            switchArgType.ToDisplayString(),
+                            partialMethodParamType.ToDisplayString()));
+                        continue;
+                    }
+                }
+
                 (string? result, string? error) = GeneratesMethodExecutionRuntime.ExecuteGeneratorMethodWithArgs(
                     switchMethod.Symbol,
                     allPartials,

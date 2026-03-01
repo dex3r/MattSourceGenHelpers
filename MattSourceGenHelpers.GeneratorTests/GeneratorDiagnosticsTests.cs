@@ -245,6 +245,62 @@ public class GeneratorDiagnosticsTests
     }
 
     // -----------------------------------------------------------------------
+    // MSGH006 – SwitchCase argument type mismatch
+    // -----------------------------------------------------------------------
+
+    [Test]
+    public void GeneratesMethod_SwitchCaseWithWrongArgumentType_EmitsMSGH006()
+    {
+        string source = """
+            using MattSourceGenHelpers.Abstractions;
+
+            namespace TestNamespace;
+
+            public static partial class MyClass
+            {
+                public static partial int GetValue(int key);
+
+                [GeneratesMethod(nameof(GetValue))]
+                [SwitchCase(arg1: "aaa")]
+                private static int GetValue_Generator(int key) => 42;
+            }
+            """;
+
+        ImmutableArray<Diagnostic> diagnostics = GeneratorTestHelper.GetGeneratorOnlyDiagnostics(source);
+
+        Diagnostic? msgh006 = diagnostics.FirstOrDefault(d => d.Id == "MSGH006");
+        Assert.That(msgh006, Is.Not.Null, "Expected MSGH006 diagnostic for SwitchCase argument type mismatch");
+        Assert.That(msgh006!.GetMessage(), Does.Contain("string"),
+            "Error message should mention the provided type");
+        Assert.That(msgh006.GetMessage(), Does.Contain("int"),
+            "Error message should mention the expected parameter type");
+    }
+
+    [Test]
+    public void GeneratesMethod_SwitchCaseWithCorrectArgumentType_DoesNotEmitMSGH006()
+    {
+        string source = """
+            using MattSourceGenHelpers.Abstractions;
+
+            namespace TestNamespace;
+
+            public static partial class MyClass
+            {
+                public static partial int GetValue(int key);
+
+                [GeneratesMethod(nameof(GetValue))]
+                [SwitchCase(arg1: 1)]
+                private static int GetValue_Generator(int key) => 42;
+            }
+            """;
+
+        ImmutableArray<Diagnostic> diagnostics = GeneratorTestHelper.GetGeneratorOnlyDiagnostics(source);
+
+        Assert.That(diagnostics.Any(d => d.Id == "MSGH006"), Is.False,
+            "Should not emit MSGH006 when SwitchCase argument type matches the parameter type");
+    }
+
+    // -----------------------------------------------------------------------
     // Type mismatch between generator return type and partial method return type
     // -----------------------------------------------------------------------
 
