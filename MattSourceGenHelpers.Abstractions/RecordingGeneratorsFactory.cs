@@ -136,7 +136,7 @@ public class RecordingMethodImplementationGeneratorSwitchBodyCase<TArg1, TReturn
         foreach (var caseValue in _cases)
         {
             var result = constantValueFactory(caseValue);
-            _record.CaseKeys.Add((object)caseValue ?? throw new InvalidOperationException("Switch case value cannot be null"));
+            _record.CaseKeys.Add((object?)caseValue ?? throw new InvalidOperationException("Switch case value cannot be null"));
             _record.CaseValues.Add(result);
         }
         return new RecordingMethodImplementationGeneratorSwitchBody<TArg1, TReturnType>(_record);
@@ -146,7 +146,7 @@ public class RecordingMethodImplementationGeneratorSwitchBodyCase<TArg1, TReturn
     {
         foreach (var caseValue in _cases)
         {
-            _record.CaseKeys.Add((object)caseValue ?? throw new InvalidOperationException("Switch case value cannot be null"));
+            _record.CaseKeys.Add((object?)caseValue ?? throw new InvalidOperationException("Switch case value cannot be null"));
             _record.CaseValues.Add(null);
         }
         return new RecordingMethodImplementationGeneratorSwitchBody<TArg1, TReturnType>(_record);

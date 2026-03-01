@@ -6,6 +6,7 @@ namespace MattSourceGenHelpers.Generators;
 
 public static class Consts
 {
+    public const string SolutionNamespace = $"{nameof(MattSourceGenHelpers)}";
     public const string AbstractionsNamespace = $"{nameof(MattSourceGenHelpers)}.{nameof(Abstractions)}";
     public const string AbstractionsAssemblyName = AbstractionsNamespace;
     public const string SwitchCaseAttributeFullName = $"{AbstractionsNamespace}.{nameof(SwitchCase)}";
