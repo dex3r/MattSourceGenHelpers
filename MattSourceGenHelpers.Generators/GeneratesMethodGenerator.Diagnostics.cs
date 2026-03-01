@@ -45,4 +45,12 @@ internal static class GeneratesMethodGeneratorDiagnostics
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor SwitchCaseArgumentTypeMismatchError = new(
+        id: "MSGH006",
+        title: "SwitchCase argument type mismatch",
+        messageFormat: "SwitchCase argument type '{0}' does not match the method parameter type '{1}'",
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
 }
