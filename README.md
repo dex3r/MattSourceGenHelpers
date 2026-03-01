@@ -1,11 +1,7 @@
 # MattSourceGenHelpers
 
-MattSourceGenHelpers is a set of helpers for building Roslyn Source Generator scenarios with less boilerplate.
-
-The project is split into:
-- `MattSourceGenHelpers.Abstractions` - attributes and fluent interfaces used in consumer code
-- `MattSourceGenHelpers.Generators` - the source generator implementation
-- `MattSourceGenHelpers.Examples` - practical usage examples
+With MattSourceGenHelpers, you can write your generator code as a normal method, in the same assembly as the output.
+This allows you to write your generator in a more natural way, without having to deal with the complexities of Roslyn Source Generators and a separate Project.
 
 ## What it does
 
@@ -18,13 +14,8 @@ The generator then emits the final method body at compile time.
 
 ## Example: simple method generation
 
-Inspired by `/MattSourceGenHelpers.Examples/ColorsClass.cs`:
-
 ```csharp
-public enum ColorsEnum
-{
-    Red, Green, Blue
-}
+public enum ColorsEnum { Red, Green, Blue }
 
 public partial class ColorsClass
 {
@@ -36,18 +27,13 @@ public partial class ColorsClass
 }
 ```
 
-Generated method:
+This generates a method:
 
 ```csharp
-public string GetAllColorsString()
-{
-    return "Red, Green, Blue";
-}
+public string GetAllColorsString() => "Red, Green, Blue";
 ```
 
 ## Example: switch-case specialization with fallback
-
-Inspired by `/MattSourceGenHelpers.Examples/PiExample.cs`:
 
 ```csharp
 public static partial class PiExample
@@ -68,7 +54,7 @@ public static partial class PiExample
 }
 ```
 
-Generated method shape:
+This generates a method:
 
 ```csharp
 public static int GetPiDecimal(int decimalNumber)
@@ -83,6 +69,65 @@ public static int GetPiDecimal(int decimalNumber)
 }
 ```
 
+## Example: fluent API
+
+Instead of using attributes, you can use the fluent API to build more complex behaviour:
+
+```csharp
+public enum FourLegged { Dog, Cat, Lizard }
+public enum Mammal { Dog, Cat }
+
+public static partial class MapperFluent
+{
+    public static partial Mammal MapToMammal(FourLegged fourLegged);
+
+    [GeneratesMethod(nameof(MapToMammal))]
+    static IMethodImplementationGenerator MapToAnimal_Generator() =>
+        Generate
+            .Method().WithParameter<FourLegged>().WithReturnType<Mammal>()
+            .WithSwitchBody()
+            .ForCases(GetFourLeggedAnimalsThatHasMatchInMammalAnimal()).ReturnConstantValue(fourLegged => Enum.Parse<Mammal>(fourLegged.ToString(), true))
+            .ForDefaultCase().UseBody(fourLegged => () => throw new ArgumentException($"Cannot map {fourLegged} to a Mammal"));
+
+    static FourLegged[] GetFourLeggedAnimalsThatHasMatchInMammalAnimal() =>
+        Enum
+            .GetValues<FourLegged>()
+            .Where(fourLeggedAnimal => Enum.TryParse(typeof(Mammal), fourLeggedAnimal.ToString(), true, out _))
+            .ToArray();
+}
+```
+
+This generates a method:
+
+```csharp
+public static partial Mammal MapToMammal(FourLegged fourLegged)
+{
+    switch (fourLegged)
+    {
+        case FourLegged.Dog: return Mammal.Dog;
+        case FourLegged.Cat: return Mammal.Cat;
+        default: throw new ArgumentException($"Cannot map {fourLegged} to a Mammal");
+    }
+}
+```
+
+## Great IDE support
+
+This project uses Roslyn Source Generators under the hood. This gives you great out-of-the-box support from IDEs like Rider, VSCode, and VisualStudio. 
+
+You can browse the generated code live in the `IL Viewer` window of your IDE:
+
+<img width="1037" height="397" alt="image" src="https://github.com/user-attachments/assets/1affb888-04d4-4fc4-8e79-db3e485de30c" />
+
 ## More examples
 
 See the full example project here: [`/MattSourceGenHelpers.Examples`](./MattSourceGenHelpers.Examples).
+
+## Structure 
+
+The project is split into:
+- `MattSourceGenHelpers.Abstractions` - attributes and fluent interfaces used in consumer code
+- `MattSourceGenHelpers.Generators` - the source generator implementation
+- `MattSourceGenHelpers.Examples` - practical usage examples
+- `MattSourceGenHelpers.Tests` - tests with Generators as Roslyn Source Generators
+- `MattSourceGenHelpers.GeneratorTests` - tests with Generators as assembly references, to cover tests that would be impossible otherwise
