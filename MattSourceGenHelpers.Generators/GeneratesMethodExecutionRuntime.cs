@@ -314,10 +314,8 @@ internal static class GeneratesMethodExecutionRuntime
                 string parameters = string.Join(", ", partialMethod.Parameters.Select(parameter => $"{parameter.Type.ToDisplayString()} {parameter.Name}"));
 
                 builder.AppendLine($"{accessibility} {staticModifier}partial {returnType} {partialMethod.Name}({parameters}) {{");
-                if (!partialMethod.ReturnsVoid)
-                {
-                    builder.AppendLine("return default!;");
-                }
+                string throwStatement = $"throw new global::MattSourceGenHelpers.Abstractions.PartialMethodCalledDuringGenerationException(\"{partialMethod.Name}\", \"{partialMethod.ContainingType.Name}\");";
+                builder.AppendLine(throwStatement);
 
                 builder.AppendLine("}");
             }
