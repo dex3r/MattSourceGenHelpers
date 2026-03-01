@@ -46,7 +46,10 @@ internal static class GeneratesMethodExecutionRuntime
         AssemblyLoadContext? loadContext = null;
         try
         {
+            Dictionary<string, byte[]> compilationReferenceBytes = EmitCompilationReferences(compilation);
+
             loadContext = new AssemblyLoadContext("__GeneratorExec", isCollectible: true);
+            Assembly? capturedAbstractionsAssembly = null;
             loadContext.Resolving += (context, assemblyName) =>
             {
                 PortableExecutableReference? match = compilation.References
@@ -55,9 +58,18 @@ internal static class GeneratesMethodExecutionRuntime
                         Path.GetFileNameWithoutExtension(reference.FilePath),
                         assemblyName.Name,
                         StringComparison.OrdinalIgnoreCase));
-                return match?.FilePath != null
-                    ? context.LoadFromAssemblyPath(ResolveImplementationAssemblyPath(match.FilePath))
-                    : null;
+                if (match?.FilePath != null)
+                    return context.LoadFromAssemblyPath(ResolveImplementationAssemblyPath(match.FilePath));
+
+                if (assemblyName.Name != null && compilationReferenceBytes.TryGetValue(assemblyName.Name, out byte[]? bytes))
+                {
+                    Assembly loaded = context.LoadFromStream(new MemoryStream(bytes));
+                    if (string.Equals(assemblyName.Name, Consts.AbstractionsAssemblyName, StringComparison.OrdinalIgnoreCase))
+                        capturedAbstractionsAssembly = loaded;
+                    return loaded;
+                }
+
+                return null;
             };
 
             Assembly assembly = loadContext.LoadFromStream(stream);
@@ -98,10 +110,22 @@ internal static class GeneratesMethodExecutionRuntime
                 string abstractionsAssemblyPath = ResolveImplementationAssemblyPath(abstractionsReference.FilePath);
                 abstractionsAssembly = loadContext.LoadFromAssemblyPath(abstractionsAssemblyPath);
             }
-            else if(csharpCompilationReference.Length > 0)
+            else if (csharpCompilationReference.Length > 0)
             {
-                //TODO: Fix
-                return (null, $"Found reference matching '{Consts.AbstractionsAssemblyName}' as a CompilationReference, but executing generator methods currently requires a PortableExecutableReference with a valid file path to load the assembly.");
+                // Handle CompilationReference case (e.g., Rider's code inspector provides in-memory compilations).
+                // The Resolving handler above should have already loaded the abstractions from the pre-emitted bytes.
+                if (capturedAbstractionsAssembly != null)
+                {
+                    abstractionsAssembly = capturedAbstractionsAssembly;
+                }
+                else if (compilationReferenceBytes.TryGetValue(Consts.AbstractionsAssemblyName, out byte[]? abstractionBytes))
+                {
+                    abstractionsAssembly = loadContext.LoadFromStream(new MemoryStream(abstractionBytes));
+                }
+                else
+                {
+                    return (null, $"Found reference matching '{Consts.AbstractionsAssemblyName}' as a CompilationReference, but failed to emit it to a loadable assembly.");
+                }
             }
             else
             {
@@ -176,6 +200,8 @@ internal static class GeneratesMethodExecutionRuntime
         AssemblyLoadContext? loadContext = null;
         try
         {
+            Dictionary<string, byte[]> compilationReferenceBytes = EmitCompilationReferences(compilation);
+
             loadContext = new AssemblyLoadContext("__GeneratorExec", isCollectible: true);
             loadContext.Resolving += (context, assemblyName) =>
             {
@@ -185,9 +211,13 @@ internal static class GeneratesMethodExecutionRuntime
                         Path.GetFileNameWithoutExtension(reference.FilePath),
                         assemblyName.Name,
                         StringComparison.OrdinalIgnoreCase));
-                return match?.FilePath != null
-                    ? context.LoadFromAssemblyPath(ResolveImplementationAssemblyPath(match.FilePath))
-                    : null;
+                if (match?.FilePath != null)
+                    return context.LoadFromAssemblyPath(ResolveImplementationAssemblyPath(match.FilePath));
+
+                if (assemblyName.Name != null && compilationReferenceBytes.TryGetValue(assemblyName.Name, out byte[]? bytes))
+                    return context.LoadFromStream(new MemoryStream(bytes));
+
+                return null;
             };
 
             Assembly assembly = loadContext.LoadFromStream(stream);
@@ -271,6 +301,22 @@ internal static class GeneratesMethodExecutionRuntime
         }
 
         return new SwitchBodyData(pairs, hasDefaultCase);
+    }
+
+    private static Dictionary<string, byte[]> EmitCompilationReferences(Compilation compilation)
+    {
+        Dictionary<string, byte[]> result = new(StringComparer.OrdinalIgnoreCase);
+        foreach (CompilationReference compilationRef in compilation.References.OfType<CompilationReference>())
+        {
+            string assemblyName = compilationRef.Compilation.AssemblyName ?? string.Empty;
+            if (string.IsNullOrEmpty(assemblyName))
+                continue;
+            using MemoryStream refStream = new();
+            if (compilationRef.Compilation.Emit(refStream).Success)
+                result[assemblyName] = refStream.ToArray();
+        }
+
+        return result;
     }
 
     private static string ResolveImplementationAssemblyPath(string path)
