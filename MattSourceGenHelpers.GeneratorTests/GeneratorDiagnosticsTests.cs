@@ -326,4 +326,41 @@ public class GeneratorDiagnosticsTests
         Assert.That(diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error), Is.Empty,
             "Valid switch-case generator configuration should produce no error diagnostics");
     }
+
+    // -----------------------------------------------------------------------
+    // CompilationReference scenario – simulates Rider's code inspector
+    // -----------------------------------------------------------------------
+
+    [Test]
+    public void GeneratesMethod_FluentPattern_WithCompilationReference_ProducesNoDiagnosticErrors()
+    {
+        // This test simulates the scenario that occurs in Rider's code inspector, where the
+        // abstractions project is provided as a CompilationReference (in-memory) instead of
+        // a PortableExecutableReference (file-based). This was the root cause of MSGH004 in Rider.
+        string source = """
+            using MattSourceGenHelpers.Abstractions;
+
+            namespace TestNamespace;
+
+            public partial class MyClass
+            {
+                public partial string GetValue();
+
+                [GeneratesMethod(nameof(GetValue))]
+                static IMethodImplementationGenerator GetValue_Generator() =>
+                    Generate.Method().WithReturnType<string>().UseBody(() => "hello");
+            }
+            """;
+
+        ImmutableArray<Diagnostic>? diagnostics = GeneratorTestHelper.GetGeneratorOnlyDiagnosticsWithCompilationReference(source);
+
+        if (diagnostics == null)
+        {
+            Assert.Ignore("Could not locate abstractions source files on disk; skipping CompilationReference test.");
+            return;
+        }
+
+        Assert.That(diagnostics.Value.Where(d => d.Severity == DiagnosticSeverity.Error), Is.Empty,
+            "Fluent generator with a CompilationReference for abstractions should produce no error diagnostics");
+    }
 }
