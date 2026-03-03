@@ -154,7 +154,7 @@ public static partial class TestPiFluentClass
         Generate
             .Method().WithParameter<int>().WithReturnType<int>()
             .WithSwitchBody()
-            .ForCases(0, 1, 2, Integer.Range(300, 303)).ReturnConstantValue(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
+            .ForCases(0, 1, 2, new[]{300, 301, 302, 303}).ReturnConstantValue(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
             .ForDefaultCase().UseBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
 }
 

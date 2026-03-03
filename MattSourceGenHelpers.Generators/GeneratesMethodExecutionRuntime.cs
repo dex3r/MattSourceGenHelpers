@@ -6,6 +6,7 @@ using System.Collections;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
+using MattSourceGenHelpers.Abstractions;
 
 namespace MattSourceGenHelpers.Generators;
 
@@ -141,7 +142,7 @@ internal static class GeneratesMethodExecutionRuntime
             }
 
             object? recordingFactory = Activator.CreateInstance(recordingFactoryType);
-            PropertyInfo? currentGeneratorProperty = generatorStaticType.GetProperty(Consts.CurrentGeneratorPropertyName, BindingFlags.Public | BindingFlags.Static);
+            PropertyInfo? currentGeneratorProperty = generatorStaticType.GetProperty(Consts.CurrentGeneratorPropertyName, BindingFlags.NonPublic | BindingFlags.Static);
             currentGeneratorProperty?.SetValue(null, recordingFactory);
 
             string typeName = generatorMethod.ContainingType.ToDisplayString();
@@ -284,9 +285,9 @@ internal static class GeneratesMethodExecutionRuntime
     private static SwitchBodyData ExtractSwitchBodyData(object lastRecord, ITypeSymbol returnType)
     {
         Type recordType = lastRecord.GetType();
-        PropertyInfo? caseKeysProperty = recordType.GetProperty("CaseKeys");
-        PropertyInfo? caseValuesProperty = recordType.GetProperty("CaseValues");
-        PropertyInfo? hasDefaultProperty = recordType.GetProperty("HasDefaultCase");
+        PropertyInfo? caseKeysProperty = recordType.GetProperty(nameof(SwitchBodyRecord.CaseKeys));
+        PropertyInfo? caseValuesProperty = recordType.GetProperty(nameof(SwitchBodyRecord.CaseValues));
+        PropertyInfo? hasDefaultProperty = recordType.GetProperty(nameof(SwitchBodyRecord.HasDefaultCase));
 
         IList caseKeys = (caseKeysProperty?.GetValue(lastRecord) as IList) ?? new List<object>();
         IList caseValues = (caseValuesProperty?.GetValue(lastRecord) as IList) ?? new List<object?>();
@@ -392,7 +393,8 @@ internal static class GeneratesMethodExecutionRuntime
                 string parameters = string.Join(", ", partialMethod.Parameters.Select(parameter => $"{parameter.Type.ToDisplayString()} {parameter.Name}"));
 
                 builder.AppendLine($"{accessibility} {staticModifier}partial {returnType} {partialMethod.Name}({parameters}) {{");
-                string throwStatement = $"throw new global::MattSourceGenHelpers.Abstractions.PartialMethodCalledDuringGenerationException(\"{partialMethod.Name}\", \"{partialMethod.ContainingType.Name}\");";
+                string exceptionName = $"{Consts.AbstractionsAssemblyName}.{nameof(PartialMethodCalledDuringGenerationException)}";
+                string throwStatement = $"throw new global::{exceptionName}(\"{partialMethod.Name}\", \"{partialMethod.ContainingType.Name}\");";
                 builder.AppendLine(throwStatement);
 
                 builder.AppendLine("}");

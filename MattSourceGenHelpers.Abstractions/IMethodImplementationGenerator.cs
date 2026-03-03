@@ -1,19 +1,15 @@
-﻿namespace MattSourceGenHelpers.Abstractions;
+﻿using JetBrains.Annotations;
 
-public interface IMethodImplementationGenerator<TReturnType> : IMethodImplementationGenerator
+namespace MattSourceGenHelpers.Abstractions;
+
+public interface IMethodImplementationGenerator<[UsedImplicitly] TReturnType> : IMethodImplementationGenerator
 {
-    IMethodImplementationGenerator UseBody(Func<object> body);
+    IMethodImplementationGenerator UseBody([UsedImplicitly] Func<object> body);
 }
 
 public interface IMethodImplementationGenerator<TArg1, TReturnType> : IMethodImplementationGenerator
 {
     IMethodImplementationGeneratorSwitchBody<TArg1, TReturnType> WithSwitchBody();
-}
-
-public interface IMethodImplementationGeneratorVoid
-{
-    IMethodImplementationGenerator CompileTimeBody(Action func);
-    IMethodImplementationGenerator RuntimeBody(Action func);
 }
 
 public interface IMethodImplementationGenerator;
