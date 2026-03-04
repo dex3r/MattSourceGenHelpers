@@ -140,7 +140,7 @@ You can browse the generated code live in the `IL Viewer` window of your IDE:
 
 Remove the guesswork from Source Generators mistakes.
 
-Roslyn Source Generator projects often produce errors that are hard to understand. One of the main goals for this package is to make sure all errors, including user errors, setup errors, and edgecases are verbose and easily visible as an error line in your IDE. 
+Roslyn Source Generator projects often produce errors that are hard to understand. One of the main goals of this package is to make sure that any error - whether it’s a user mistake, a setup problem, or an edge case - shows up clearly in your IDE by highlighting the line that caused it.
 
 <img width="626" height="98" alt="image" src="https://github.com/user-attachments/assets/cfe7544f-05b8-4e33-bacd-a35c23a5bae7" />
 
