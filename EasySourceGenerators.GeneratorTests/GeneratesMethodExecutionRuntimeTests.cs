@@ -234,11 +234,13 @@ public class GeneratesMethodExecutionRuntimeTests
                 }
                 catch (FileNotFoundException)
                 {
-                    // Ignore transient runtime assemblies that are not backed by files.
+                    // AppDomain can contain dynamic/transient entries where Location points to a file that
+                    // is no longer available. These references are optional for this test helper, so we skip them.
                 }
                 catch (BadImageFormatException)
                 {
-                    // Ignore entries that are not valid .NET assemblies.
+                    // Some loaded modules are native or otherwise not valid managed PE metadata references.
+                    // They cannot be used by Roslyn, and skipping them is safe because core references are added above.
                 }
             }
         }
