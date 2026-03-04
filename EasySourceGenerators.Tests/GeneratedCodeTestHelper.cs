@@ -6,8 +6,37 @@ internal static class GeneratedCodeTestHelper
 
     internal static string ReadGeneratedCode(string generatedFileName)
     {
+        string rawCode = ReadGeneratedCodeRaw(generatedFileName);
+        return StripGeneratedPreamble(rawCode);
+    }
+
+    internal static string ReadGeneratedCodeRaw(string generatedFileName)
+    {
         string generatedCodePath = GetGeneratedCodePath(generatedFileName);
         return File.ReadAllText(generatedCodePath).TrimStart(UnicodeBom).ReplaceLineEndings("\n").TrimEnd();
+    }
+
+    private static string StripGeneratedPreamble(string generatedCode)
+    {
+        string[] lines = generatedCode.Split('\n');
+        int index = 0;
+
+        while (index < lines.Length)
+        {
+            string currentLine = lines[index];
+            bool isGeneratedPreambleLine = currentLine.StartsWith("//", StringComparison.Ordinal)
+                || currentLine.StartsWith("#pragma warning disable", StringComparison.Ordinal)
+                || string.IsNullOrWhiteSpace(currentLine);
+
+            if (!isGeneratedPreambleLine)
+            {
+                break;
+            }
+
+            index++;
+        }
+
+        return string.Join('\n', lines[index..]).TrimEnd();
     }
 
     private static string GetGeneratedCodePath(string generatedFileName)
