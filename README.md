@@ -1,6 +1,6 @@
 # EasySourceGenerators
 
-[![codecov](https://codecov.io/gh/dex3r/EasySourceGenerators/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/EasySourceGenerators)
+[![CI](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml/badge.svg)](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/dex3r/EasySourceGenerators/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/EasySourceGenerators)
 
 With EasySourceGenerators, you can write your generator code as a normal method, in the same assembly as the output.
 This allows you to write your generator in a more natural way, without having to deal with the complexities of Roslyn Source Generators and a separate Project.
