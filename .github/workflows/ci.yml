@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -23,10 +24,34 @@ jobs:
         run: dotnet restore EasySourceGenerators.sln
 
       - name: Test
-        run: dotnet test EasySourceGenerators.sln --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test EasySourceGenerators.sln --no-restore --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFilePrefix=test-results" --results-directory ./coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           directory: ./coverage
+          use_oidc: true
           fail_ci_if_error: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+      - name: Convert TRX to JUnit XML
+        if: ${{ !cancelled() }}
+        run: |
+          if dotnet tool list --global | grep -q '^trx2junit '; then
+            dotnet tool update --global trx2junit --version 2.1.0
+          else
+            dotnet tool install --global trx2junit --version 2.1.0
+          fi
+          TRX_FILES="$(find ./coverage -type f -name '*.trx')"
+          if [ -n "$TRX_FILES" ]; then
+            trx2junit $TRX_FILES
+          else
+            echo "No TRX files found in ./coverage."
+          fi
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/*.xml
+          disable_search: true
