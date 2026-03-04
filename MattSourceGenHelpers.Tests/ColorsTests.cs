@@ -1,6 +1,6 @@
-﻿using MattSourceGenHelpers.Abstractions;
+﻿using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 public class Tests
 {
@@ -19,7 +19,7 @@ public class Tests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestColorsClass_GetAllColorsString.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               partial class TestColorsClass
                               {

@@ -1,8 +1,8 @@
-# MattSourceGenHelpers
+# EasySourceGenerators
 
-[![codecov](https://codecov.io/gh/dex3r/MattSourceGenHelpers/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/MattSourceGenHelpers)
+[![codecov](https://codecov.io/gh/dex3r/EasySourceGenerators/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/EasySourceGenerators)
 
-With MattSourceGenHelpers, you can write your generator code as a normal method, in the same assembly as the output.
+With EasySourceGenerators, you can write your generator code as a normal method, in the same assembly as the output.
 This allows you to write your generator in a more natural way, without having to deal with the complexities of Roslyn Source Generators and a separate Project.
 
 ## What it does
@@ -123,13 +123,13 @@ You can browse the generated code live in the `IL Viewer` window of your IDE:
 
 ## More examples
 
-See the full example project here: [`/MattSourceGenHelpers.Examples`](./MattSourceGenHelpers.Examples).
+See the full example project here: [`/EasySourceGenerators.Examples`](./EasySourceGenerators.Examples).
 
 ## Structure 
 
 The project is split into:
-- `MattSourceGenHelpers.Abstractions` - attributes and fluent interfaces used in consumer code
-- `MattSourceGenHelpers.Generators` - the source generator implementation
-- `MattSourceGenHelpers.Examples` - practical usage examples
-- `MattSourceGenHelpers.Tests` - tests with Generators as Roslyn Source Generators
-- `MattSourceGenHelpers.GeneratorTests` - tests with Generators as assembly references, to cover tests that would be impossible otherwise
+- `EasySourceGenerators.Abstractions` - attributes and fluent interfaces used in consumer code
+- `EasySourceGenerators.Generators` - the source generator implementation
+- `EasySourceGenerators.Examples` - practical usage examples
+- `EasySourceGenerators.Tests` - tests with Generators as Roslyn Source Generators
+- `EasySourceGenerators.GeneratorTests` - tests with Generators as assembly references, to cover tests that would be impossible otherwise

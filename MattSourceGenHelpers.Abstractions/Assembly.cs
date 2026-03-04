@@ -1,2 +1,2 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MattSourceGenHelpers.Tests")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MattSourceGenHelpers.Generators")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("EasySourceGenerators.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("EasySourceGenerators.Generators")]

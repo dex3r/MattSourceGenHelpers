@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using ExtendedNumerics;
 
-namespace MattSourceGenHelpers.Examples;
+namespace EasySourceGenerators.Examples;
 
 public static class SlowMath
 {

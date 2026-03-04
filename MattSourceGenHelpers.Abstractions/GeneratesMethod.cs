@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace MattSourceGenHelpers.Abstractions;
+namespace EasySourceGenerators.Abstractions;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 [MeansImplicitUse(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.WithMembers)]

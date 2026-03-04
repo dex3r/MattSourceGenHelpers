@@ -1,7 +1,7 @@
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 [TestFixture]
 public class BoolSwitchKeyTests
@@ -19,7 +19,7 @@ public class BoolSwitchKeyTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestBoolSwitchClass_GetBoolLabel.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestBoolSwitchClass
                               {

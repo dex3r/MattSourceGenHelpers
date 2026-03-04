@@ -1,7 +1,7 @@
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 [TestFixture]
 public class DefaultCaseConstValueFluent
@@ -21,7 +21,7 @@ public class DefaultCaseConstValueFluent
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("DefaultCaseConstValueFluentClass_Foo.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class DefaultCaseConstValueFluentClass
                               {

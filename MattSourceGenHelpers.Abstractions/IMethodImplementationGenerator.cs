@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace MattSourceGenHelpers.Abstractions;
+namespace EasySourceGenerators.Abstractions;
 
 public interface IMethodImplementationGenerator<[UsedImplicitly] TReturnType> : IMethodImplementationGenerator
 {

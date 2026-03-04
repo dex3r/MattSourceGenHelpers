@@ -1,4 +1,4 @@
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 internal static class TestSlowMath
 {

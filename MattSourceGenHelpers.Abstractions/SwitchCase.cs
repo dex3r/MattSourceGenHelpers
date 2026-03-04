@@ -1,4 +1,4 @@
-﻿namespace MattSourceGenHelpers.Abstractions;
+﻿namespace EasySourceGenerators.Abstractions;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class SwitchCase(object? arg1) : Attribute

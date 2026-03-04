@@ -1,4 +1,4 @@
-﻿namespace MattSourceGenHelpers.Abstractions;
+﻿namespace EasySourceGenerators.Abstractions;
 
 public interface IMethodImplementationGeneratorSwitchBodyCase<TArg1, TReturnType>
 {

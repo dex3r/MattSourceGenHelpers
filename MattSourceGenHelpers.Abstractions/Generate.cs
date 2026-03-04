@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace MattSourceGenHelpers.Abstractions;
+namespace EasySourceGenerators.Abstractions;
 
 public static class Generate
 {

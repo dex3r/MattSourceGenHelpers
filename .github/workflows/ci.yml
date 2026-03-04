@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore MattSourceGenHelpers.sln
+        run: dotnet restore EasySourceGenerators.sln
 
       - name: Test
-        run: dotnet test MattSourceGenHelpers.sln --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test EasySourceGenerators.sln --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5

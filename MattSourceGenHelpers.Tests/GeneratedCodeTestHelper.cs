@@ -1,4 +1,4 @@
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 internal static class GeneratedCodeTestHelper
 {
@@ -29,7 +29,7 @@ internal static class GeneratedCodeTestHelper
 
         while (currentDirectory is not null)
         {
-            string projectFilePath = Path.Combine(currentDirectory, "MattSourceGenHelpers.Tests.csproj");
+            string projectFilePath = Path.Combine(currentDirectory, "EasySourceGenerators.Tests.csproj");
             if (File.Exists(projectFilePath))
             {
                 return currentDirectory;
@@ -38,6 +38,6 @@ internal static class GeneratedCodeTestHelper
             currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
         }
 
-        throw new DirectoryNotFoundException("Could not locate MattSourceGenHelpers.Tests project directory.");
+        throw new DirectoryNotFoundException("Could not locate EasySourceGenerators.Tests project directory.");
     }
 }

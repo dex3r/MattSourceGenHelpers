@@ -1,6 +1,6 @@
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 public class MethodBuilder(IGeneratorsFactory generatorsFactory) : IMethodBuilder
 {

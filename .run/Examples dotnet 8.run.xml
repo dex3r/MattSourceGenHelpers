@@ -1,6 +1,6 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Examples dotnet 8" type="DotNetFolderPublish" factoryName="Publish to folder">
-    <riderPublish configuration="Release" platform="Any CPU" target_folder="$PROJECT_DIR$/MattSourceGenHelpers.Examples/bin/Release/net8.0/publish" target_framework="net8.0" uuid_high="2267988728648713066" uuid_low="-8701392894052327047">
+    <riderPublish configuration="Release" platform="Any CPU" target_folder="$PROJECT_DIR$/EasySourceGenerators.Examples/bin/Release/net8.0/publish" target_framework="net8.0" uuid_high="2267988728648713066" uuid_low="-8701392894052327047">
       <runtimes>
         <item value="win-x64" />
         <item value="win-x86" />

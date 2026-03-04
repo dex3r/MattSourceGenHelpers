@@ -1,6 +1,6 @@
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 [TestFixture]
 public class EdgeCaseSimplePatternTests
@@ -21,7 +21,7 @@ public class EdgeCaseSimplePatternTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestVoidClass_DoSomething.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               partial class TestVoidClass
                               {
@@ -50,7 +50,7 @@ public class EdgeCaseSimplePatternTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestBoolReturnClass_IsEnabled.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestBoolReturnClass
                               {
@@ -80,7 +80,7 @@ public class EdgeCaseSimplePatternTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestCharReturnClass_GetSymbol.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestCharReturnClass
                               {
@@ -111,7 +111,7 @@ public class EdgeCaseSimplePatternTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestInternalMethodClass_GetValue.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               partial class TestInternalMethodClass
                               {

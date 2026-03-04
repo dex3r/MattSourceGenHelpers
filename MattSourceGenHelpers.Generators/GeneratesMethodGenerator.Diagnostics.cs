@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 internal static class GeneratesMethodGeneratorDiagnostics
 {

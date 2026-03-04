@@ -6,11 +6,11 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>0.1.0</Version>
-        <Title>Matt Source Generation Helpers Abstractions</Title>
-        <Description>Attributes and fluent abstractions used by MattSourceGenHelpers source generators.</Description>
+        <Title>Easy Source Generators Abstractions</Title>
+        <Description>Abstractions used by EasySourceGenerators.</Description>
         <Authors>Matt Krzaczek</Authors>
-        <PackageProjectUrl>https://github.com/dex3r/MattSourceGenHelpers</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/dex3r/MattSourceGenHelpers</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/dex3r/EasySourceGenerators</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dex3r/EasySourceGenerators</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>

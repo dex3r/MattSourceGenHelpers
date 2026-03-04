@@ -1,15 +1,15 @@
-﻿using MattSourceGenHelpers.Abstractions;
+﻿using EasySourceGenerators.Abstractions;
 
 // ReSharper disable InconsistentNaming - names like IFoo are neede here
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 public static class Consts
 {
-    public const string SolutionNamespace = $"{nameof(MattSourceGenHelpers)}";
-    public const string AbstractionsNamespace = $"{nameof(MattSourceGenHelpers)}.{nameof(Abstractions)}";
+    public const string SolutionNamespace = $"{nameof(EasySourceGenerators)}";
+    public const string AbstractionsNamespace = $"{nameof(EasySourceGenerators)}.{nameof(Abstractions)}";
     public const string AbstractionsAssemblyName = AbstractionsNamespace;
-    public const string GeneratorsNamespace = "MattSourceGenHelpers.Generators";
+    public const string GeneratorsNamespace = "EasySourceGenerators.Generators";
     public const string GeneratorsAssemblyName = GeneratorsNamespace;
     public const string SwitchCaseAttributeFullName = $"{AbstractionsNamespace}.{nameof(SwitchCase)}";
     public const string SwitchDefaultAttributeFullName = $"{AbstractionsNamespace}.{nameof(SwitchDefault)}";

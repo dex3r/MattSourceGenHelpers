@@ -1,11 +1,11 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 using System.Text;
-using static MattSourceGenHelpers.Generators.Consts;
+using static EasySourceGenerators.Generators.Consts;
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 internal static class GeneratesMethodPatternSourceBuilder
 {

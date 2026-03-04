@@ -1,6 +1,6 @@
-﻿using MattSourceGenHelpers.Abstractions;
+﻿using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Examples;
+namespace EasySourceGenerators.Examples;
 
 public enum ColorsEnum
 { 

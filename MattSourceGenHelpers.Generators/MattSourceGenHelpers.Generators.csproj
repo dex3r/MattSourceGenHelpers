@@ -8,11 +8,11 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>0.1.0</Version>
-        <Title>Matt Source Generation Helpers</Title>
-        <Description>Roslyn source generators that turn normal methods into generated implementations.</Description>
+        <Title>Easy Source Generators</Title>
+        <Description>Source Generators made easy. Write code that generates code without learning Roslyn Source Generators. Simply write regular code, this package will do the hard work for you.</Description>
         <Authors>Matt Krzaczek</Authors>
-        <PackageProjectUrl>https://github.com/dex3r/MattSourceGenHelpers</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/dex3r/MattSourceGenHelpers</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/dex3r/EasySourceGenerators</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dex3r/EasySourceGenerators</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
@@ -26,7 +26,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\MattSourceGenHelpers.Abstractions\MattSourceGenHelpers.Abstractions.csproj" />
+      <ProjectReference Include="..\EasySourceGenerators.Abstractions\EasySourceGenerators.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>

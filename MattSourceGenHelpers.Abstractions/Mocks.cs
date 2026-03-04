@@ -1,4 +1,4 @@
-﻿namespace MattSourceGenHelpers.Abstractions;
+﻿namespace EasySourceGenerators.Abstractions;
 
 public class MockGeneratorsFactory : IGeneratorsFactory
 {

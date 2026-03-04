@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace MattSourceGenHelpers.Abstractions;
+namespace EasySourceGenerators.Abstractions;
 
 /// <summary>
 /// Thrown when a partial method is called during source generation.

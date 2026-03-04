@@ -2,9 +2,9 @@ using System.Collections.Immutable;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using MattSourceGenHelpers.Generators;
+using EasySourceGenerators.Generators;
 
-namespace MattSourceGenHelpers.GeneratorTests;
+namespace EasySourceGenerators.GeneratorTests;
 
 /// <summary>
 /// Helper for running the <see cref="GeneratesMethodGenerator"/> against in-memory source code
@@ -79,7 +79,7 @@ internal static class GeneratorTestHelper
 
         // Use standard references but replace the abstractions PE reference with the CompilationReference.
         List<MetadataReference> references = GetMetadataReferences()
-            .Where(r => r.Display?.Contains("MattSourceGenHelpers.Abstractions", StringComparison.OrdinalIgnoreCase) != true)
+            .Where(r => r.Display?.Contains("EasySourceGenerators.Abstractions", StringComparison.OrdinalIgnoreCase) != true)
             .ToList();
         references.Add(abstractionsRef);
 
@@ -142,7 +142,7 @@ internal static class GeneratorTestHelper
             TryAddFile(dll);
 
         CSharpCompilation abstractionsCompilation = CSharpCompilation.Create(
-            assemblyName: "MattSourceGenHelpers.Abstractions",
+            assemblyName: "EasySourceGenerators.Abstractions",
             syntaxTrees: syntaxTrees,
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
@@ -160,7 +160,7 @@ internal static class GeneratorTestHelper
         {
             if (dir == null)
                 return null;
-            string candidate = Path.Combine(dir, "MattSourceGenHelpers.Abstractions");
+            string candidate = Path.Combine(dir, "EasySourceGenerators.Abstractions");
             if (Directory.Exists(candidate) && Directory.GetFiles(candidate, "*.cs").Length > 0)
                 return candidate;
             dir = Path.GetDirectoryName(dir);
@@ -182,7 +182,7 @@ internal static class GeneratorTestHelper
             MetadataReference.CreateFromFile(Path.Combine(dotnetDir, "System.Linq.dll")),
             MetadataReference.CreateFromFile(Path.Combine(dotnetDir, "netstandard.dll")),
             // Abstractions assembly
-            MetadataReference.CreateFromFile(typeof(MattSourceGenHelpers.Abstractions.GeneratesMethod).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(EasySourceGenerators.Abstractions.GeneratesMethod).Assembly.Location),
         };
 
         // Add any other loaded assemblies that might be needed (e.g., System.Private.CoreLib)

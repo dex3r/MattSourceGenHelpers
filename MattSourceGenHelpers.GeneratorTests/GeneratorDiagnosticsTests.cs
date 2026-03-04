@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
-namespace MattSourceGenHelpers.GeneratorTests;
+namespace EasySourceGenerators.GeneratorTests;
 
 [TestFixture]
 public class GeneratorDiagnosticsTests
@@ -14,7 +14,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_WithNonExistingMethodName_EmitsMSGH001()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -41,7 +41,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_WithEmptyMethodName_DoesNotCrash()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -66,7 +66,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_WithNonStaticMethod_EmitsMSGH002()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -95,7 +95,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCaseWithMoreThanOneParameter_EmitsMSGH005()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -123,7 +123,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCaseWithOneParameter_DoesNotEmitMSGH005()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -147,7 +147,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCaseWithZeroParameters_DoesNotEmitMSGH005()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -181,7 +181,7 @@ public class GeneratorDiagnosticsTests
         // We expect either an MSGH004 or generated code with no meaningful content.
         // Either way, no uncaught exception should escape the generator.
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -210,7 +210,7 @@ public class GeneratorDiagnosticsTests
         // The dummy implementation should throw PartialMethodCalledDuringGenerationException,
         // which should be surfaced as MSGH004 with an informative message.
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -252,7 +252,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCaseWithWrongArgumentType_EmitsMSGH006()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -280,7 +280,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCaseWithCorrectArgumentType_DoesNotEmitMSGH006()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -310,7 +310,7 @@ public class GeneratorDiagnosticsTests
         // The generator method returns a string, but the partial method returns int.
         // The generated code will contain `return "hello";` where int is expected.
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -339,7 +339,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SimplePattern_ValidConfiguration_ProducesNoDiagnosticErrors()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -362,7 +362,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCasePattern_ValidConfiguration_ProducesNoDiagnosticErrors()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -394,7 +394,7 @@ public class GeneratorDiagnosticsTests
         // abstractions project is provided as a CompilationReference (in-memory) instead of
         // a PortableExecutableReference (file-based). This was the root cause of MSGH004 in Rider.
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -428,7 +428,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_TargetingNonPartialMethod_EmitsMSGH001()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
 
             namespace TestNamespace;
 
@@ -458,7 +458,7 @@ public class GeneratorDiagnosticsTests
     public void GeneratesMethod_SwitchCaseWithBoolParameter_ValidConfiguration_ProducesNoDiagnosticErrors()
     {
         string source = """
-            using MattSourceGenHelpers.Abstractions;
+            using EasySourceGenerators.Abstractions;
             using System;
 
             namespace TestNamespace;

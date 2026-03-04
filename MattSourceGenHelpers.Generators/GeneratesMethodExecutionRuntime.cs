@@ -6,9 +6,9 @@ using System.Collections;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 internal sealed record SwitchBodyData(
     IReadOnlyList<(object key, string value)> CasePairs,

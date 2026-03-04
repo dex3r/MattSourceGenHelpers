@@ -1,7 +1,7 @@
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 [TestFixture]
 public class PiExampleFluentTests
@@ -26,7 +26,7 @@ public class PiExampleFluentTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestPiFluentClass_GetPiDecimal.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestPiFluentClass
                               {
@@ -65,7 +65,7 @@ public class PiExampleFluentTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestMapperFluent_MapToMammal.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestMapperFluent
                               {
@@ -103,16 +103,16 @@ public class PiExampleFluentTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestMapperFluentEnum_MapToMammal.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestMapperFluentEnum
                               {
-                                  public static partial MattSourceGenHelpers.Tests.TestMammalAnimal MapToMammal(MattSourceGenHelpers.Tests.TestFourLeggedAnimal fourLeggedAnimal)
+                                  public static partial EasySourceGenerators.Tests.TestMammalAnimal MapToMammal(EasySourceGenerators.Tests.TestFourLeggedAnimal fourLeggedAnimal)
                                   {
                                       switch (fourLeggedAnimal)
                                       {
-                                          case MattSourceGenHelpers.Tests.TestFourLeggedAnimal.Dog: return MattSourceGenHelpers.Tests.TestMammalAnimal.Dog;
-                                          case MattSourceGenHelpers.Tests.TestFourLeggedAnimal.Cat: return MattSourceGenHelpers.Tests.TestMammalAnimal.Cat;
+                                          case EasySourceGenerators.Tests.TestFourLeggedAnimal.Dog: return EasySourceGenerators.Tests.TestMammalAnimal.Dog;
+                                          case EasySourceGenerators.Tests.TestFourLeggedAnimal.Cat: return EasySourceGenerators.Tests.TestMammalAnimal.Cat;
                                           default: throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a mammal");
                                       }
                                   }

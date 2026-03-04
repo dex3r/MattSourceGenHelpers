@@ -1,9 +1,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 #pragma warning disable RS1041 // This generator will only work with dotnet 8 to 10
 

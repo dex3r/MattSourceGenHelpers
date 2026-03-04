@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 
-namespace MattSourceGenHelpers.Generators;
+namespace EasySourceGenerators.Generators;
 
 public class SwitchBodyRecord
 {

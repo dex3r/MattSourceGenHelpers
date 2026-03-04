@@ -1,7 +1,7 @@
-﻿using MattSourceGenHelpers.Abstractions;
+﻿using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
-namespace MattSourceGenHelpers.Examples;
+namespace EasySourceGenerators.Examples;
 
 public static partial class PiExample
 {

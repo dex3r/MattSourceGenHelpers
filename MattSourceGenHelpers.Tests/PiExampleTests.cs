@@ -1,7 +1,7 @@
-using MattSourceGenHelpers.Abstractions;
+using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
-namespace MattSourceGenHelpers.Tests;
+namespace EasySourceGenerators.Tests;
 
 [TestFixture]
 public class PiExampleTests
@@ -30,7 +30,7 @@ public class PiExampleTests
     {
         string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestPiClass_GetPiDecimal.g.cs");
         string expectedCode = """
-                              namespace MattSourceGenHelpers.Tests;
+                              namespace EasySourceGenerators.Tests;
 
                               static partial class TestPiClass
                               {
