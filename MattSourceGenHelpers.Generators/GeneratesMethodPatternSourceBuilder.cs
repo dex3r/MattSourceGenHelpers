@@ -241,9 +241,7 @@ internal static class GeneratesMethodPatternSourceBuilder
         ITypeSymbol? parameterType = partialMethod.Parameters.Length > 0 ? partialMethod.Parameters[0].Type : null;
         foreach ((object key, string value) in cases)
         {
-            string formattedKey = parameterType?.TypeKind == TypeKind.Enum
-                ? $"{parameterType.ToDisplayString()}.{key}"
-                : key.ToString()!;
+            string formattedKey = FormatKeyAsCSharpLiteral(key, parameterType);
             builder.AppendLine($"            case {formattedKey}: return {value};");
         }
 
@@ -316,6 +314,22 @@ internal static class GeneratesMethodPatternSourceBuilder
             SpecialType.System_Boolean => value.ToLowerInvariant(),
             _ when returnType.TypeKind == TypeKind.Enum => $"{returnType.ToDisplayString()}.{value}",
             _ => value
+        };
+    }
+
+    private static string FormatKeyAsCSharpLiteral(object key, ITypeSymbol? parameterType)
+    {
+        if (parameterType?.TypeKind == TypeKind.Enum)
+        {
+            return $"{parameterType.ToDisplayString()}.{key}";
+        }
+
+        return key switch
+        {
+            bool b => b ? "true" : "false",
+            // SyntaxFactory.Literal handles escaping and quoting (e.g. "hello" → "\"hello\"")
+            string s => SyntaxFactory.Literal(s).Text,
+            _ => key.ToString()!
         };
     }
 }

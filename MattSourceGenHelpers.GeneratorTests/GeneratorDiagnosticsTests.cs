@@ -419,4 +419,68 @@ public class GeneratorDiagnosticsTests
         Assert.That(diagnostics.Value.Where(d => d.Severity == DiagnosticSeverity.Error), Is.Empty,
             "Fluent generator with a CompilationReference for abstractions should produce no error diagnostics");
     }
+
+    // -----------------------------------------------------------------------
+    // MSGH001 – targeting an existing but non-partial method
+    // -----------------------------------------------------------------------
+
+    [Test]
+    public void GeneratesMethod_TargetingNonPartialMethod_EmitsMSGH001()
+    {
+        string source = """
+            using MattSourceGenHelpers.Abstractions;
+
+            namespace TestNamespace;
+
+            public partial class MyClass
+            {
+                public string NonPartialMethod() => "hello";
+
+                [GeneratesMethod("NonPartialMethod")]
+                private static string MyGenerator() => "world";
+            }
+            """;
+
+        ImmutableArray<Diagnostic> diagnostics = GeneratorTestHelper.GetGeneratorOnlyDiagnostics(source);
+
+        Diagnostic? msgh001 = diagnostics.FirstOrDefault(d => d.Id == "MSGH001");
+        Assert.That(msgh001, Is.Not.Null,
+            "Expected MSGH001 when targeting an existing but non-partial method");
+        Assert.That(msgh001!.GetMessage(), Does.Contain("NonPartialMethod"),
+            "Error message should mention the non-partial method name");
+    }
+
+    // -----------------------------------------------------------------------
+    // Bool switch parameter – valid configuration
+    // -----------------------------------------------------------------------
+
+    [Test]
+    public void GeneratesMethod_SwitchCaseWithBoolParameter_ValidConfiguration_ProducesNoDiagnosticErrors()
+    {
+        string source = """
+            using MattSourceGenHelpers.Abstractions;
+            using System;
+
+            namespace TestNamespace;
+
+            public static partial class MyClass
+            {
+                public static partial string GetLabel(bool flag);
+
+                [GeneratesMethod(nameof(GetLabel))]
+                [SwitchCase(arg1: true)]
+                [SwitchCase(arg1: false)]
+                private static string GetLabel_Generator(bool flag) => flag ? "Yes" : "No";
+
+                [GeneratesMethod(nameof(GetLabel))]
+                [SwitchDefault]
+                private static Func<bool, string> GetLabel_Default() => _ => "Unknown";
+            }
+            """;
+
+        ImmutableArray<Diagnostic> diagnostics = GeneratorTestHelper.GetGeneratorOnlyDiagnostics(source);
+
+        Assert.That(diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error), Is.Empty,
+            "Valid bool switch case generator should produce no error diagnostics");
+    }
 }
