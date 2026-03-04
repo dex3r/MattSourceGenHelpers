@@ -2,19 +2,14 @@
 
 [![CI](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml/badge.svg)](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/dex3r/EasySourceGenerators/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/EasySourceGenerators)
 
-With EasySourceGenerators, you can write your generator code as a normal method, in the same assembly as the output.
-This allows you to write your generator in a more natural way, without having to deal with the complexities of Roslyn Source Generators and a separate Project.
+**Easy Source Generators** - Code generation made easy.
 
-## What it does
+With this package, you can easily create **code that generates source** - without creating a separate Analyzers assembly and without learning Roslyn Source Generators. It will be generated any time you run a build.
 
-You declare partial methods and provide generator methods marked with attributes such as:
-- `[GeneratesMethod(...)]`
-- `[SwitchCase(...)]`
-- `[SwitchDefault]`
+Just look at the examples below, or scroll down to a more in-depth explanation.
 
-The generator then emits the final method body at compile time.
-
-## Example: simple method generation
+# Examples
+### Simple method generation
 
 ```csharp
 public enum ColorsEnum { Red, Green, Blue }
@@ -35,7 +30,7 @@ This generates a method:
 public string GetAllColorsString() => "Red, Green, Blue";
 ```
 
-## Example: switch-case specialization with fallback
+### Switch-case specialization with fallback
 
 ```csharp
 public static partial class PiExample
@@ -71,7 +66,7 @@ public static int GetPiDecimal(int decimalNumber)
 }
 ```
 
-## Example: fluent API
+### Fluent API
 
 Instead of using attributes, you can use the fluent API to build more complex behaviour:
 
@@ -102,7 +97,7 @@ public static partial class MapperFluent
 This generates a method:
 
 ```csharp
-public static partial Mammal MapToMammal(FourLegged fourLegged)
+public static Mammal MapToMammal(FourLegged fourLegged)
 {
     switch (fourLegged)
     {
@@ -113,6 +108,26 @@ public static partial Mammal MapToMammal(FourLegged fourLegged)
 }
 ```
 
+#### More examples
+See the full example project here: [`/EasySourceGenerators.Examples`](./EasySourceGenerators.Examples).
+
+## What it does
+
+You declare partial methods and provide generator methods marked with attributes such as:
+- `[GeneratesMethod(...)]`
+- `[SwitchCase(...)]`
+- `[SwitchDefault]`
+
+The generator uses Roslyn Source Generators under the hood to generate the source in build time.
+
+The Generators package and binaries is not going to be added to your shipped code. The generators package will be added as a compile-time only dependency:
+
+```xml
+  <PackageReference Include="EasySourceGenerators.Generators" Version="x.y.z"
+                    PrivateAssets="all"
+                    IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+```
+
 ## Great IDE support
 
 This project uses Roslyn Source Generators under the hood. This gives you great out-of-the-box support from IDEs like Rider, VSCode, and VisualStudio. 
@@ -121,9 +136,13 @@ You can browse the generated code live in the `IL Viewer` window of your IDE:
 
 <img width="1037" height="397" alt="image" src="https://github.com/user-attachments/assets/1affb888-04d4-4fc4-8e79-db3e485de30c" />
 
-## More examples
+## Verbose and easy to understand errors
 
-See the full example project here: [`/EasySourceGenerators.Examples`](./EasySourceGenerators.Examples).
+Remove the guesswork from Source Generators mistakes.
+
+Roslyn Source Generator projects often produce errors that are hard to understand. One of the main goals for this package is to make sure all errors, including user errors, setup errors, and edgecases are verbose and easily visible as an error line in your IDE. 
+
+<img width="626" height="98" alt="image" src="https://github.com/user-attachments/assets/cfe7544f-05b8-4e33-bacd-a35c23a5bae7" />
 
 ## Structure 
 
