@@ -114,6 +114,60 @@ public class GeneratesMethodExecutionRuntimeTests
     }
 
     [Test]
+    public void ExecuteGeneratorMethodWithArgs_ReturnsErrorWhenGeneratorThrowsException()
+    {
+        CSharpCompilation compilation = CreateCompilation("""
+                                                         using System;
+
+                                                         namespace TestNamespace;
+
+                                                         public static class GenHost
+                                                         {
+                                                             public static string Generate()
+                                                             {
+                                                                 throw new InvalidOperationException("boom");
+                                                             }
+                                                         }
+                                                         """);
+
+        IMethodSymbol generatorMethod = GetMethodSymbol(compilation, "TestNamespace.GenHost", "Generate");
+
+        (string? value, string? error) result = GeneratesMethodExecutionRuntime.ExecuteGeneratorMethodWithArgs(
+            generatorMethod,
+            Array.Empty<IMethodSymbol>(),
+            compilation,
+            null);
+
+        Assert.That(result.value, Is.Null);
+        Assert.That(result.error, Does.Contain("InvalidOperationException"));
+        Assert.That(result.error, Does.Contain("boom"));
+    }
+
+    [Test]
+    public void ExecuteGeneratorMethodWithArgs_ReturnsErrorWhenArgumentConversionFails()
+    {
+        CSharpCompilation compilation = CreateCompilation("""
+                                                         namespace TestNamespace;
+
+                                                         public static class GenHost
+                                                         {
+                                                             public static string Generate(int value) => value.ToString();
+                                                         }
+                                                         """);
+
+        IMethodSymbol generatorMethod = GetMethodSymbol(compilation, "TestNamespace.GenHost", "Generate");
+
+        (string? value, string? error) result = GeneratesMethodExecutionRuntime.ExecuteGeneratorMethodWithArgs(
+            generatorMethod,
+            Array.Empty<IMethodSymbol>(),
+            compilation,
+            new object?[] { "not-an-int" });
+
+        Assert.That(result.value, Is.Null);
+        Assert.That(result.error, Does.Contain("FormatException"));
+    }
+
+    [Test]
     public void ExecuteFluentGeneratorMethod_CollectsSwitchBodyData()
     {
         CSharpCompilation compilation = CreateCompilation("""
