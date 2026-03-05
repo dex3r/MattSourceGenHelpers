@@ -1,0 +1,78 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: nuget_publish
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Validate tag and package versions
+        run: |
+          TAGS="$(git tag --points-at "$GITHUB_SHA")"
+          if [ -z "$TAGS" ]; then
+            echo "Current commit $GITHUB_SHA is not tagged."
+            exit 1
+          fi
+
+          TAG_COUNT="$(echo "$TAGS" | wc -l | xargs)"
+          if [ "$TAG_COUNT" -ne 1 ]; then
+            echo "Expected exactly one tag on commit $GITHUB_SHA, found:"
+            echo "$TAGS"
+            exit 1
+          fi
+
+          TAG="$TAGS"
+          ABSTRACTIONS_VERSION="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' EasySourceGenerators.Abstractions/EasySourceGenerators.Abstractions.csproj | head -n 1)"
+          GENERATORS_VERSION="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' EasySourceGenerators.Generators/EasySourceGenerators.Generators.csproj | head -n 1)"
+
+          if [ "$ABSTRACTIONS_VERSION" != "$TAG" ]; then
+            echo "Abstractions version ($ABSTRACTIONS_VERSION) does not match tag ($TAG)."
+            exit 1
+          fi
+
+          if [ "$GENERATORS_VERSION" != "$TAG" ]; then
+            echo "Generators version ($GENERATORS_VERSION) does not match tag ($TAG)."
+            exit 1
+          fi
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore EasySourceGenerators.sln
+
+      - name: Build
+        run: dotnet build EasySourceGenerators.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test EasySourceGenerators.sln --no-build --configuration Release --verbosity normal
+
+      - name: Pack Abstractions
+        run: dotnet pack EasySourceGenerators.Abstractions/EasySourceGenerators.Abstractions.csproj --no-build --configuration Release --output ./artifacts
+
+      - name: Pack Generators
+        run: dotnet pack EasySourceGenerators.Generators/EasySourceGenerators.Generators.csproj --no-build --configuration Release --output ./artifacts
+
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: dex3r
+
+      - name: Publish Abstractions package
+        run: dotnet nuget push ./artifacts/EasySourceGenerators.Abstractions.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+
+      - name: Publish Generators package
+        run: dotnet nuget push ./artifacts/EasySourceGenerators.Generators.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
