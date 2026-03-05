@@ -38,9 +38,9 @@ public static partial class PiExample
     public static partial int GetPiDecimal(int decimalNumber);
 
     [GeneratesMethod(nameof(GetPiDecimal))]
-    [SwitchCase(arg1: 0)]
-    [SwitchCase(arg1: 1)]
-    [SwitchCase(arg1: 2)]
+    [SwitchCase(0)]
+    [SwitchCase(1)]
+    [SwitchCase(2)]
     static int GetPiDecimal_Generator_Specialized(int decimalNumber) =>
         SlowMath.CalculatePiDecimal(decimalNumber);
 
@@ -113,12 +113,14 @@ See the full example project here: [`/EasySourceGenerators.Examples`](./EasySour
 
 ## What it does
 
-You declare partial methods, both static and non-static, and provide generator methods marked with attributes such as:
-- `[GeneratesMethod(...)]`
-- `[SwitchCase(...)]`
+You declare partial methods, either static or non-static, and provide generator methods marked with attributes such as:
+- `[GeneratesMethod(nameof(YourMethod)]`
+- `[SwitchCase("someArgumentValue)]`
 - `[SwitchDefault]`
 
 The generator uses Roslyn Source Generators under the hood to generate the source at build time.
+
+For more complex behavior there is a fluent API as well (see `MapperFluent` example above).
 
 The Generators package and its binaries will not be included in your shipped code. The generators package will be added as a compile-time only dependency:
 
