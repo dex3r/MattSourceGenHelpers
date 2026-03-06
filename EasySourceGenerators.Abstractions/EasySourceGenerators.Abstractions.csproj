@@ -9,6 +9,7 @@
         <Title>Easy Source Generators Abstractions</Title>
         <Description>Abstractions used by EasySourceGenerators.</Description>
         <Authors>Matt Krzaczek</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/dex3r/EasySourceGenerators</PackageProjectUrl>
         <RepositoryUrl>https://github.com/dex3r/EasySourceGenerators</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
