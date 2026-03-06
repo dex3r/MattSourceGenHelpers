@@ -7,6 +7,8 @@
         <IsRoslynAnalyzer>true</IsRoslynAnalyzer>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Version>0.1.1-alpha</Version>
         <Title>Easy Source Generators</Title>
         <Description>Source Generators made easy. Write code that generates code without learning Roslyn Source Generators. Simply write regular code, this package will do the hard work for you.</Description>

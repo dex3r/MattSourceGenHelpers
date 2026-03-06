@@ -5,6 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Version>0.1.1-alpha</Version>
         <Title>Easy Source Generators Abstractions</Title>
         <Description>Abstractions used by EasySourceGenerators.</Description>
