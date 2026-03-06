@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace EasySourceGenerators.Abstractions;
+﻿namespace EasySourceGenerators.Abstractions;
 
 public static class Generate
 {

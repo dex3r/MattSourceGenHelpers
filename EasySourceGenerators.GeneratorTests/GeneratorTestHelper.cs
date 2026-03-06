@@ -117,7 +117,7 @@ internal static class GeneratorTestHelper
             .ToList();
 
         // Collect metadata references: start with already-loaded assemblies, then also add any
-        // DLLs in the test binary directory to pick up JetBrains.Annotations and similar packages
+        // DLLs in the test binary directory to pick up any package assemblies
         // that may not have been loaded into the AppDomain yet.
         HashSet<string> addedPaths = new(StringComparer.OrdinalIgnoreCase);
         List<MetadataReference> references = new();
@@ -136,7 +136,7 @@ internal static class GeneratorTestHelper
                 TryAddFile(assembly.Location);
         }
 
-        // Also scan the test binary directory for DLLs not yet loaded (e.g., JetBrains.Annotations).
+        // Also scan the test binary directory for DLLs not yet loaded.
         string testBinDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         foreach (string dll in Directory.GetFiles(testBinDir, "*.dll"))
             TryAddFile(dll);
