@@ -309,6 +309,7 @@ public class GeneratesMethodExecutionRuntimeTests
             MetadataReference.CreateFromFile(Path.Combine(dotnetDirectory, "System.Runtime.dll")),
             MetadataReference.CreateFromFile(Path.Combine(dotnetDirectory, "System.Collections.dll")),
             MetadataReference.CreateFromFile(Path.Combine(dotnetDirectory, "System.Linq.dll")),
+            MetadataReference.CreateFromFile(Path.Combine(dotnetDirectory, "System.Console.dll")),
             MetadataReference.CreateFromFile(Path.Combine(dotnetDirectory, "netstandard.dll")),
             MetadataReference.CreateFromFile(typeof(Generate).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(GeneratesMethodExecutionRuntime).Assembly.Location)
