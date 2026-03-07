@@ -1,39 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+
         <LangVersion>default</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
         <IsRoslynAnalyzer>true</IsRoslynAnalyzer>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
         <Version>0.1.1-alpha</Version>
+        <PackageId>EasySourceGenerators</PackageId>
         <Title>Easy Source Generators</Title>
         <Description>Source Generators made easy. Write code that generates code without learning Roslyn Source Generators. Simply write regular code, this package will do the hard work for you.</Description>
         <Authors>Matt Krzaczek</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/dex3r/EasySourceGenerators</PackageProjectUrl>
         <RepositoryUrl>https://github.com/dex3r/EasySourceGenerators</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+
+        <Deterministic>true</Deterministic>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <PackageTags>roslyn;source-generator;analyzer;codegen</PackageTags>
     </PropertyGroup>
-   
+
     <ItemGroup>
-         <None Include="..\README.md" Pack="true" PackagePath="\" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\EasySourceGenerators.Abstractions\EasySourceGenerators.Abstractions.csproj" />
+        <None Include="..\README.md" Pack="true" PackagePath="\" Link="README.md" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="MethodBuilder.cs" LogicalName="$(RootNamespace).MethodBuilder.cs" />
-      <EmbeddedResource Include="RecordingGeneratorsFactory.cs" LogicalName="$(RootNamespace).RecordingGeneratorsFactory.cs" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
     </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\EasySourceGenerators.Abstractions\EasySourceGenerators.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(OutputPath)$(AssemblyName).dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs"
+              Visible="false" />
+
+        <None Include="$(OutputPath)$(AssemblyName).pdb"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs"
+              Visible="false"
+              Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="MethodBuilder.cs" LogicalName="$(RootNamespace).MethodBuilder.cs" />
+        <EmbeddedResource Include="RecordingGeneratorsFactory.cs" LogicalName="$(RootNamespace).RecordingGeneratorsFactory.cs" />
+    </ItemGroup>
+
 </Project>
