@@ -58,6 +58,39 @@ public class GeneratesMethodExecutionRuntimeTests
     }
 
     [Test]
+    public void ExecuteSimpleGeneratorMethod_ExecutesWhenCompilationHasTopLevelStatements()
+    {
+        CSharpCompilation compilation = CreateCompilation("""
+                                                         using System;
+
+                                                         Console.WriteLine("warmup");
+
+                                                         namespace TestNamespace
+                                                         {
+                                                             public partial class Target
+                                                             {
+                                                                 public partial string GetValue();
+                                                             }
+
+                                                             public static class GenHost
+                                                             {
+                                                                 public static string Generate() => "hello";
+                                                             }
+                                                         }
+                                                         """,
+            outputKind: OutputKind.ConsoleApplication);
+
+        IMethodSymbol generatorMethod = GetMethodSymbol(compilation, "TestNamespace.GenHost", "Generate");
+        IMethodSymbol partialMethod = GetMethodSymbol(compilation, "TestNamespace.Target", "GetValue");
+
+        (string? value, string? error) result =
+            GeneratesMethodExecutionRuntime.ExecuteSimpleGeneratorMethod(generatorMethod, partialMethod, compilation);
+
+        Assert.That(result.error, Is.Null);
+        Assert.That(result.value, Is.EqualTo("hello"));
+    }
+
+    [Test]
     public void ExecuteGeneratorMethodWithArgs_ConvertsArgumentsToMethodParameterType()
     {
         CSharpCompilation compilation = CreateCompilation("""
@@ -253,14 +286,17 @@ public class GeneratesMethodExecutionRuntimeTests
         Assert.That(result.error, Does.StartWith("Compilation failed:"));
     }
 
-    private static CSharpCompilation CreateCompilation(string source, string assemblyName = "TestAssembly")
+    private static CSharpCompilation CreateCompilation(
+        string source,
+        string assemblyName = "TestAssembly",
+        OutputKind outputKind = OutputKind.DynamicallyLinkedLibrary)
     {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
         CSharpCompilation compilation = CSharpCompilation.Create(
             assemblyName: assemblyName,
             syntaxTrees: new[] { syntaxTree },
             references: GetMetadataReferences(),
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(outputKind));
         return compilation;
     }
 

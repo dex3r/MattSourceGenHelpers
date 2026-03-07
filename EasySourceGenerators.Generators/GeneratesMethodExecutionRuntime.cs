@@ -344,8 +344,9 @@ internal static class GeneratesMethodExecutionRuntime
         CSharpParseOptions parseOptions = compilation.SyntaxTrees.FirstOrDefault()?.Options as CSharpParseOptions
                                          ?? CSharpParseOptions.Default;
 
-        return (CSharpCompilation)compilation
-            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+        CSharpCompilation cSharpCompilation = (CSharpCompilation)compilation;
+
+        return cSharpCompilation
             .AddSyntaxTrees(
                 CSharpSyntaxTree.ParseText(dummySource, parseOptions),
                 CSharpSyntaxTree.ParseText(methodBuilderSource, parseOptions),
