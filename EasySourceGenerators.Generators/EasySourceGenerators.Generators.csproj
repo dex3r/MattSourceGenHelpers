@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
 
@@ -34,33 +33,33 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\" Link="README.md" />
+        <None Include="..\README.md" Pack="true" PackagePath="\" Link="README.md"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EasySourceGenerators.Abstractions\EasySourceGenerators.Abstractions.csproj" />
+        <ProjectReference Include="..\EasySourceGenerators.Abstractions\EasySourceGenerators.Abstractions.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <None Include="$(OutputPath)$(AssemblyName).dll"
               Pack="true"
               PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
+              Visible="false"/>
 
         <None Include="$(OutputPath)$(AssemblyName).pdb"
               Pack="true"
               PackagePath="analyzers/dotnet/cs"
               Visible="false"
-              Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" />
+              Condition="Exists('$(OutputPath)$(AssemblyName).pdb')"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="MethodBuilder.cs" LogicalName="$(RootNamespace).MethodBuilder.cs" />
-        <EmbeddedResource Include="RecordingGeneratorsFactory.cs" LogicalName="$(RootNamespace).RecordingGeneratorsFactory.cs" />
+        <EmbeddedResource Include="MethodBuilder.cs" LogicalName="$(RootNamespace).MethodBuilder.cs"/>
+        <EmbeddedResource Include="RecordingGeneratorsFactory.cs" LogicalName="$(RootNamespace).RecordingGeneratorsFactory.cs"/>
     </ItemGroup>
 
 </Project>
