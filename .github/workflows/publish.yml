@@ -54,16 +54,16 @@ jobs:
         run: dotnet restore EasySourceGenerators.sln
 
       - name: Build
-        run: dotnet build EasySourceGenerators.sln --no-restore --configuration Release
+        run: dotnet build EasySourceGenerators.sln --no-restore --configuration Release -p:ContinuousIntegrationBuild=true
 
       - name: Test
-        run: dotnet test EasySourceGenerators.sln --no-build --configuration Release --verbosity normal
+        run: dotnet test EasySourceGenerators.sln --no-build --configuration Release --verbosity normal -p:ContinuousIntegrationBuild=true
 
       - name: Pack Abstractions
-        run: dotnet pack EasySourceGenerators.Abstractions/EasySourceGenerators.Abstractions.csproj --no-build --configuration Release --output ./artifacts
+        run: dotnet pack EasySourceGenerators.Abstractions/EasySourceGenerators.Abstractions.csproj --no-build --configuration Release --output ./artifacts -p:ContinuousIntegrationBuild=true
 
       - name: Pack Generators
-        run: dotnet pack EasySourceGenerators.Generators/EasySourceGenerators.Generators.csproj --no-build --configuration Release --output ./artifacts
+        run: dotnet pack EasySourceGenerators.Generators/EasySourceGenerators.Generators.csproj --no-build --configuration Release --output ./artifacts -p:ContinuousIntegrationBuild=true
 
       - name: NuGet login
         uses: NuGet/login@v1
