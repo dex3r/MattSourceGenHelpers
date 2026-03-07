@@ -1,4 +1,8 @@
-﻿namespace EasySourceGenerators.GeneratorTests;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
+
+namespace EasySourceGenerators.GeneratorTests;
 
 public class SimpleMethodWithParameterTests
 {
@@ -22,6 +26,16 @@ public class SimpleMethodWithParameterTests
                         }
                         """;
 
-        //TODO: This should not compile and throw error MSGH007
+        ImmutableArray<Diagnostic> diagnostics = GeneratorTestHelper.GetGeneratorOnlyDiagnostics(source);
+
+        Diagnostic? msgh007 = diagnostics.FirstOrDefault(diagnostic => diagnostic.Id == "MSGH007");
+        Assert.That(msgh007, Is.Not.Null, "Expected MSGH007 for simple generator method with runtime parameter.");
+        Assert.That(msgh007!.Location.IsInSource, Is.True, "MSGH007 should point to generator source.");
+
+        TextSpan span = msgh007.Location.SourceSpan;
+        string highlightedCode = source.Substring(span.Start, span.Length);
+        Assert.That(highlightedCode, Does.Contain("SimpleMethodWithParameter_Generator(int someIntParameter)"));
+        Assert.That(highlightedCode, Does.Not.Contain("return 5;"),
+            "MSGH007 should highlight the generator method signature, not the method body.");
     }
 }
