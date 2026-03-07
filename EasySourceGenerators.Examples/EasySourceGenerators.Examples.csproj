@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
+        <!-- The Examples project only target one framework, to make it easier for IL preview in IDE to generate. -->
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
