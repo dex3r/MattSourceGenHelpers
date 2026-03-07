@@ -1,6 +1,10 @@
 # EasySourceGenerators
 
-[![CI](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml/badge.svg)](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/dex3r/EasySourceGenerators/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/EasySourceGenerators)
+[![NuGet](https://img.shields.io/nuget/v/EasySourceGenerators.Generators?logo=nuget)](https://www.nuget.org/packages/EasySourceGenerators.Generators/)
+[![MIT License](https://img.shields.io/github/license/dex3r/EasySourceGenerators)](https://github.com/dex3r/EasySourceGenerators/blob/main/LICENSE)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-dex3r%2FEasySourceGenerators-181717?logo=github)](https://github.com/dex3r/EasySourceGenerators)
+[![CI](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml/badge.svg)](https://github.com/dex3r/EasySourceGenerators/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/dex3r/EasySourceGenerators/branch/main/graph/badge.svg)](https://codecov.io/gh/dex3r/EasySourceGenerators)
 
 **Easy Source Generators** - Code generation made easy.
 
