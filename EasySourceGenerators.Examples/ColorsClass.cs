@@ -11,7 +11,7 @@ public partial class ColorsClass
 {
     public partial string GetAllColorsString();
 
-    [GeneratesMethod(nameof(GetAllColorsString))]
+    [MethodBodyGenerator(nameof(GetAllColorsString))]
     static string GetAllColorsString_Generator() =>
         string.Join(", ", Enum.GetNames<ColorsEnum>());
 }

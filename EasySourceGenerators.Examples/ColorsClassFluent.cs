@@ -6,7 +6,7 @@ public partial class ColorsClassFluent
 {
     public partial string GetAllColorsString();
 
-    [GeneratesMethod(nameof(GetAllColorsString))]
+    [MethodBodyGenerator(nameof(GetAllColorsString))]
     static IMethodImplementationGenerator GetAllColorsString_Generator() =>
         Generate
             .Method().WithReturnType<string>()

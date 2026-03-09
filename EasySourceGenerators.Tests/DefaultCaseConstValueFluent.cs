@@ -43,7 +43,7 @@ public static partial class DefaultCaseConstValueFluentClass
 {
     public static partial int Foo(int decimalNumber);
 
-    [GeneratesMethod(nameof(Foo))]
+    [MethodBodyGenerator(nameof(Foo))]
     static IMethodImplementationGenerator Foo_Generator_Default() =>
         Generate
             .Method().WithParameter<int>().WithReturnType<int>()

@@ -131,7 +131,7 @@ public static partial class TestMapperFluentEnum
 {
     public static partial TestMammalAnimal MapToMammal(TestFourLeggedAnimal fourLeggedAnimal);
 
-    [GeneratesMethod(nameof(MapToMammal))]
+    [MethodBodyGenerator(nameof(MapToMammal))]
     static IMethodImplementationGenerator MapToMammal_Generator() =>
         Generate
             .Method().WithParameter<TestFourLeggedAnimal>().WithReturnType<TestMammalAnimal>()
@@ -149,7 +149,7 @@ public static partial class TestPiFluentClass
 {
     public static partial int GetPiDecimal(int decimalNumber);
 
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     static IMethodImplementationGenerator GetPiDecimal_Generator() =>
         Generate
             .Method().WithParameter<int>().WithReturnType<int>()
@@ -162,7 +162,7 @@ public static partial class TestMapperFluent
 {
     public static partial string MapToMammal(int animalCode);
 
-    [GeneratesMethod(nameof(MapToMammal))]
+    [MethodBodyGenerator(nameof(MapToMammal))]
     static IMethodImplementationGenerator MapToMammal_Generator() =>
         Generate
             .Method().WithParameter<int>().WithReturnType<string>()

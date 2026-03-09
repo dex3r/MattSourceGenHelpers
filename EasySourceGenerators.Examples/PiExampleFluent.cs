@@ -7,7 +7,7 @@ public static partial class PiExampleFluent
 {
     public static partial int GetPiDecimal(int decimalNumber);
 
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     static IMethodImplementationGenerator GetPiDecimal_Generator_Specialized() =>
         Generate
             .Method().WithParameter<int>().WithReturnType<int>()

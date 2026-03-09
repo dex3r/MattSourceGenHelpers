@@ -7,14 +7,14 @@ public static partial class PiExample
 {
     public static partial int GetPiDecimal(int decimalNumber);
 
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     [SwitchCase(arg1: 0)]
     [SwitchCase(arg1: 1)]
     [SwitchCase(arg1: 2)]
     static int GetPiDecimal_Generator_Specialized(int decimalNumber) =>
         SlowMath.CalculatePiDecimal(decimalNumber);
     
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     [SwitchDefault]
     static Func<int, int> GetPiDecimal_Generator_Fallback() => decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber);
 }

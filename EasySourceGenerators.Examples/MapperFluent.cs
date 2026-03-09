@@ -16,7 +16,7 @@ public static partial class MapperFluent
 {
     public static partial Mammal MapToMammal(FourLegged fourLegged);
 
-    [GeneratesMethod(nameof(MapToMammal))]
+    [MethodBodyGenerator(nameof(MapToMammal))]
     static IMethodImplementationGenerator MapToAnimal_Generator() =>
         Generate
             .Method().WithParameter<FourLegged>().WithReturnType<Mammal>()

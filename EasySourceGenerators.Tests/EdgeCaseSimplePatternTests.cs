@@ -130,7 +130,7 @@ public partial class TestVoidClass
 {
     public partial void DoSomething();
 
-    [GeneratesMethod(nameof(DoSomething))]
+    [MethodBodyGenerator(nameof(DoSomething))]
     private static void DoSomething_Generator() { }
 }
 
@@ -138,7 +138,7 @@ public static partial class TestBoolReturnClass
 {
     public static partial bool IsEnabled();
 
-    [GeneratesMethod(nameof(IsEnabled))]
+    [MethodBodyGenerator(nameof(IsEnabled))]
     private static bool IsEnabled_Generator() => true;
 }
 
@@ -146,7 +146,7 @@ public static partial class TestCharReturnClass
 {
     public static partial char GetSymbol();
 
-    [GeneratesMethod(nameof(GetSymbol))]
+    [MethodBodyGenerator(nameof(GetSymbol))]
     private static char GetSymbol_Generator() => 'A';
 }
 
@@ -154,6 +154,6 @@ public partial class TestInternalMethodClass
 {
     internal partial string GetValue();
 
-    [GeneratesMethod(nameof(GetValue))]
+    [MethodBodyGenerator(nameof(GetValue))]
     private static string GetValue_Generator() => "internal_value";
 }

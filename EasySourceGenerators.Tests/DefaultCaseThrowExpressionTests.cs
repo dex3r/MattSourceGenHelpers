@@ -41,7 +41,7 @@ public static partial class DefaultCaseThrowExpressionClass
 {
     public static partial int Foo(int input);
 
-    [GeneratesMethod(nameof(Foo))]
+    [MethodBodyGenerator(nameof(Foo))]
     [SwitchDefault]
     private static Func<int, int> Foo_Generator_Default() => _ => throw new InvalidOperationException("Unsupported input");
 }

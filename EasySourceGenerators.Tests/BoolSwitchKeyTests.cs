@@ -53,12 +53,12 @@ public static partial class TestBoolSwitchClass
 {
     public static partial string GetBoolLabel(bool flag);
 
-    [GeneratesMethod(nameof(GetBoolLabel))]
+    [MethodBodyGenerator(nameof(GetBoolLabel))]
     [SwitchCase(arg1: true)]
     [SwitchCase(arg1: false)]
     static string GetBoolLabel_Generator(bool flag) => flag ? "Yes" : "No";
 
-    [GeneratesMethod(nameof(GetBoolLabel))]
+    [MethodBodyGenerator(nameof(GetBoolLabel))]
     [SwitchDefault]
     static Func<bool, string> GetBoolLabel_Default() => _ => "Unknown";
 }

@@ -60,7 +60,7 @@ internal static class GeneratesMethodGenerationTargetCollector
             for (int parameterIndex = 0; parameterIndex < constructorParameters.Length; parameterIndex++)
             {
                 IParameterSymbol constructorParameter = constructorParameters[parameterIndex];
-                if (constructorParameter.Name.Equals(nameof(GeneratesMethod.SameClassMethodName), StringComparison.OrdinalIgnoreCase))
+                if (constructorParameter.Name.Equals(nameof(MethodBodyGenerator.SameClassMethodName), StringComparison.OrdinalIgnoreCase))
                 {
                     targetMethodNameArgumentIndex = parameterIndex;
                     break;

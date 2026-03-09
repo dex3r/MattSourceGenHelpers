@@ -182,7 +182,7 @@ internal static class GeneratorTestHelper
             MetadataReference.CreateFromFile(Path.Combine(dotnetDir, "System.Linq.dll")),
             MetadataReference.CreateFromFile(Path.Combine(dotnetDir, "netstandard.dll")),
             // Abstractions assembly
-            MetadataReference.CreateFromFile(typeof(EasySourceGenerators.Abstractions.GeneratesMethod).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(EasySourceGenerators.Abstractions.MethodBodyGenerator).Assembly.Location),
         };
 
         // Add any other loaded assemblies that might be needed (e.g., System.Private.CoreLib)

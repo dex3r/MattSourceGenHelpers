@@ -33,7 +33,7 @@ public sealed class GeneratesMethodGenerator : IIncrementalGenerator
         
         return method.AttributeLists
             .SelectMany(attributeList => attributeList.Attributes)
-            .Any(attribute => attribute.Name.ToString() is nameof(GeneratesMethod));
+            .Any(attribute => attribute.Name.ToString() is nameof(MethodBodyGenerator));
     }
 
     private static MethodDeclarationSyntax? GetMethodDeclaration(GeneratorSyntaxContext context, CancellationToken _)

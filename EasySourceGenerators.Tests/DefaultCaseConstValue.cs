@@ -43,7 +43,7 @@ public static partial class DefaultCaseConstValueClass
 {
     public static partial int Foo(int decimalNumber);
 
-    [GeneratesMethod(nameof(Foo))]
+    [MethodBodyGenerator(nameof(Foo))]
     [SwitchDefault]
     static Func<int, int> Foo_Generator_Default() => decimalNumber => 777;
 }

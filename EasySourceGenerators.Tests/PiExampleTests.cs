@@ -55,14 +55,14 @@ public static partial class TestPiClass
 {
     public static partial int GetPiDecimal(int decimalNumber);
 
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     [SwitchCase(arg1: 0)]
     [SwitchCase(arg1: 1)]
     [SwitchCase(arg1: 2)]
     static int GetPiDecimal_Generator_Specialized(int decimalNumber) =>
         TestSlowMath.CalculatePiDecimal(decimalNumber);
 
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     [SwitchDefault]
     static Func<int, int> GetPiDecimal_Generator_Fallback() => decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber);
 }
