@@ -53,4 +53,12 @@ internal static class GeneratesMethodGeneratorDiagnostics
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
+    
+    internal static readonly DiagnosticDescriptor CannotUseRuntimeParameterForCompileTimeGeneratorError = new(
+        id: "MSGH007",
+        title: "Cannot use runtime parameter for compile-time generator",
+        messageFormat: "Method generators cannot have any parameters, as they will be run at compile time to generate the method output value. Use MethodTemplate if you want to emit method body instead of single value.",
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
 }

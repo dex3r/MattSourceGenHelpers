@@ -1,5 +1,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using System.Collections.Immutable;
 using static EasySourceGenerators.Generators.Consts;
 
@@ -71,6 +72,21 @@ internal static class GeneratesMethodGenerationPipeline
                 compilation);
         }
 
+        List<GeneratesMethodGenerationTarget> methodsWithParameters = methods
+            .Where(method => method.Symbol.Parameters.Length > 0)
+            .ToList();
+        if (methodsWithParameters.Count > 0)
+        {
+            foreach (GeneratesMethodGenerationTarget methodWithParameters in methodsWithParameters)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    GeneratesMethodGeneratorDiagnostics.CannotUseRuntimeParameterForCompileTimeGeneratorError,
+                    GetMethodSignatureLocation(methodWithParameters.Syntax)));
+            }
+
+            return string.Empty;
+        }
+
         return GenerateFromSimplePattern(context, firstMethod, compilation);
     }
 
@@ -104,5 +120,11 @@ internal static class GeneratesMethodGenerationPipeline
     {
         return methodSymbol.GetAttributes()
             .Any(attribute => attribute.AttributeClass?.ToDisplayString() == fullAttributeTypeName);
+    }
+
+    private static Location GetMethodSignatureLocation(MethodDeclarationSyntax methodSyntax)
+    {
+        TextSpan signatureSpan = TextSpan.FromBounds(methodSyntax.SpanStart, methodSyntax.ParameterList.Span.End);
+        return Location.Create(methodSyntax.SyntaxTree, signatureSpan);
     }
 }
