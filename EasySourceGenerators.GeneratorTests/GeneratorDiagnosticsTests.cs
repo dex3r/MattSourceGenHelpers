@@ -22,7 +22,7 @@ public class GeneratorDiagnosticsTests
             {
                 public partial string ExistingMethod();
 
-                [GeneratesMethod("NonExistingMethod")]
+                [MethodBodyGenerator("NonExistingMethod")]
                 private static string MyGenerator() => "hello";
             }
             """;
@@ -49,7 +49,7 @@ public class GeneratorDiagnosticsTests
             {
                 public partial string ExistingMethod();
 
-                [GeneratesMethod("")]
+                [MethodBodyGenerator("")]
                 private static string MyGenerator() => "hello";
             }
             """;
@@ -74,7 +74,7 @@ public class GeneratorDiagnosticsTests
             {
                 public partial string GetValue();
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 private string NonStaticGenerator() => "hello";
             }
             """;
@@ -103,7 +103,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetValue(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 [SwitchCase(arg1: 1)]
                 private static int GetValue_Generator(int key, string extraParam) => 42;
             }
@@ -131,7 +131,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetValue(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 [SwitchCase(arg1: 1)]
                 private static int GetValue_Generator(int key) => 42;
             }
@@ -155,7 +155,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetValue(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 [SwitchCase(arg1: 1)]
                 private static int GetValue_Generator() => 42;
             }
@@ -189,7 +189,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetValue(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 private static IMethodImplementationGenerator GetValue_Generator() =>
                     Generate.Method().WithParameter<int>().WithReturnType<int>();
             }
@@ -220,7 +220,7 @@ public class GeneratorDiagnosticsTests
 
                 public static partial string GetLabel(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 [SwitchCase(arg1: 1)]
                 private static int GetValue_Generator(int key)
                 {
@@ -260,7 +260,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetValue(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 [SwitchCase(arg1: "aaa")]
                 private static int GetValue_Generator(int key) => 42;
             }
@@ -288,7 +288,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetValue(int key);
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 [SwitchCase(arg1: 1)]
                 private static int GetValue_Generator(int key) => 42;
             }
@@ -318,7 +318,7 @@ public class GeneratorDiagnosticsTests
             {
                 public partial int GetValue();
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 private static string GetValue_Generator() => "hello";
             }
             """;
@@ -347,7 +347,7 @@ public class GeneratorDiagnosticsTests
             {
                 public partial string GetValue();
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 private static string GetValue_Generator() => "hello";
             }
             """;
@@ -370,7 +370,7 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial int GetPiDigit(int index);
 
-                [GeneratesMethod(nameof(GetPiDigit))]
+                [MethodBodyGenerator(nameof(GetPiDigit))]
                 [SwitchCase(arg1: 0)]
                 [SwitchCase(arg1: 1)]
                 private static int GetPiDigit_Generator(int index) => index == 0 ? 3 : 1;
@@ -402,7 +402,7 @@ public class GeneratorDiagnosticsTests
             {
                 public partial string GetValue();
 
-                [GeneratesMethod(nameof(GetValue))]
+                [MethodBodyGenerator(nameof(GetValue))]
                 static IMethodImplementationGenerator GetValue_Generator() =>
                     Generate.Method().WithReturnType<string>().UseBody(() => "hello");
             }
@@ -436,7 +436,7 @@ public class GeneratorDiagnosticsTests
             {
                 public string NonPartialMethod() => "hello";
 
-                [GeneratesMethod("NonPartialMethod")]
+                [MethodBodyGenerator("NonPartialMethod")]
                 private static string MyGenerator() => "world";
             }
             """;
@@ -467,12 +467,12 @@ public class GeneratorDiagnosticsTests
             {
                 public static partial string GetLabel(bool flag);
 
-                [GeneratesMethod(nameof(GetLabel))]
+                [MethodBodyGenerator(nameof(GetLabel))]
                 [SwitchCase(arg1: true)]
                 [SwitchCase(arg1: false)]
                 private static string GetLabel_Generator(bool flag) => flag ? "Yes" : "No";
 
-                [GeneratesMethod(nameof(GetLabel))]
+                [MethodBodyGenerator(nameof(GetLabel))]
                 [SwitchDefault]
                 private static Func<bool, string> GetLabel_Default() => _ => "Unknown";
             }

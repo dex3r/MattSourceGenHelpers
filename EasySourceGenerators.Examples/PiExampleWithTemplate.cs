@@ -6,16 +6,16 @@ public static partial class PiExampleWithTemplate
 {
     public static partial int GetPiDecimal(int decimalNumber);
 
-    [GeneratesMethod(nameof(GetPiDecimal))]
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
     [MethodTemplate]
     static int GetPiDecimal_Template(int decimalNumber)
     {
         switch (decimalNumber)
         {
-            case 0: return TemplateEngine.RunAtCompileTime(() => SlowMath.CalculatePiDecimal(0));
-            case 1: return TemplateEngine.RunAtCompileTime(() => SlowMath.CalculatePiDecimal(1));
-            case 2: return TemplateEngine.RunAtCompileTime(() => SlowMath.CalculatePiDecimal(2));
-            default: return CalculatePiDecimal(decimalNumber);
+            case 0: return Compiler.CalculateConstant(() => SlowMath.CalculatePiDecimal(0));
+            case 1: return Compiler.CalculateConstant(() => SlowMath.CalculatePiDecimal(1));
+            case 2: return Compiler.CalculateConstant(() => SlowMath.CalculatePiDecimal(2));
+            default: return SlowMath.CalculatePiDecimal(decimalNumber);
         }
     }
 }

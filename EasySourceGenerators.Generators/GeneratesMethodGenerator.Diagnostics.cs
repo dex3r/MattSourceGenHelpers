@@ -17,7 +17,7 @@ internal static class GeneratesMethodGeneratorDiagnostics
     internal static readonly DiagnosticDescriptor GeneratorMethodMustBeStaticError = new(
         id: "MSGH002",
         title: "Generator method must be static",
-        messageFormat: "Method '{0}' marked with [GeneratesMethod] must be static",
+        messageFormat: "Method '{0}' marked with [MethodBodyGenerator] must be static",
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
@@ -41,7 +41,7 @@ internal static class GeneratesMethodGeneratorDiagnostics
     internal static readonly DiagnosticDescriptor GeneratorMethodTooManyParametersError = new(
         id: "MSGH005",
         title: "Generator method has too many parameters",
-        messageFormat: "Method '{0}' marked with [GeneratesMethod] and [SwitchCase] has {1} parameter(s), but only methods with zero or one parameter are supported. Remove extra parameters or use the fluent API for more complex scenarios.",
+        messageFormat: "Method '{0}' marked with [MethodBodyGenerator] and [SwitchCase] has {1} parameter(s), but only methods with zero or one parameter are supported. Remove extra parameters or use the fluent API for more complex scenarios.",
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);

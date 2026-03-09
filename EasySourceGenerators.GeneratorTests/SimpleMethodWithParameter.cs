@@ -18,7 +18,7 @@ public class SimpleMethodWithParameterTests
                         {
                             public partial int SimpleMethodWithParameter(int someIntParameter);
 
-                            [GeneratesMethod(sameClassMethodName: nameof(SimpleMethodWithParameter))]
+                            [MethodBodyGenerator(sameClassMethodName: nameof(SimpleMethodWithParameter))]
                             private static int SimpleMethodWithParameter_Generator(int someIntParameter)
                             {
                                 return 5;

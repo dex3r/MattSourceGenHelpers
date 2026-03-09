@@ -16,7 +16,7 @@ public class GeneratesMethodGenerationTargetCollectorTests
 
             public partial class MyClass
             {
-                [GeneratesMethod("MissingPartial")]
+                [MethodBodyGenerator("MissingPartial")]
                 private string MyGenerator() => "hello";
             }
             """;
@@ -41,7 +41,7 @@ public class GeneratesMethodGenerationTargetCollectorTests
             {
                 public partial string ExistingMethod();
 
-                [GeneratesMethod("   ")]
+                [MethodBodyGenerator("   ")]
                 private static string MyGenerator() => "hello";
             }
             """;
