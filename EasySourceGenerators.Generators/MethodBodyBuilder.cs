@@ -2,6 +2,7 @@ using EasySourceGenerators.Abstractions;
 
 namespace EasySourceGenerators.Generators;
 
+//TODO: A lot of interfaces, like IMethodBodyGeneratorStage0, has been refactored or changed entirely. But the Examples remained the same. Fix the generators.
 public class MethodBodyBuilder(IMethodBodyGeneratorStage0 generatorsFactory) : IMethodBodyBuilder
 {
     public IMethodBodyBuilder<TArg1> WithParameter<TArg1>() => new MethodBodyBodyBuilder<TArg1>(generatorsFactory);

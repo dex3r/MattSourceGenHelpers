@@ -5,12 +5,10 @@ namespace EasySourceGenerators.Examples;
 
 public static partial class PiExampleFluent
 {
-    public static partial int GetPiDecimal(int decimalNumber);
-
-    [MethodBodyGenerator(nameof(GetPiDecimal))]
+    [MethodGenerator]
     static IMethodBodyGenerator GetPiDecimal_Generator() =>
-        Generate.MethodBody()
-            .ForMethod().WithReturnType<int>().WithParameter<int>()
+        Generate
+            .Method("GetPiDecimal").WithReturnType<int>().WithParameter<int>()
             .BodyWithSwitchStatement()
             .ForCases(0, 1, 2, 300, 301, 302, 303).ReturnConstantValue(decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber))
             .ForDefaultCase().UseProvidedBody(decimalNumber => SlowMath.CalculatePiDecimal(decimalNumber));

@@ -2,21 +2,19 @@
 
 namespace EasySourceGenerators.Examples;
 
-public partial class ColorsClassFluent
+public partial class ColorsClassFluentCreated
 {
-    public partial string GetAllColorsString();
-
-    [MethodBodyGenerator(nameof(GetAllColorsString))]
+    [MethodGenerator]
     static IMethodBodyGenerator GetAllColorsString_Generator() =>
-        Generate.MethodBody()
-            .ForMethod().WithReturnType<string>().WithNoParameters()
+        Generate
+            .Method("GetAllColorsStringGenerated").WithReturnType<string>().WithNoParameters()
             .BodyReturningConstant(() => string.Join(", ", Enum.GetNames<ColorsEnum>()));
 }
 
 /*
  This will generate the following method:
 
-    public string GetAllColorsString()
+    public string GetAllColorsStringGenerated()
     {
         return "Red, Green, Blue";
     }

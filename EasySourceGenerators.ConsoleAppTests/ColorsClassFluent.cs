@@ -9,8 +9,8 @@ public partial class ColorsClassFluent
     [MethodBodyGenerator(nameof(GetAllColorsString))]
     static IMethodBodyGenerator GetAllColorsString_Generator() =>
         Generate
-            .MethodBody().WithReturnType<string>()
-            .BodyReturningConstantValue(() => string.Join(", ", Enum.GetNames<ColorsEnum>()));
+            .MethodBody().ForMethod().WithReturnType<string>().WithNoParameters()
+            .BodyReturningConstant(() => string.Join(", ", Enum.GetNames<ColorsEnum>()));
 }
 
 /*

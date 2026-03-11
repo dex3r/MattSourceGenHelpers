@@ -2,24 +2,12 @@
 
 namespace EasySourceGenerators.Examples;
 
-public enum FourLegged
+public static partial class MapperFluentCreated
 {
-    Dog, Cat, Lizard
-}
-
-public enum Mammal
-{
-    Dog, Cat
-}
-
-public static partial class MapperFluent
-{
-    public static partial Mammal MapToMammal(FourLegged fourLegged);
-
-    [MethodBodyGenerator(nameof(MapToMammal))]
+    [MethodGenerator]
     static IMethodBodyGenerator MapToAnimal_Generator() =>
-        Generate.MethodBody()
-            .ForMethod().WithReturnType<Mammal>().WithParameter<FourLegged>()
+        Generate
+            .Method("MapToMammal").WithReturnType<Mammal>().WithParameter<FourLegged>()
             .BodyWithSwitchStatement()
             .ForCases(GetFourLeggedAnimalsThatHasMatchInMammalAnimal()).ReturnConstantValue(fourLegged => Enum.Parse<Mammal>(fourLegged.ToString(), true))
             .ForDefaultCase().UseProvidedBody(fourLegged => throw new ArgumentException($"Cannot map {fourLegged} to a Mammal"));

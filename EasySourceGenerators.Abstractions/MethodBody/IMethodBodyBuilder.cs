@@ -16,13 +16,13 @@ public interface IMethodBodyBuilderStage2
 public interface IMethodBodyBuilderStage3ReturnVoid
 {
     IMethodBodyBuilderStage4ReturnVoidNoArg WithNoParameters();
-    IMethodBodyBuilderStage4ReturnVoid<TParam1> WithOneParameter<TParam1>();
+    IMethodBodyBuilderStage4ReturnVoid<TParam1> WithParameter<TParam1>();
 }
 
 public interface IMethodBodyBuilderStage3<TReturnType>
 {
     IMethodBodyBuilderStage4NoArg<TReturnType> WithNoParameters();
-    IMethodBodyBuilderStage4<TParam1, TReturnType> WithOneParameter<TParam1>();
+    IMethodBodyBuilderStage4<TParam1, TReturnType> WithParameter<TParam1>();
 }
 
 public interface IMethodBodyBuilderStage4ReturnVoidNoArg
@@ -33,7 +33,7 @@ public interface IMethodBodyBuilderStage4ReturnVoidNoArg
 public interface IMethodBodyBuilderStage4NoArg<TReturnType>
 {
     IMethodBodyGenerator UseProvidedBody(Func<TReturnType> body);
-    IMethodBodyGenerator BodyRetuningConstant(Func<TReturnType> constantValueFactory);
+    IMethodBodyGenerator BodyReturningConstant(Func<TReturnType> constantValueFactory);
 }
 
 public interface IMethodBodyBuilderStage4ReturnVoid<TParam1>
