@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using EasySourceGenerators.Abstractions.Method;
+using JetBrains.Annotations;
 
 namespace EasySourceGenerators.Abstractions;
 

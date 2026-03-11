@@ -50,16 +50,22 @@ internal static class GeneratesMethodGenerationPipeline
         bool hasSwitchCase = methods.Any(method => HasAttribute(method.Symbol, SwitchCaseAttributeFullName));
         bool hasSwitchDefault = methods.Any(method => HasAttribute(method.Symbol, SwitchDefaultAttributeFullName));
         bool isFluentPattern = methods.Count == 1 && methods[0].Symbol.ReturnType.ToDisplayString() == IMethodImplementationGeneratorFullName;
+        bool isEntireMethodGeneration = firstMethod.PartialMethod is null;
 
         if (hasSwitchCase || hasSwitchDefault)
         {
             return GeneratesMethodPatternSourceBuilder.GenerateFromSwitchAttributes(
                 context,
                 methods,
-                firstMethod.PartialMethod,
+                firstMethod.PartialMethod!,
                 firstMethod.ContainingType,
                 allPartials,
                 compilation);
+        }
+
+        if (isFluentPattern && isEntireMethodGeneration)
+        {
+            return GenerateFromEntireMethodPattern(context, methods[0], compilation);
         }
 
         if (isFluentPattern)
@@ -67,7 +73,7 @@ internal static class GeneratesMethodGenerationPipeline
             return GeneratesMethodPatternSourceBuilder.GenerateFromFluent(
                 context,
                 methods[0],
-                firstMethod.PartialMethod,
+                firstMethod.PartialMethod!,
                 firstMethod.ContainingType,
                 compilation);
         }
@@ -97,7 +103,7 @@ internal static class GeneratesMethodGenerationPipeline
     {
         (string? returnValue, string? error) = GeneratesMethodExecutionRuntime.ExecuteSimpleGeneratorMethod(
             firstMethod.Symbol,
-            firstMethod.PartialMethod,
+            firstMethod.PartialMethod!,
             compilation);
 
         if (error != null)
@@ -112,8 +118,46 @@ internal static class GeneratesMethodGenerationPipeline
 
         return GeneratesMethodPatternSourceBuilder.GenerateSimplePartialMethod(
             firstMethod.ContainingType,
-            firstMethod.PartialMethod,
+            firstMethod.PartialMethod!,
             returnValue);
+    }
+
+    private static string GenerateFromEntireMethodPattern(
+        SourceProductionContext context,
+        GeneratesMethodGenerationTarget methodInfo,
+        Compilation compilation)
+    {
+        (MethodData? methodData, string? error) = GeneratesMethodExecutionRuntime.ExecuteEntireMethodGeneratorMethod(
+            methodInfo.Symbol,
+            compilation);
+
+        if (error != null)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                GeneratesMethodGeneratorDiagnostics.GeneratorMethodExecutionError,
+                methodInfo.Syntax.GetLocation(),
+                methodInfo.Symbol.Name,
+                error));
+            return string.Empty;
+        }
+
+        MethodData data = methodData!;
+
+        if (data.SwitchBody != null)
+        {
+            string? defaultExpression = data.SwitchBody.HasDefaultCase
+                ? GeneratesMethodPatternSourceBuilder.ExtractDefaultExpressionFromFluentMethod(methodInfo.Syntax)
+                : null;
+
+            return GeneratesMethodPatternSourceBuilder.GenerateEntireMethodWithSwitch(
+                methodInfo.ContainingType,
+                data,
+                defaultExpression);
+        }
+
+        return GeneratesMethodPatternSourceBuilder.GenerateEntireMethodSimple(
+            methodInfo.ContainingType,
+            data);
     }
 
     private static bool HasAttribute(IMethodSymbol methodSymbol, string fullAttributeTypeName)

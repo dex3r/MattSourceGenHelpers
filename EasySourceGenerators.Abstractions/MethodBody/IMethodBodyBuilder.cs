@@ -2,7 +2,7 @@
 
 // ReSharper disable TypeParameterCanBeVariant - not available for every overload, so not used for consistency
 
-public interface IMethodBodyBuilderStage1
+public interface IMethodBodyBuilderStage1 : IMethodBodyBuilder
 {
     IMethodBodyBuilderStage2 ForMethod();
 }

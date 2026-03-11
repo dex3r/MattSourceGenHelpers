@@ -19,4 +19,5 @@ public static class Consts
     public const string RecordingGeneratorsFactoryTypeFullName = $"{GeneratorsNamespace}.{nameof(RecordingGeneratorsFactory)}";
     public const string CurrentGeneratorPropertyName = nameof(Generate.CurrentGenerator);
     public const string LastRecordPropertyName = nameof(RecordingGeneratorsFactory.LastRecord);
+    public const string LastMethodRecordPropertyName = nameof(RecordingGeneratorsFactory.LastMethodRecord);
 }

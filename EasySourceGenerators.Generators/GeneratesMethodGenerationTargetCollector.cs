@@ -10,7 +10,7 @@ internal sealed record GeneratesMethodGenerationTarget(
     MethodDeclarationSyntax Syntax,
     IMethodSymbol Symbol,
     string TargetMethodName,
-    IMethodSymbol PartialMethod,
+    IMethodSymbol? PartialMethod,
     INamedTypeSymbol ContainingType);
 
 internal static class GeneratesMethodGenerationTargetCollector
@@ -83,7 +83,9 @@ internal static class GeneratesMethodGenerationTargetCollector
                 .OfType<IMethodSymbol>()
                 .FirstOrDefault(method => method.IsPartialDefinition);
 
-            if (partialMethodSymbol is null)
+            bool isFluentPattern = methodSymbol.ReturnType.ToDisplayString() == IMethodImplementationGeneratorFullName;
+
+            if (partialMethodSymbol is null && !isFluentPattern)
             {
                 Location? attributeLocation = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation();
                 
