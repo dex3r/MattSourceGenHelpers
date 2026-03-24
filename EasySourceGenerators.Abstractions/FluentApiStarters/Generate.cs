@@ -3,12 +3,13 @@ using JetBrains.Annotations;
 
 namespace EasySourceGenerators.Abstractions;
 
+[PublicAPI]
 public static class Generate
 {
     internal static IGeneratorsFactory CurrentGenerator
     {
-        get => field ?? throw new InvalidOperationException("Trying to run Easy Source Generator in runtime or in environment other than" +
-                                                            " Easy Source Generators internals. Or something went very wrong.");
+        get => field ?? throw new InvalidOperationException(
+            "Trying to run Easy Source Generator in runtime or in environment other than Easy Source Generators internals.");
         [UsedImplicitly(ImplicitUseKindFlags.Assign, Reason = "Used in Easy Source Generators internals")] set;
     }
 
