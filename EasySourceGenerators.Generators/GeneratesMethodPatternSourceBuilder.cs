@@ -175,7 +175,7 @@ internal static class GeneratesMethodPatternSourceBuilder
         return ExtractInnermostLambdaBody(bodyExpression);
     }
 
-    private static string? ExtractDefaultExpressionFromFluentMethod(MethodDeclarationSyntax method)
+    internal static string? ExtractDefaultExpressionFromFluentMethod(MethodDeclarationSyntax method)
     {
         IEnumerable<InvocationExpressionSyntax> invocations = method.DescendantNodes().OfType<InvocationExpressionSyntax>();
         foreach (InvocationExpressionSyntax invocation in invocations)

@@ -51,6 +51,10 @@ internal static class GeneratesMethodGenerationPipeline
         bool hasSwitchDefault = methods.Any(method => HasAttribute(method.Symbol, SwitchDefaultAttributeFullName));
         bool isFluentPattern = methods.Count == 1 && methods[0].Symbol.ReturnType.ToDisplayString() == IMethodImplementationGeneratorFullName;
 
+        // NOTE: Explicit [SwitchCase] attribute-based generation is commented out and will be
+        // replaced with a new approach in a future PR. The data abstraction layer will be
+        // extended to support the new pattern. For now, only fluent and simple patterns are
+        // supported through the data layer.
         if (hasSwitchCase || hasSwitchDefault)
         {
             return GeneratesMethodPatternSourceBuilder.GenerateFromSwitchAttributes(
@@ -64,12 +68,7 @@ internal static class GeneratesMethodGenerationPipeline
 
         if (isFluentPattern)
         {
-            return GeneratesMethodPatternSourceBuilder.GenerateFromFluent(
-                context,
-                methods[0],
-                firstMethod.PartialMethod,
-                firstMethod.ContainingType,
-                compilation);
+            return GenerateFromFluentPattern(context, methods[0], firstMethod, compilation);
         }
 
         List<GeneratesMethodGenerationTarget> methodsWithParameters = methods
@@ -88,6 +87,36 @@ internal static class GeneratesMethodGenerationPipeline
         }
 
         return GenerateFromSimplePattern(context, firstMethod, compilation);
+    }
+
+    private static string GenerateFromFluentPattern(
+        SourceProductionContext context,
+        GeneratesMethodGenerationTarget methodInfo,
+        GeneratesMethodGenerationTarget firstMethod,
+        Compilation compilation)
+    {
+        (SwitchBodyData? record, string? error) = GeneratesMethodExecutionRuntime.ExecuteFluentGeneratorMethod(
+            methodInfo.Symbol,
+            firstMethod.PartialMethod,
+            compilation);
+
+        if (error != null)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                GeneratesMethodGeneratorDiagnostics.GeneratorMethodExecutionError,
+                methodInfo.Syntax.GetLocation(),
+                methodInfo.Symbol.Name,
+                error));
+            return string.Empty;
+        }
+
+        SwitchBodyData switchBodyData = record!;
+        string? defaultExpression = switchBodyData.HasDefaultCase
+            ? GeneratesMethodPatternSourceBuilder.ExtractDefaultExpressionFromFluentMethod(methodInfo.Syntax)
+            : null;
+
+        DataSwitchBody data = DataGeneratorsFactory.CreateSwitchBodyFromFluentData(switchBodyData, defaultExpression);
+        return DataMethodBodyBuilders.BuildMethodSource(data, firstMethod.PartialMethod, firstMethod.ContainingType);
     }
 
     private static string GenerateFromSimplePattern(
@@ -110,10 +139,8 @@ internal static class GeneratesMethodGenerationPipeline
             return string.Empty;
         }
 
-        return GeneratesMethodPatternSourceBuilder.GenerateSimplePartialMethod(
-            firstMethod.ContainingType,
-            firstMethod.PartialMethod,
-            returnValue);
+        DataSimpleReturnBody data = DataGeneratorsFactory.CreateSimpleReturnBody(returnValue);
+        return DataMethodBodyBuilders.BuildMethodSource(data, firstMethod.PartialMethod, firstMethod.ContainingType);
     }
 
     private static bool HasAttribute(IMethodSymbol methodSymbol, string fullAttributeTypeName)
