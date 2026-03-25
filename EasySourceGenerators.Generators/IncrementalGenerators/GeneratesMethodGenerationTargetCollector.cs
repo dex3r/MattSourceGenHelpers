@@ -111,6 +111,18 @@ internal static class GeneratesMethodGenerationTargetCollector
                 continue;
             }
 
+            string generatorReturnType = methodSymbol.ReturnType.ToDisplayString();
+            string targetReturnType = partialMethodSymbol.ReturnType.ToDisplayString();
+
+            if (generatorReturnType != IMethodImplementationGeneratorFullName && generatorReturnType != targetReturnType)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    GeneratesMethodGeneratorDiagnostics.MethodBodyGeneratorInvalidReturnType,
+                    generatorMethod.ReturnType.GetLocation(),
+                    methodSymbol.Name));
+                continue;
+            }
+
             validMethods.Add(new GeneratesMethodGenerationTarget(
                 generatorMethod,
                 methodSymbol,
