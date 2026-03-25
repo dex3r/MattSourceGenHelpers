@@ -96,9 +96,10 @@ internal static class GeneratesMethodGenerationPipeline
     }
 
     /// <summary>
-    /// Generates source code from a fluent body pattern. First attempts to extract the delegate
-    /// body from a <c>UseProvidedBody</c> call in the syntax tree. If no such call is found,
-    /// falls back to executing the generator method and extracting the return value.
+    /// Generates source code from a fluent body pattern. Executes the generator method first
+    /// to obtain <see cref="FluentBodyResult"/>. If the result indicates a delegate body was
+    /// provided (via <see cref="FluentBodyResult.HasDelegateBody"/>), attempts to extract the
+    /// lambda body from the syntax tree. Otherwise, uses the runtime-evaluated return value.
     /// </summary>
     private static string GenerateFromFluentBodyPattern(
         SourceProductionContext context,
@@ -107,18 +108,6 @@ internal static class GeneratesMethodGenerationPipeline
         INamedTypeSymbol containingType,
         Compilation compilation)
     {
-        string? delegateBody = DelegateBodySyntaxExtractor.TryExtractDelegateBody(methodInfo.Syntax);
-        if (delegateBody != null)
-        {
-            bool isVoidReturn = partialMethod.ReturnType.SpecialType == SpecialType.System_Void;
-            string bodyLines = FormatDelegateBodyForEmit(delegateBody, isVoidReturn);
-
-            return GeneratesMethodPatternSourceBuilder.GeneratePartialMethodWithBody(
-                containingType,
-                partialMethod,
-                bodyLines);
-        }
-
         (FluentBodyResult? result, string? error) = GeneratesMethodExecutionRuntime.ExecuteFluentBodyGeneratorMethod(
             methodInfo.Symbol,
             partialMethod,
@@ -134,10 +123,25 @@ internal static class GeneratesMethodGenerationPipeline
             return string.Empty;
         }
 
+        if (result!.HasDelegateBody)
+        {
+            string? delegateBody = DelegateBodySyntaxExtractor.TryExtractDelegateBody(methodInfo.Syntax);
+            if (delegateBody != null)
+            {
+                bool isVoidReturn = partialMethod.ReturnType.SpecialType == SpecialType.System_Void;
+                string bodyLines = FormatDelegateBodyForEmit(delegateBody, isVoidReturn);
+
+                return GeneratesMethodPatternSourceBuilder.GeneratePartialMethodWithBody(
+                    containingType,
+                    partialMethod,
+                    bodyLines);
+            }
+        }
+
         return GeneratesMethodPatternSourceBuilder.GenerateSimplePartialMethod(
             containingType,
             partialMethod,
-            result!.ReturnValue);
+            result.ReturnValue);
     }
 
     /// <summary>

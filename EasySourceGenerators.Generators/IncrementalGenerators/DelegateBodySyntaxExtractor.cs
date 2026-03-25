@@ -6,8 +6,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace EasySourceGenerators.Generators.IncrementalGenerators;
 
 /// <summary>
-/// Extracts the delegate body source code from a <c>UseProvidedBody(...)</c> invocation
-/// within a generator method's syntax tree. The extracted body is re-indented to match
+/// Extracts the delegate body source code from the outermost invocation's lambda argument
+/// in a generator method's return expression. The extracted body is re-indented to match
 /// the target method body indentation (8 spaces).
 /// </summary>
 internal static class DelegateBodySyntaxExtractor
@@ -15,21 +15,16 @@ internal static class DelegateBodySyntaxExtractor
     private const string MethodBodyIndent = "        ";
 
     /// <summary>
-    /// Attempts to find a <c>UseProvidedBody(...)</c> call in the given generator method syntax
-    /// and extract the lambda body. Returns <c>null</c> if no such call is found.
-    /// For expression lambdas, returns a single <c>return {expr};</c> line.
+    /// Attempts to find the lambda argument of the outermost invocation in the generator
+    /// method's return expression and extract the lambda body. Returns <c>null</c> if no
+    /// such lambda is found.
+    /// For expression lambdas, returns the expression text.
     /// For block lambdas, returns the block body re-indented to the method body level.
     /// </summary>
     internal static string? TryExtractDelegateBody(MethodDeclarationSyntax generatorMethodSyntax)
     {
-        InvocationExpressionSyntax? invocation = generatorMethodSyntax
-            .DescendantNodes()
-            .OfType<InvocationExpressionSyntax>()
-            .FirstOrDefault(inv =>
-                inv.Expression is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Name.Identifier.Text == "UseProvidedBody");
-
-        if (invocation == null)
+        ExpressionSyntax? returnExpression = GetReturnExpression(generatorMethodSyntax);
+        if (returnExpression is not InvocationExpressionSyntax invocation)
         {
             return null;
         }
@@ -49,6 +44,28 @@ internal static class DelegateBodySyntaxExtractor
         if (lambda.Body is BlockSyntax block)
         {
             return ExtractBlockBody(block);
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the return expression from a generator method. Handles both expression-body
+    /// methods (<c>=&gt; expr</c>) and block-body methods (<c>{ return expr; }</c>).
+    /// </summary>
+    private static ExpressionSyntax? GetReturnExpression(MethodDeclarationSyntax method)
+    {
+        if (method.ExpressionBody != null)
+        {
+            return method.ExpressionBody.Expression;
+        }
+
+        if (method.Body != null)
+        {
+            ReturnStatementSyntax? returnStatement = method.Body.Statements
+                .OfType<ReturnStatementSyntax>()
+                .FirstOrDefault();
+            return returnStatement?.Expression;
         }
 
         return null;

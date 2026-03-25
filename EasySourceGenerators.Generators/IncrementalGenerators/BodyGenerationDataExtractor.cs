@@ -15,6 +15,8 @@ internal static class BodyGenerationDataExtractor
     /// Checks for <c>ReturnConstantValueFactory</c> first, then <c>RuntimeDelegateBody</c>.
     /// Returns a <see cref="FluentBodyResult"/> with the extracted value, or <c>null</c> return value
     /// if neither factory nor body are present.
+    /// Sets <see cref="FluentBodyResult.HasDelegateBody"/> when <c>RuntimeDelegateBody</c> is present,
+    /// indicating that the delegate body source code should be extracted from the syntax tree.
     /// </summary>
     internal static FluentBodyResult Extract(object methodResult, bool isVoidReturnType)
     {
@@ -26,13 +28,13 @@ internal static class BodyGenerationDataExtractor
         {
             // The method returned something that isn't a DataMethodBodyGenerator.
             // This may happen when the fluent chain is incomplete (e.g., user returned an intermediate builder).
-            return new FluentBodyResult(null, isVoidReturnType);
+            return new FluentBodyResult(null, isVoidReturnType, HasDelegateBody: false);
         }
 
         object? bodyGenerationData = dataProperty.GetValue(methodResult);
         if (bodyGenerationData == null)
         {
-            return new FluentBodyResult(null, isVoidReturnType);
+            return new FluentBodyResult(null, isVoidReturnType, HasDelegateBody: false);
         }
 
         Type dataType = bodyGenerationData.GetType();
@@ -40,9 +42,21 @@ internal static class BodyGenerationDataExtractor
         Type? dataReturnType = returnTypeProperty?.GetValue(bodyGenerationData) as Type;
         bool isVoid = dataReturnType == typeof(void);
 
+        bool hasDelegateBody = HasRuntimeDelegateBody(dataType, bodyGenerationData);
+
         return TryExtractFromConstantFactory(dataType, bodyGenerationData, isVoid)
-               ?? TryExtractFromRuntimeBody(dataType, bodyGenerationData, isVoid)
-               ?? new FluentBodyResult(null, isVoid);
+               ?? TryExtractFromRuntimeBody(dataType, bodyGenerationData, isVoid, hasDelegateBody)
+               ?? new FluentBodyResult(null, isVoid, hasDelegateBody);
+    }
+
+    /// <summary>
+    /// Checks whether <c>RuntimeDelegateBody</c> is set (non-null) in the body generation data.
+    /// </summary>
+    private static bool HasRuntimeDelegateBody(Type dataType, object bodyGenerationData)
+    {
+        PropertyInfo? runtimeBodyProperty = dataType.GetProperty("RuntimeDelegateBody");
+        Delegate? runtimeBody = runtimeBodyProperty?.GetValue(bodyGenerationData) as Delegate;
+        return runtimeBody != null;
     }
 
     /// <summary>
@@ -61,7 +75,7 @@ internal static class BodyGenerationDataExtractor
         }
 
         object? constantValue = constantFactory.DynamicInvoke();
-        return new FluentBodyResult(constantValue?.ToString(), isVoid);
+        return new FluentBodyResult(constantValue?.ToString(), isVoid, HasDelegateBody: false);
     }
 
     /// <summary>
@@ -72,7 +86,8 @@ internal static class BodyGenerationDataExtractor
     private static FluentBodyResult? TryExtractFromRuntimeBody(
         Type dataType,
         object bodyGenerationData,
-        bool isVoid)
+        bool isVoid,
+        bool hasDelegateBody)
     {
         PropertyInfo? runtimeBodyProperty = dataType.GetProperty("RuntimeDelegateBody");
         Delegate? runtimeBody = runtimeBodyProperty?.GetValue(bodyGenerationData) as Delegate;
@@ -85,10 +100,10 @@ internal static class BodyGenerationDataExtractor
         if (bodyParams.Length == 0)
         {
             object? bodyResult = runtimeBody.DynamicInvoke();
-            return new FluentBodyResult(bodyResult?.ToString(), isVoid);
+            return new FluentBodyResult(bodyResult?.ToString(), isVoid, hasDelegateBody);
         }
 
         // For delegates with parameters, we can't invoke at compile time without values
-        return new FluentBodyResult(null, isVoid);
+        return new FluentBodyResult(null, isVoid, hasDelegateBody);
     }
 }

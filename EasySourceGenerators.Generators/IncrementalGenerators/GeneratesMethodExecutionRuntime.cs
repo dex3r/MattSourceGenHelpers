@@ -14,10 +14,13 @@ internal sealed record SwitchBodyData(
 
 /// <summary>
 /// Result extracted from <see cref="DataBuilding.BodyGenerationData"/> after executing a fluent body generator method.
+/// <see cref="HasDelegateBody"/> indicates that the generator used <c>UseProvidedBody</c>,
+/// signaling that the delegate body source code should be extracted from the syntax tree.
 /// </summary>
 internal sealed record FluentBodyResult(
     string? ReturnValue,
-    bool IsVoid);
+    bool IsVoid,
+    bool HasDelegateBody);
 
 /// <summary>
 /// Orchestrates the execution of generator methods at compile time.
