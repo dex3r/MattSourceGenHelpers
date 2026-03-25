@@ -9,6 +9,9 @@ namespace EasySourceGenerators.Generators;
 
 internal static class GeneratesMethodPatternSourceBuilder
 {
+    // SwitchCase attribute-based and fluent switch generation are commented out pending replacement
+    // with a data-driven approach. See DataMethodBodyBuilders.cs for details.
+    /*
     internal static string GenerateFromSwitchAttributes(
         SourceProductionContext context,
         List<GeneratesMethodGenerationTarget> methods,
@@ -143,6 +146,7 @@ internal static class GeneratesMethodPatternSourceBuilder
 
         return GenerateSwitchMethodSource(containingType, partialMethod, switchBodyData.CasePairs, defaultExpression);
     }
+    */
 
     internal static string GenerateSimplePartialMethod(
         INamedTypeSymbol containingType,
@@ -163,6 +167,8 @@ internal static class GeneratesMethodPatternSourceBuilder
         return builder.ToString();
     }
 
+    // Switch-related helper methods are commented out pending replacement with data-driven approach
+    /*
     private static string? ExtractDefaultExpressionFromSwitchDefaultMethod(MethodDeclarationSyntax method)
     {
         ExpressionSyntax? bodyExpression = method.ExpressionBody?.Expression;
@@ -258,6 +264,23 @@ internal static class GeneratesMethodPatternSourceBuilder
         builder.AppendLine("}");
         return builder.ToString();
     }
+
+    private static string FormatKeyAsCSharpLiteral(object key, ITypeSymbol? parameterType)
+    {
+        if (parameterType?.TypeKind == TypeKind.Enum)
+        {
+            return $"{parameterType.ToDisplayString()}.{key}";
+        }
+
+        return key switch
+        {
+            bool b => b ? "true" : "false",
+            // SyntaxFactory.Literal handles escaping and quoting (e.g. "hello" → "\"hello\"")
+            string s => SyntaxFactory.Literal(s).Text,
+            _ => key.ToString()!
+        };
+    }
+    */
 
     private static void AppendNamespaceAndTypeHeader(StringBuilder builder, INamedTypeSymbol containingType, IMethodSymbol partialMethod)
     {

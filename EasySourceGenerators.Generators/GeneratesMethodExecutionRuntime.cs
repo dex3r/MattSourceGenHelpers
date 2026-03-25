@@ -31,15 +31,8 @@ internal static class GeneratesMethodExecutionRuntime
         return ExecuteGeneratorMethodWithArgs(generatorMethod, allPartials, compilation, null);
     }
 
-    internal static (SwitchBodyData? record, string? error) ExecuteFluentGeneratorMethod(
-        IMethodSymbol generatorMethod,
-        IMethodSymbol partialMethod,
-        Compilation compilation)
-    {
-        // Kept for backward compatibility but no longer the primary path.
-        // SwitchCase-based fluent generation is being replaced by the data abstraction layer.
-        return (null, "SwitchCase-based fluent generation has been replaced by the data abstraction layer. Use ExecuteFluentBodyGeneratorMethod instead.");
-    }
+    // SwitchBodyData-based fluent execution has been replaced by the data abstraction layer.
+    // Use ExecuteFluentBodyGeneratorMethod instead.
 
     internal static (FluentBodyResult? result, string? error) ExecuteFluentBodyGeneratorMethod(
         IMethodSymbol generatorMethod,
@@ -301,8 +294,9 @@ internal static class GeneratesMethodExecutionRuntime
         PropertyInfo? dataProperty = resultType.GetProperty(Consts.BodyGenerationDataPropertyName);
         if (dataProperty == null)
         {
-            // The method returned something that isn't a DataMethodBodyGenerator - treat it as a simple return
-            return new FluentBodyResult(methodResult.ToString(), returnType.SpecialType == SpecialType.System_Void);
+            // The method returned something that isn't a DataMethodBodyGenerator.
+            // This may happen when the fluent chain is incomplete (e.g., user returned an intermediate builder).
+            return new FluentBodyResult(null, returnType.SpecialType == SpecialType.System_Void);
         }
 
         object? bodyGenerationData = dataProperty.GetValue(methodResult);
