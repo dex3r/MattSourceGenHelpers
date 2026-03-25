@@ -1,3 +1,7 @@
+// SwitchDefault attribute-based generation is commented out pending replacement with a data-driven approach.
+// See DataMethodBodyBuilders.cs for details on the planned replacement.
+
+/*
 using System;
 using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
@@ -45,3 +49,4 @@ public static partial class DefaultCaseThrowExpressionClass
     [SwitchDefault]
     private static Func<int, int> Foo_Generator_Default() => _ => throw new InvalidOperationException("Unsupported input");
 }
+*/

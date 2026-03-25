@@ -60,8 +60,9 @@
     </Target>
 
     <ItemGroup>
-        <EmbeddedResource Include="MethodBodyBuilder.cs" LogicalName="$(RootNamespace).MethodBuilder.cs" />
-        <EmbeddedResource Include="RecordingGeneratorsFactory.cs" LogicalName="$(RootNamespace).RecordingGeneratorsFactory.cs"/>
+        <EmbeddedResource Include="DataBuilding/DataGeneratorsFactory.cs" LogicalName="$(RootNamespace).DataGeneratorsFactory.cs"/>
+        <EmbeddedResource Include="DataBuilding/DataMethodBodyBuilders.cs" LogicalName="$(RootNamespace).DataMethodBodyBuilders.cs"/>
+        <EmbeddedResource Include="DataBuilding/DataRecords.cs" LogicalName="$(RootNamespace).DataRecords.cs"/>
     </ItemGroup>
 
 </Project>

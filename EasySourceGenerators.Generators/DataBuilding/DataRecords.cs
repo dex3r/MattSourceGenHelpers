@@ -1,4 +1,6 @@
-﻿namespace EasySourceGenerators.Generators.DataBuilding;
+﻿using System;
+
+namespace EasySourceGenerators.Generators.DataBuilding;
 
 public record BodyGenerationData(
     Type? ReturnType = null,

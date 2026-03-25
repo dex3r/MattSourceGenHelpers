@@ -1,77 +1,192 @@
 using EasySourceGenerators.Abstractions;
-using EasySourceGenerators.Generators;
+using EasySourceGenerators.Generators.DataBuilding;
 
 namespace EasySourceGenerators.GeneratorTests;
 
 [TestFixture]
-public class MethodBodyBodyBuilderTests
+public class DataMethodBodyBuilderTests
 {
     [Test]
-    public void WithParameter_ReturnsGenericMethodBuilder()
+    public void ForMethod_ReturnsStage2()
     {
-        TrackingGeneratorsFactory factory = new TrackingGeneratorsFactory();
-        MethodBodyBuilder bodyBuilder = new MethodBodyBuilder(factory);
+        DataMethodBodyBuilderStage1 stage1 = new DataMethodBodyBuilderStage1(new BodyGenerationData());
 
-        IMethodBodyBuilder<int> result = bodyBuilder.WithParameter<int>();
-        IMethodBodyGenerator<int, string> implementation = result.WithReturnType<string>();
+        IMethodBodyBuilderStage2 result = stage1.ForMethod();
 
-        Assert.That(result, Is.TypeOf<MethodBodyBodyBuilder<int>>());
-        Assert.That(implementation, Is.TypeOf<TrackingArgImplementationGenerator<int, string>>());
-        Assert.That(factory.ArgCreateImplementationCalls, Is.EqualTo(1));
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage2>());
     }
 
     [Test]
-    public void WithReturnType_OnNonGenericBuilder_UsesFactoryCreateImplementation()
+    public void WithReturnType_ReturnsStage3()
     {
-        TrackingGeneratorsFactory factory = new TrackingGeneratorsFactory();
-        MethodBodyBuilder bodyBuilder = new MethodBodyBuilder(factory);
+        DataMethodBodyBuilderStage2 stage2 = new DataMethodBodyBuilderStage2(new BodyGenerationData());
 
-        IMethodBodyGenerator<string> result = bodyBuilder.WithReturnType<string>();
+        IMethodBodyBuilderStage3<string> result = stage2.WithReturnType<string>();
 
-        Assert.That(result, Is.TypeOf<TrackingTypedImplementationGenerator<string>>());
-        Assert.That(factory.TypedCreateImplementationCalls, Is.EqualTo(1));
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage3<string>>());
+        Assert.That(((DataMethodBodyBuilderStage3<string>)result).Data.ReturnType, Is.EqualTo(typeof(string)));
     }
 
     [Test]
-    public void WithReturnType_OnGenericBuilder_UsesFactoryCreateImplementationWithArg()
+    public void WithVoidReturnType_ReturnsStage3ReturnVoid()
     {
-        TrackingGeneratorsFactory factory = new TrackingGeneratorsFactory();
-        MethodBodyBodyBuilder<int> bodyBuilder = new MethodBodyBodyBuilder<int>(factory);
+        DataMethodBodyBuilderStage2 stage2 = new DataMethodBodyBuilderStage2(new BodyGenerationData());
 
-        IMethodBodyGenerator<int, string> result = bodyBuilder.WithReturnType<string>();
+        IMethodBodyBuilderStage3ReturnVoid result = stage2.WithVoidReturnType();
 
-        Assert.That(result, Is.TypeOf<TrackingArgImplementationGenerator<int, string>>());
-        Assert.That(factory.ArgCreateImplementationCalls, Is.EqualTo(1));
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage3ReturnVoid>());
+        Assert.That(((DataMethodBodyBuilderStage3ReturnVoid)result).Data.ReturnType, Is.EqualTo(typeof(void)));
     }
 
-    private sealed class TrackingGeneratorsFactory : IMethodBodyGeneratorStage0
+    [Test]
+    public void WithNoParameters_ReturnsStage4NoArg()
     {
-        public int TypedCreateImplementationCalls { get; private set; }
-        public int ArgCreateImplementationCalls { get; private set; }
+        DataMethodBodyBuilderStage3<int> stage3 = new DataMethodBodyBuilderStage3<int>(new BodyGenerationData(ReturnType: typeof(int)));
 
-        public IMethodBodyBuilder ForMethod() => new MethodBodyBuilder(this);
+        IMethodBodyBuilderStage4NoArg<int> result = stage3.WithNoParameters();
 
-        public IMethodBodyGenerator<TReturnType> CreateImplementation<TReturnType>()
-        {
-            TypedCreateImplementationCalls++;
-            return new TrackingTypedImplementationGenerator<TReturnType>();
-        }
-
-        public IMethodBodyGenerator<TArg1, TReturnType> CreateImplementation<TArg1, TReturnType>()
-        {
-            ArgCreateImplementationCalls++;
-            return new TrackingArgImplementationGenerator<TArg1, TReturnType>();
-        }
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage4NoArg<int>>());
+        DataMethodBodyBuilderStage4NoArg<int> stage4 = (DataMethodBodyBuilderStage4NoArg<int>)result;
+        Assert.That(stage4.Data.ParametersTypes, Is.Empty);
+        Assert.That(stage4.Data.ReturnType, Is.EqualTo(typeof(int)));
     }
 
-    private sealed class TrackingTypedImplementationGenerator<TReturnType> : IMethodBodyGenerator<TReturnType>
+    [Test]
+    public void WithParameter_ReturnsStage4()
     {
-        public IMethodBodyGeneratorWithNoParameter BodyReturningConstantValue(Func<object> body) => this;
+        DataMethodBodyBuilderStage3<int> stage3 = new DataMethodBodyBuilderStage3<int>(new BodyGenerationData(ReturnType: typeof(int)));
+
+        IMethodBodyBuilderStage4<string, int> result = stage3.WithParameter<string>();
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage4<string, int>>());
+        DataMethodBodyBuilderStage4<string, int> stage4 = (DataMethodBodyBuilderStage4<string, int>)result;
+        Assert.That(stage4.Data.ParametersTypes, Is.EqualTo(new[] { typeof(string) }));
     }
 
-    private sealed class TrackingArgImplementationGenerator<TArg1, TReturnType> : IMethodBodyGenerator<TArg1, TReturnType>
+    [Test]
+    public void BodyReturningConstant_SetsReturnConstantValueFactory()
     {
-        public IMethodBodyGeneratorSwitchBody<TArg1, TReturnType> GenerateSwitchBody() =>
-            new MockMethodImplementationGeneratorSwitchBody<TArg1, TReturnType>();
+        DataMethodBodyBuilderStage4NoArg<int> stage4 = new DataMethodBodyBuilderStage4NoArg<int>(
+            new BodyGenerationData(ReturnType: typeof(int), ParametersTypes: []));
+
+        IMethodBodyGenerator result = stage4.BodyReturningConstant(() => 42);
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Not.Null);
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Null);
+    }
+
+    [Test]
+    public void UseProvidedBody_NoArg_SetsRuntimeDelegateBody()
+    {
+        DataMethodBodyBuilderStage4NoArg<string> stage4 = new DataMethodBodyBuilderStage4NoArg<string>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: []));
+
+        IMethodBodyGenerator result = stage4.UseProvidedBody(() => "hello");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Null);
+    }
+
+    [Test]
+    public void UseProvidedBody_WithArg_SetsRuntimeDelegateBody()
+    {
+        DataMethodBodyBuilderStage4<int, string> stage4 = new DataMethodBodyBuilderStage4<int, string>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [typeof(int)]));
+
+        IMethodBodyGenerator result = stage4.UseProvidedBody(x => x.ToString());
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+    }
+
+    [Test]
+    public void BodyReturningConstant_WithArg_SetsReturnConstantValueFactory()
+    {
+        DataMethodBodyBuilderStage4<int, string> stage4 = new DataMethodBodyBuilderStage4<int, string>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [typeof(int)]));
+
+        IMethodBodyGenerator result = stage4.BodyReturningConstant(() => "constant");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Not.Null);
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Null);
+    }
+
+    [Test]
+    public void VoidReturnType_WithNoParameters_UseProvidedBody_SetsCorrectData()
+    {
+        DataMethodBodyBuilderStage3ReturnVoid stage3 = new DataMethodBodyBuilderStage3ReturnVoid(
+            new BodyGenerationData(ReturnType: typeof(void)));
+
+        IMethodBodyBuilderStage4ReturnVoidNoArg stage4 = stage3.WithNoParameters();
+        IMethodBodyGenerator result = stage4.UseProvidedBody(() => { });
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnType, Is.EqualTo(typeof(void)));
+        Assert.That(generator.Data.ParametersTypes, Is.Empty);
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+    }
+
+    [Test]
+    public void VoidReturnType_WithParameter_UseProvidedBody_SetsCorrectData()
+    {
+        DataMethodBodyBuilderStage3ReturnVoid stage3 = new DataMethodBodyBuilderStage3ReturnVoid(
+            new BodyGenerationData(ReturnType: typeof(void)));
+
+        IMethodBodyBuilderStage4ReturnVoid<int> stage4 = stage3.WithParameter<int>();
+        IMethodBodyGenerator result = stage4.UseProvidedBody(_ => { });
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnType, Is.EqualTo(typeof(void)));
+        Assert.That(generator.Data.ParametersTypes, Is.EqualTo(new[] { typeof(int) }));
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+    }
+
+    [Test]
+    public void FullFluentChain_BodyReturningConstant_ProducesCorrectData()
+    {
+        DataGeneratorsFactory factory = new DataGeneratorsFactory();
+
+        IMethodBodyGenerator result = factory.StartFluentApiBuilderForBody()
+            .ForMethod()
+            .WithReturnType<string>()
+            .WithNoParameters()
+            .BodyReturningConstant(() => "hello world");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnType, Is.EqualTo(typeof(string)));
+        Assert.That(generator.Data.ParametersTypes, Is.Empty);
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Not.Null);
+        object? constantValue = generator.Data.ReturnConstantValueFactory!.DynamicInvoke();
+        Assert.That(constantValue, Is.EqualTo("hello world"));
+    }
+
+    [Test]
+    public void FullFluentChain_UseProvidedBody_ProducesCorrectData()
+    {
+        DataGeneratorsFactory factory = new DataGeneratorsFactory();
+
+        IMethodBodyGenerator result = factory.StartFluentApiBuilderForBody()
+            .ForMethod()
+            .WithReturnType<int>()
+            .WithNoParameters()
+            .UseProvidedBody(() => 42);
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnType, Is.EqualTo(typeof(int)));
+        Assert.That(generator.Data.ParametersTypes, Is.Empty);
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+        object? bodyValue = generator.Data.RuntimeDelegateBody!.DynamicInvoke();
+        Assert.That(bodyValue, Is.EqualTo(42));
     }
 }

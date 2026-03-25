@@ -1,3 +1,7 @@
+// SwitchCase/SwitchDefault attribute-based generation is commented out pending replacement with a data-driven approach.
+// See DataMethodBodyBuilders.cs for details on the planned replacement.
+
+/*
 using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
@@ -62,3 +66,4 @@ public static partial class TestBoolSwitchClass
     [SwitchDefault]
     static Func<bool, string> GetBoolLabel_Default() => _ => "Unknown";
 }
+*/

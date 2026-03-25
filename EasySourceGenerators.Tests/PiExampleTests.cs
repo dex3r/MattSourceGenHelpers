@@ -1,3 +1,7 @@
+// SwitchCase/SwitchDefault attribute-based generation is commented out pending replacement with a data-driven approach.
+// See DataMethodBodyBuilders.cs for details on the planned replacement.
+
+/*
 using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
@@ -66,3 +70,4 @@ public static partial class TestPiClass
     [SwitchDefault]
     static Func<int, int> GetPiDecimal_Generator_Fallback() => decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber);
 }
+*/

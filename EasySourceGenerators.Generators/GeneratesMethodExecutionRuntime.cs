@@ -2,7 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
-using System.Collections;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
@@ -13,6 +12,13 @@ namespace EasySourceGenerators.Generators;
 internal sealed record SwitchBodyData(
     IReadOnlyList<(object key, string value)> CasePairs,
     bool HasDefaultCase);
+
+/// <summary>
+/// Result extracted from <see cref="DataBuilding.BodyGenerationData"/> after executing a fluent body generator method.
+/// </summary>
+internal sealed record FluentBodyResult(
+    string? ReturnValue,
+    bool IsVoid);
 
 internal static class GeneratesMethodExecutionRuntime
 {
@@ -26,6 +32,16 @@ internal static class GeneratesMethodExecutionRuntime
     }
 
     internal static (SwitchBodyData? record, string? error) ExecuteFluentGeneratorMethod(
+        IMethodSymbol generatorMethod,
+        IMethodSymbol partialMethod,
+        Compilation compilation)
+    {
+        // Kept for backward compatibility but no longer the primary path.
+        // SwitchCase-based fluent generation is being replaced by the data abstraction layer.
+        return (null, "SwitchCase-based fluent generation has been replaced by the data abstraction layer. Use ExecuteFluentBodyGeneratorMethod instead.");
+    }
+
+    internal static (FluentBodyResult? result, string? error) ExecuteFluentBodyGeneratorMethod(
         IMethodSymbol generatorMethod,
         IMethodSymbol partialMethod,
         Compilation compilation)
@@ -113,8 +129,6 @@ internal static class GeneratesMethodExecutionRuntime
             }
             else if (csharpCompilationReference.Length > 0)
             {
-                // Handle CompilationReference case (e.g., Rider's code inspector provides in-memory compilations).
-                // The Resolving handler above should have already loaded the abstractions from the pre-emitted bytes.
                 if (capturedAbstractionsAssembly != null)
                 {
                     abstractionsAssembly = capturedAbstractionsAssembly;
@@ -135,15 +149,15 @@ internal static class GeneratesMethodExecutionRuntime
             }
             
             Type? generatorStaticType = abstractionsAssembly.GetType(Consts.GenerateTypeFullName);
-            Type? recordingFactoryType = assembly.GetType(Consts.RecordingGeneratorsFactoryTypeFullName);
-            if (generatorStaticType == null || recordingFactoryType == null)
+            Type? dataGeneratorsFactoryType = assembly.GetType(Consts.DataGeneratorsFactoryTypeFullName);
+            if (generatorStaticType == null || dataGeneratorsFactoryType == null)
             {
-                return (null, $"Could not find {Consts.GenerateTypeFullName} or {Consts.RecordingGeneratorsFactoryTypeFullName} types in compiled assembly");
+                return (null, $"Could not find {Consts.GenerateTypeFullName} or {Consts.DataGeneratorsFactoryTypeFullName} types in compiled assembly");
             }
 
-            object? recordingFactory = Activator.CreateInstance(recordingFactoryType);
+            object? dataGeneratorsFactory = Activator.CreateInstance(dataGeneratorsFactoryType);
             PropertyInfo? currentGeneratorProperty = generatorStaticType.GetProperty(Consts.CurrentGeneratorPropertyName, BindingFlags.NonPublic | BindingFlags.Static);
-            currentGeneratorProperty?.SetValue(null, recordingFactory);
+            currentGeneratorProperty?.SetValue(null, dataGeneratorsFactory);
 
             string typeName = generatorMethod.ContainingType.ToDisplayString();
             Type? loadedType = assembly.GetType(typeName);
@@ -158,16 +172,13 @@ internal static class GeneratesMethodExecutionRuntime
                 return (null, $"Could not find method '{generatorMethod.Name}' in type '{typeName}'");
             }
 
-            generatorMethodInfo.Invoke(null, null);
-
-            PropertyInfo? lastRecordProperty = recordingFactoryType.GetProperty(Consts.LastRecordPropertyName);
-            object? lastRecord = lastRecordProperty?.GetValue(recordingFactory);
-            if (lastRecord == null)
+            object? methodResult = generatorMethodInfo.Invoke(null, null);
+            if (methodResult == null)
             {
-                return (null, "RecordingGeneratorsFactory did not produce a record");
+                return (null, "Fluent body generator method returned null");
             }
 
-            return (ExtractSwitchBodyData(lastRecord, partialMethod.ReturnType), null);
+            return (ExtractBodyGenerationData(methodResult, partialMethod.ReturnType), null);
         }
         catch (Exception ex)
         {
@@ -282,26 +293,55 @@ internal static class GeneratesMethodExecutionRuntime
         return new[] { Convert.ChangeType(args[0], parameterType) };
     }
 
-    private static SwitchBodyData ExtractSwitchBodyData(object lastRecord, ITypeSymbol returnType)
+    private static FluentBodyResult ExtractBodyGenerationData(object methodResult, ITypeSymbol returnType)
     {
-        Type recordType = lastRecord.GetType();
-        PropertyInfo? caseKeysProperty = recordType.GetProperty(nameof(SwitchBodyRecord.CaseKeys));
-        PropertyInfo? caseValuesProperty = recordType.GetProperty(nameof(SwitchBodyRecord.CaseValues));
-        PropertyInfo? hasDefaultProperty = recordType.GetProperty(nameof(SwitchBodyRecord.HasDefaultCase));
+        Type resultType = methodResult.GetType();
 
-        IList caseKeys = (caseKeysProperty?.GetValue(lastRecord) as IList) ?? new List<object>();
-        IList caseValues = (caseValuesProperty?.GetValue(lastRecord) as IList) ?? new List<object?>();
-        bool hasDefaultCase = (bool)(hasDefaultProperty?.GetValue(lastRecord) ?? false);
-
-        List<(object key, string value)> pairs = new();
-        for (int index = 0; index < caseKeys.Count; index++)
+        // The result should be a DataMethodBodyGenerator containing a BodyGenerationData Data property
+        PropertyInfo? dataProperty = resultType.GetProperty(Consts.BodyGenerationDataPropertyName);
+        if (dataProperty == null)
         {
-            object key = caseKeys[index]!;
-            string? value = index < caseValues.Count ? caseValues[index]?.ToString() : null;
-            pairs.Add((key, GeneratesMethodPatternSourceBuilder.FormatValueAsCSharpLiteral(value, returnType)));
+            // The method returned something that isn't a DataMethodBodyGenerator - treat it as a simple return
+            return new FluentBodyResult(methodResult.ToString(), returnType.SpecialType == SpecialType.System_Void);
         }
 
-        return new SwitchBodyData(pairs, hasDefaultCase);
+        object? bodyGenerationData = dataProperty.GetValue(methodResult);
+        if (bodyGenerationData == null)
+        {
+            return new FluentBodyResult(null, returnType.SpecialType == SpecialType.System_Void);
+        }
+
+        Type dataType = bodyGenerationData.GetType();
+        PropertyInfo? returnTypeProperty = dataType.GetProperty("ReturnType");
+        Type? dataReturnType = returnTypeProperty?.GetValue(bodyGenerationData) as Type;
+        bool isVoid = dataReturnType == typeof(void);
+
+        // Try ReturnConstantValueFactory first
+        PropertyInfo? constantFactoryProperty = dataType.GetProperty("ReturnConstantValueFactory");
+        Delegate? constantFactory = constantFactoryProperty?.GetValue(bodyGenerationData) as Delegate;
+        if (constantFactory != null)
+        {
+            object? constantValue = constantFactory.DynamicInvoke();
+            return new FluentBodyResult(constantValue?.ToString(), isVoid);
+        }
+
+        // Try RuntimeDelegateBody
+        PropertyInfo? runtimeBodyProperty = dataType.GetProperty("RuntimeDelegateBody");
+        Delegate? runtimeBody = runtimeBodyProperty?.GetValue(bodyGenerationData) as Delegate;
+        if (runtimeBody != null)
+        {
+            ParameterInfo[] bodyParams = runtimeBody.Method.GetParameters();
+            if (bodyParams.Length == 0)
+            {
+                object? bodyResult = runtimeBody.DynamicInvoke();
+                return new FluentBodyResult(bodyResult?.ToString(), isVoid);
+            }
+
+            // For delegates with parameters, we can't invoke at compile time without values
+            return new FluentBodyResult(null, isVoid);
+        }
+
+        return new FluentBodyResult(null, isVoid);
     }
 
     private static Dictionary<string, byte[]> EmitCompilationReferences(Compilation compilation)
@@ -339,16 +379,18 @@ internal static class GeneratesMethodExecutionRuntime
         Compilation compilation)
     {
         string dummySource = BuildDummyImplementation(allPartialMethods);
-        string methodBuilderSource = ReadEmbeddedResource($"{Consts.GeneratorsAssemblyName}.MethodBodyBuilder.cs");
-        string recordingFactorySource = ReadEmbeddedResource($"{Consts.GeneratorsAssemblyName}.RecordingGeneratorsFactory.cs");
+        string dataGeneratorsFactorySource = ReadEmbeddedResource($"{Consts.GeneratorsAssemblyName}.DataGeneratorsFactory.cs");
+        string dataMethodBodyBuildersSource = ReadEmbeddedResource($"{Consts.GeneratorsAssemblyName}.DataMethodBodyBuilders.cs");
+        string dataRecordsSource = ReadEmbeddedResource($"{Consts.GeneratorsAssemblyName}.DataRecords.cs");
         CSharpParseOptions parseOptions = compilation.SyntaxTrees.FirstOrDefault()?.Options as CSharpParseOptions
                                          ?? CSharpParseOptions.Default;
 
         return (CSharpCompilation)compilation
             .AddSyntaxTrees(
                 CSharpSyntaxTree.ParseText(dummySource, parseOptions),
-                CSharpSyntaxTree.ParseText(methodBuilderSource, parseOptions),
-                CSharpSyntaxTree.ParseText(recordingFactorySource, parseOptions));
+                CSharpSyntaxTree.ParseText(dataGeneratorsFactorySource, parseOptions),
+                CSharpSyntaxTree.ParseText(dataMethodBodyBuildersSource, parseOptions),
+                CSharpSyntaxTree.ParseText(dataRecordsSource, parseOptions));
     }
 
     private static string ReadEmbeddedResource(string resourceName)

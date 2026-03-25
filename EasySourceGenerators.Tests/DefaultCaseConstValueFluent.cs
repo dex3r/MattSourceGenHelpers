@@ -1,3 +1,8 @@
+// Fluent switch body generation is commented out pending replacement with a data-driven approach.
+// Explicit SwitchCase statements will be replaced in the future.
+// See DataMethodBodyBuilders.cs for details on the planned replacement.
+
+/*
 using EasySourceGenerators.Abstractions;
 // ReSharper disable ConvertClosureToMethodGroup
 
@@ -50,3 +55,4 @@ public static partial class DefaultCaseConstValueFluentClass
             .GenerateSwitchBody()
             .ForDefaultCase().ReturnConstantValue(_ => 888);
 }
+*/

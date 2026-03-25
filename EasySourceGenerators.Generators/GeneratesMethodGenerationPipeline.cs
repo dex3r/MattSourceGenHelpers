@@ -47,24 +47,15 @@ internal static class GeneratesMethodGenerationPipeline
         IReadOnlyList<IMethodSymbol> allPartials,
         Compilation compilation)
     {
-        bool hasSwitchCase = methods.Any(method => HasAttribute(method.Symbol, SwitchCaseAttributeFullName));
-        bool hasSwitchDefault = methods.Any(method => HasAttribute(method.Symbol, SwitchDefaultAttributeFullName));
+        // SwitchCase attribute-based generation is commented out pending replacement with a data-driven approach.
+        // See DataMethodBodyBuilders.cs for details on the planned replacement.
+        // bool hasSwitchCase = methods.Any(method => HasAttribute(method.Symbol, SwitchCaseAttributeFullName));
+        // bool hasSwitchDefault = methods.Any(method => HasAttribute(method.Symbol, SwitchDefaultAttributeFullName));
         bool isFluentPattern = methods.Count == 1 && methods[0].Symbol.ReturnType.ToDisplayString() == IMethodImplementationGeneratorFullName;
-
-        if (hasSwitchCase || hasSwitchDefault)
-        {
-            return GeneratesMethodPatternSourceBuilder.GenerateFromSwitchAttributes(
-                context,
-                methods,
-                firstMethod.PartialMethod,
-                firstMethod.ContainingType,
-                allPartials,
-                compilation);
-        }
 
         if (isFluentPattern)
         {
-            return GeneratesMethodPatternSourceBuilder.GenerateFromFluent(
+            return GenerateFromFluentBodyPattern(
                 context,
                 methods[0],
                 firstMethod.PartialMethod,
@@ -88,6 +79,34 @@ internal static class GeneratesMethodGenerationPipeline
         }
 
         return GenerateFromSimplePattern(context, firstMethod, compilation);
+    }
+
+    private static string GenerateFromFluentBodyPattern(
+        SourceProductionContext context,
+        GeneratesMethodGenerationTarget methodInfo,
+        IMethodSymbol partialMethod,
+        INamedTypeSymbol containingType,
+        Compilation compilation)
+    {
+        (FluentBodyResult? result, string? error) = GeneratesMethodExecutionRuntime.ExecuteFluentBodyGeneratorMethod(
+            methodInfo.Symbol,
+            partialMethod,
+            compilation);
+
+        if (error != null)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                GeneratesMethodGeneratorDiagnostics.GeneratorMethodExecutionError,
+                methodInfo.Syntax.GetLocation(),
+                methodInfo.Symbol.Name,
+                error));
+            return string.Empty;
+        }
+
+        return GeneratesMethodPatternSourceBuilder.GenerateSimplePartialMethod(
+            containingType,
+            partialMethod,
+            result!.ReturnValue);
     }
 
     private static string GenerateFromSimplePattern(

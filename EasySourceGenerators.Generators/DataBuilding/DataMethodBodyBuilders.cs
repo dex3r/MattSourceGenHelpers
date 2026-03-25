@@ -1,4 +1,5 @@
-﻿using EasySourceGenerators.Abstractions;
+﻿using System;
+using EasySourceGenerators.Abstractions;
 
 namespace EasySourceGenerators.Generators.DataBuilding;
 

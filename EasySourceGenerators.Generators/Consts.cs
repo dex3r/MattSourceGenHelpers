@@ -1,4 +1,5 @@
 ﻿using EasySourceGenerators.Abstractions;
+using EasySourceGenerators.Generators.DataBuilding;
 
 // ReSharper disable InconsistentNaming - names like IFoo are neede here
 
@@ -16,7 +17,8 @@ public static class Consts
     public const string GeneratesMethodAttributeFullName = $"{AbstractionsNamespace}.{nameof(MethodBodyGenerator)}";
     public const string IMethodImplementationGeneratorFullName = $"{AbstractionsNamespace}.{nameof(IMethodBodyGenerator)}";
     public const string GenerateTypeFullName = $"{AbstractionsNamespace}.{nameof(Generate)}";
-    public const string RecordingGeneratorsFactoryTypeFullName = $"{GeneratorsNamespace}.{nameof(RecordingGeneratorsFactory)}";
+    public const string DataGeneratorsFactoryTypeFullName = $"{GeneratorsNamespace}.DataBuilding.{nameof(DataGeneratorsFactory)}";
+    public const string DataMethodBodyGeneratorTypeName = nameof(DataMethodBodyGenerator);
+    public const string BodyGenerationDataPropertyName = "Data";
     public const string CurrentGeneratorPropertyName = nameof(Generate.CurrentGenerator);
-    public const string LastRecordPropertyName = nameof(RecordingGeneratorsFactory.LastRecord);
 }

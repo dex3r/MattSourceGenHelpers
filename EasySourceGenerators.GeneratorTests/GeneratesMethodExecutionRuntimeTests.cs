@@ -200,6 +200,9 @@ public class GeneratesMethodExecutionRuntimeTests
         Assert.That(result.error, Does.Contain("FormatException"));
     }
 
+    // ExecuteFluentGeneratorMethod with SwitchBodyData is commented out pending replacement
+    // with the data abstraction layer. See DataMethodBodyBuilders.cs for details.
+    /*
     [Test]
     public void ExecuteFluentGeneratorMethod_CollectsSwitchBodyData()
     {
@@ -246,9 +249,49 @@ public class GeneratesMethodExecutionRuntimeTests
         Assert.That(result.record.CasePairs.Select(pair => pair.key), Is.EqualTo(new object[] { 1, 2, 3, 4 }));
         Assert.That(result.record.CasePairs.Select(pair => pair.value), Is.EqualTo(new[] { "2", "4", "6", "8" }));
     }
+    */
 
     [Test]
-    public void ExecuteFluentGeneratorMethod_ReturnsErrorWhenAbstractionsReferenceIsMissing()
+    public void ExecuteFluentBodyGeneratorMethod_WithBodyReturningConstant_ExtractsReturnValue()
+    {
+        CSharpCompilation compilation = CreateCompilation("""
+                                                         using EasySourceGenerators.Abstractions;
+
+                                                         namespace TestNamespace;
+
+                                                         public static partial class Target
+                                                         {
+                                                             public static partial string GetValue();
+                                                         }
+
+                                                         public static class GenHost
+                                                         {
+                                                             public static IMethodBodyGenerator Generate()
+                                                             {
+                                                                 return global::EasySourceGenerators.Abstractions.Generate
+                                                                     .MethodBody()
+                                                                     .ForMethod()
+                                                                     .WithReturnType<string>()
+                                                                     .WithNoParameters()
+                                                                     .BodyReturningConstant(() => "hello fluent");
+                                                             }
+                                                         }
+                                                         """);
+
+        IMethodSymbol generatorMethod = GetMethodSymbol(compilation, "TestNamespace.GenHost", "Generate");
+        IMethodSymbol partialMethod = GetMethodSymbol(compilation, "TestNamespace.Target", "GetValue");
+
+        (FluentBodyResult? result, string? error) outcome =
+            GeneratesMethodExecutionRuntime.ExecuteFluentBodyGeneratorMethod(generatorMethod, partialMethod, compilation);
+
+        Assert.That(outcome.error, Is.Null);
+        Assert.That(outcome.result, Is.Not.Null);
+        Assert.That(outcome.result!.ReturnValue, Is.EqualTo("hello fluent"));
+        Assert.That(outcome.result.IsVoid, Is.False);
+    }
+
+    [Test]
+    public void ExecuteFluentBodyGeneratorMethod_ReturnsErrorWhenAbstractionsReferenceIsMissing()
     {
         CSharpCompilation originalCompilation = CreateCompilation("""
                                                                  namespace TestNamespace;
@@ -279,11 +322,11 @@ public class GeneratesMethodExecutionRuntimeTests
         IMethodSymbol generatorMethod = GetMethodSymbol(originalCompilation, "TestNamespace.GenHost", "Generate");
         IMethodSymbol partialMethod = GetMethodSymbol(originalCompilation, "TestNamespace.Target", "GetValue");
 
-        (SwitchBodyData? record, string? error) result =
-            GeneratesMethodExecutionRuntime.ExecuteFluentGeneratorMethod(generatorMethod, partialMethod, compilation);
+        (FluentBodyResult? result, string? error) outcome =
+            GeneratesMethodExecutionRuntime.ExecuteFluentBodyGeneratorMethod(generatorMethod, partialMethod, compilation);
 
-        Assert.That(result.record, Is.Null);
-        Assert.That(result.error, Does.StartWith("Compilation failed:"));
+        Assert.That(outcome.result, Is.Null);
+        Assert.That(outcome.error, Does.StartWith("Compilation failed:"));
     }
 
     private static CSharpCompilation CreateCompilation(
