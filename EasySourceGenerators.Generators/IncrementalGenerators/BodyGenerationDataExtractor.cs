@@ -40,18 +40,32 @@ internal static class BodyGenerationDataExtractor
         Type? dataReturnType = returnTypeProperty?.GetValue(bodyGenerationData) as Type;
         bool isVoid = dataReturnType == typeof(void);
 
-        return TryExtractFromConstantFactory(dataType, bodyGenerationData, isVoid)
-               ?? TryExtractFromRuntimeBody(dataType, bodyGenerationData, isVoid)
+        object? compileTimeConstants = GetCompileTimeConstants(dataType, bodyGenerationData);
+
+        return TryExtractFromConstantFactory(dataType, bodyGenerationData, isVoid, compileTimeConstants)
+               ?? TryExtractFromRuntimeBody(dataType, bodyGenerationData, isVoid, compileTimeConstants)
                ?? new FluentBodyResult(null, isVoid);
     }
 
     /// <summary>
+    /// Retrieves the <c>CompileTimeConstants</c> value from the body generation data, if present.
+    /// </summary>
+    private static object? GetCompileTimeConstants(Type dataType, object bodyGenerationData)
+    {
+        PropertyInfo? constantsProperty = dataType.GetProperty("CompileTimeConstants");
+        return constantsProperty?.GetValue(bodyGenerationData);
+    }
+
+    /// <summary>
     /// Attempts to extract a return value by invoking the <c>ReturnConstantValueFactory</c> delegate.
+    /// If <paramref name="compileTimeConstants"/> is provided and the factory accepts a parameter,
+    /// the constants are passed as the first argument.
     /// </summary>
     private static FluentBodyResult? TryExtractFromConstantFactory(
         Type dataType,
         object bodyGenerationData,
-        bool isVoid)
+        bool isVoid,
+        object? compileTimeConstants)
     {
         PropertyInfo? constantFactoryProperty = dataType.GetProperty("ReturnConstantValueFactory");
         Delegate? constantFactory = constantFactoryProperty?.GetValue(bodyGenerationData) as Delegate;
@@ -60,19 +74,37 @@ internal static class BodyGenerationDataExtractor
             return null;
         }
 
-        object? constantValue = constantFactory.DynamicInvoke();
+        ParameterInfo[] factoryParams = constantFactory.Method.GetParameters();
+        object? constantValue;
+
+        if (factoryParams.Length == 1 && compileTimeConstants != null)
+        {
+            constantValue = constantFactory.DynamicInvoke(compileTimeConstants);
+        }
+        else if (factoryParams.Length == 0)
+        {
+            constantValue = constantFactory.DynamicInvoke();
+        }
+        else
+        {
+            return null;
+        }
+
         return new FluentBodyResult(constantValue?.ToString(), isVoid);
     }
 
     /// <summary>
     /// Attempts to extract a return value by invoking the <c>RuntimeDelegateBody</c> delegate.
-    /// Only invokes delegates with zero parameters; parameterized delegates cannot be executed
-    /// at compile time without concrete values.
+    /// If the delegate has no parameters, it is invoked directly.
+    /// If <paramref name="compileTimeConstants"/> is provided and the delegate has exactly one parameter
+    /// (the constants), it is invoked with the constants. Delegates with additional parameters
+    /// (method parameters) cannot be executed at compile time without concrete values.
     /// </summary>
     private static FluentBodyResult? TryExtractFromRuntimeBody(
         Type dataType,
         object bodyGenerationData,
-        bool isVoid)
+        bool isVoid,
+        object? compileTimeConstants)
     {
         PropertyInfo? runtimeBodyProperty = dataType.GetProperty("RuntimeDelegateBody");
         Delegate? runtimeBody = runtimeBodyProperty?.GetValue(bodyGenerationData) as Delegate;
@@ -88,7 +120,13 @@ internal static class BodyGenerationDataExtractor
             return new FluentBodyResult(bodyResult?.ToString(), isVoid);
         }
 
-        // For delegates with parameters, we can't invoke at compile time without values
+        if (bodyParams.Length == 1 && compileTimeConstants != null)
+        {
+            object? bodyResult = runtimeBody.DynamicInvoke(compileTimeConstants);
+            return new FluentBodyResult(bodyResult?.ToString(), isVoid);
+        }
+
+        // For delegates with additional parameters, we can't invoke at compile time without values
         return new FluentBodyResult(null, isVoid);
     }
 }

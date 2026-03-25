@@ -189,4 +189,198 @@ public class DataMethodBodyBuilderTests
         object? bodyValue = generator.Data.RuntimeDelegateBody!.DynamicInvoke();
         Assert.That(bodyValue, Is.EqualTo(42));
     }
+
+    [Test]
+    public void WithCompileTimeConstants_WithParam_ReturnsStage5WithConstants()
+    {
+        DataMethodBodyBuilderStage4<int, string> stage4 = new DataMethodBodyBuilderStage4<int, string>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [typeof(int)]));
+
+        IMethodBodyBuilderStage5WithConstants<int, string, int> result = stage4.WithCompileTimeConstants(() => 42);
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage5WithConstants<int, string, int>>());
+        DataMethodBodyBuilderStage5WithConstants<int, string, int> stage5 = (DataMethodBodyBuilderStage5WithConstants<int, string, int>)result;
+        Assert.That(stage5.Data.CompileTimeConstants, Is.EqualTo(42));
+    }
+
+    [Test]
+    public void WithCompileTimeConstants_NoArg_ReturnsStage5NoArgWithConstants()
+    {
+        DataMethodBodyBuilderStage4NoArg<string> stage4 = new DataMethodBodyBuilderStage4NoArg<string>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: []));
+
+        IMethodBodyBuilderStage5NoArgWithConstants<string, int> result = stage4.WithCompileTimeConstants(() => 99);
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage5NoArgWithConstants<string, int>>());
+        DataMethodBodyBuilderStage5NoArgWithConstants<string, int> stage5 = (DataMethodBodyBuilderStage5NoArgWithConstants<string, int>)result;
+        Assert.That(stage5.Data.CompileTimeConstants, Is.EqualTo(99));
+    }
+
+    [Test]
+    public void WithCompileTimeConstants_ReturnVoid_ReturnsStage5ReturnVoidWithConstants()
+    {
+        DataMethodBodyBuilderStage4ReturnVoid<int> stage4 = new DataMethodBodyBuilderStage4ReturnVoid<int>(
+            new BodyGenerationData(ReturnType: typeof(void), ParametersTypes: [typeof(int)]));
+
+        IMethodBodyBuilderStage5ReturnVoidWithConstants<int, string> result = stage4.WithCompileTimeConstants(() => "test");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage5ReturnVoidWithConstants<int, string>>());
+        DataMethodBodyBuilderStage5ReturnVoidWithConstants<int, string> stage5 = (DataMethodBodyBuilderStage5ReturnVoidWithConstants<int, string>)result;
+        Assert.That(stage5.Data.CompileTimeConstants, Is.EqualTo("test"));
+    }
+
+    [Test]
+    public void WithCompileTimeConstants_ReturnVoidNoArg_ReturnsStage5ReturnVoidNoArgWithConstants()
+    {
+        DataMethodBodyBuilderStage4ReturnVoidNoArg stage4 = new DataMethodBodyBuilderStage4ReturnVoidNoArg(
+            new BodyGenerationData(ReturnType: typeof(void), ParametersTypes: []));
+
+        IMethodBodyBuilderStage5ReturnVoidNoArgWithConstants<int> result = stage4.WithCompileTimeConstants(() => 7);
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyBuilderStage5ReturnVoidNoArgWithConstants<int>>());
+        DataMethodBodyBuilderStage5ReturnVoidNoArgWithConstants<int> stage5 = (DataMethodBodyBuilderStage5ReturnVoidNoArgWithConstants<int>)result;
+        Assert.That(stage5.Data.CompileTimeConstants, Is.EqualTo(7));
+    }
+
+    [Test]
+    public void Stage5WithConstants_UseProvidedBody_SetsRuntimeDelegateBody()
+    {
+        DataMethodBodyBuilderStage5WithConstants<int, string, int> stage5 = new DataMethodBodyBuilderStage5WithConstants<int, string, int>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [typeof(int)], CompileTimeConstants: 42));
+
+        IMethodBodyGenerator result = stage5.UseProvidedBody((constants, param) => $"{constants}_{param}");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo(42));
+    }
+
+    [Test]
+    public void Stage5WithConstants_BodyReturningConstant_SetsReturnConstantValueFactory()
+    {
+        DataMethodBodyBuilderStage5WithConstants<int, string, int> stage5 = new DataMethodBodyBuilderStage5WithConstants<int, string, int>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [typeof(int)], CompileTimeConstants: 42));
+
+        IMethodBodyGenerator result = stage5.BodyReturningConstant(constants => $"value_{constants}");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Not.Null);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo(42));
+    }
+
+    [Test]
+    public void Stage5NoArgWithConstants_UseProvidedBody_SetsRuntimeDelegateBody()
+    {
+        DataMethodBodyBuilderStage5NoArgWithConstants<string, int> stage5 = new DataMethodBodyBuilderStage5NoArgWithConstants<string, int>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [], CompileTimeConstants: 10));
+
+        IMethodBodyGenerator result = stage5.UseProvidedBody(constants => $"value_{constants}");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo(10));
+    }
+
+    [Test]
+    public void Stage5NoArgWithConstants_BodyReturningConstant_SetsReturnConstantValueFactory()
+    {
+        DataMethodBodyBuilderStage5NoArgWithConstants<string, int> stage5 = new DataMethodBodyBuilderStage5NoArgWithConstants<string, int>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: [], CompileTimeConstants: 10));
+
+        IMethodBodyGenerator result = stage5.BodyReturningConstant(constants => $"const_{constants}");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Not.Null);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo(10));
+    }
+
+    [Test]
+    public void Stage5ReturnVoidWithConstants_UseProvidedBody_SetsRuntimeDelegateBody()
+    {
+        DataMethodBodyBuilderStage5ReturnVoidWithConstants<int, string> stage5 = new DataMethodBodyBuilderStage5ReturnVoidWithConstants<int, string>(
+            new BodyGenerationData(ReturnType: typeof(void), ParametersTypes: [typeof(int)], CompileTimeConstants: "ctx"));
+
+        IMethodBodyGenerator result = stage5.UseProvidedBody((constants, param) => { });
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo("ctx"));
+    }
+
+    [Test]
+    public void Stage5ReturnVoidNoArgWithConstants_UseProvidedBody_SetsRuntimeDelegateBody()
+    {
+        DataMethodBodyBuilderStage5ReturnVoidNoArgWithConstants<string> stage5 = new DataMethodBodyBuilderStage5ReturnVoidNoArgWithConstants<string>(
+            new BodyGenerationData(ReturnType: typeof(void), ParametersTypes: [], CompileTimeConstants: "ctx"));
+
+        IMethodBodyGenerator result = stage5.UseProvidedBody(constants => { });
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo("ctx"));
+    }
+
+    [Test]
+    public void FullFluentChain_WithConstants_NoArg_BodyReturningConstant_ProducesCorrectData()
+    {
+        DataGeneratorsFactory factory = new DataGeneratorsFactory();
+
+        IMethodBodyGenerator result = factory.StartFluentApiBuilderForBody()
+            .ForMethod()
+            .WithReturnType<string>()
+            .WithNoParameters()
+            .WithCompileTimeConstants(() => 42)
+            .BodyReturningConstant(constants => $"value_{constants}");
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnType, Is.EqualTo(typeof(string)));
+        Assert.That(generator.Data.ParametersTypes, Is.Empty);
+        Assert.That(generator.Data.CompileTimeConstants, Is.EqualTo(42));
+        Assert.That(generator.Data.ReturnConstantValueFactory, Is.Not.Null);
+        object? constantValue = generator.Data.ReturnConstantValueFactory!.DynamicInvoke(42);
+        Assert.That(constantValue, Is.EqualTo("value_42"));
+    }
+
+    [Test]
+    public void FullFluentChain_WithConstants_WithParam_UseProvidedBody_ProducesCorrectData()
+    {
+        DataGeneratorsFactory factory = new DataGeneratorsFactory();
+
+        IMethodBodyGenerator result = factory.StartFluentApiBuilderForBody()
+            .ForMethod()
+            .WithReturnType<int>()
+            .WithParameter<int>()
+            .WithCompileTimeConstants(() => new { Offset = 100 })
+            .UseProvidedBody((constants, param) => constants.Offset + param);
+
+        Assert.That(result, Is.TypeOf<DataMethodBodyGenerator>());
+        DataMethodBodyGenerator generator = (DataMethodBodyGenerator)result;
+        Assert.That(generator.Data.ReturnType, Is.EqualTo(typeof(int)));
+        Assert.That(generator.Data.ParametersTypes, Is.EqualTo(new[] { typeof(int) }));
+        Assert.That(generator.Data.CompileTimeConstants, Is.Not.Null);
+        Assert.That(generator.Data.RuntimeDelegateBody, Is.Not.Null);
+    }
+
+    [Test]
+    public void WithCompileTimeConstants_FactoryIsInvokedImmediately()
+    {
+        int invocationCount = 0;
+        DataMethodBodyBuilderStage4NoArg<string> stage4 = new DataMethodBodyBuilderStage4NoArg<string>(
+            new BodyGenerationData(ReturnType: typeof(string), ParametersTypes: []));
+
+        stage4.WithCompileTimeConstants(() =>
+        {
+            invocationCount++;
+            return 42;
+        });
+
+        Assert.That(invocationCount, Is.EqualTo(1));
+    }
 }
