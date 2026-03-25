@@ -18,7 +18,7 @@ internal sealed record DummyTypeGroupData(
 /// </summary>
 internal sealed record DummyMethodData(
     string AccessibilityKeyword,
-    string StaticModifier,
+    string MethodModifiers,
     string ReturnTypeName,
     string MethodName,
     string ParameterList,
@@ -50,7 +50,7 @@ internal static class DummyImplementationEmitter
 
             foreach (DummyMethodData method in typeGroup.Methods)
             {
-                builder.AppendLine($"{method.AccessibilityKeyword} {method.StaticModifier}partial {method.ReturnTypeName} {method.MethodName}({method.ParameterList}) {{");
+                builder.AppendLine($"{method.AccessibilityKeyword} {method.MethodModifiers} {method.ReturnTypeName} {method.MethodName}({method.ParameterList}) {{");
                 builder.AppendLine(method.BodyStatement);
                 builder.AppendLine("}");
             }

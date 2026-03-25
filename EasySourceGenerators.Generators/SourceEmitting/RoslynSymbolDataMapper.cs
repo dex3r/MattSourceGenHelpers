@@ -73,7 +73,7 @@ internal static class RoslynSymbolDataMapper
             foreach (IMethodSymbol partialMethod in typeGroup)
             {
                 string accessibility = CSharpAccessibilityKeyword.FromOrEmpty(partialMethod.DeclaredAccessibility);
-                string staticModifier = partialMethod.IsStatic ? "static " : "";
+                string methodModifiers = partialMethod.IsStatic ? "static partial" : "partial";
                 string returnTypeName = partialMethod.ReturnType.ToDisplayString();
                 string parameterList = string.Join(", ", partialMethod.Parameters.Select(
                     parameter => $"{parameter.Type.ToDisplayString()} {parameter.Name}"));
@@ -83,7 +83,7 @@ internal static class RoslynSymbolDataMapper
 
                 methods.Add(new DummyMethodData(
                     AccessibilityKeyword: accessibility,
-                    StaticModifier: staticModifier,
+                    MethodModifiers: methodModifiers,
                     ReturnTypeName: returnTypeName,
                     MethodName: partialMethod.Name,
                     ParameterList: parameterList,

@@ -19,7 +19,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "string",
                         MethodName: "GetValue",
                         ParameterList: "",
@@ -46,7 +46,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "string",
                         MethodName: "GetValue",
                         ParameterList: "",
@@ -75,7 +75,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "void",
                         MethodName: "DoWork",
                         ParameterList: "",
@@ -102,7 +102,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "static ",
+                        MethodModifiers: "static partial",
                         ReturnTypeName: "int",
                         MethodName: "Calculate",
                         ParameterList: "",
@@ -129,7 +129,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "string",
                         MethodName: "GetValue",
                         ParameterList: "",
@@ -156,7 +156,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "static ",
+                        MethodModifiers: "static partial",
                         ReturnTypeName: "int",
                         MethodName: "Compute",
                         ParameterList: "int x",
@@ -184,7 +184,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "void",
                         MethodName: "DoWork",
                         ParameterList: "",
@@ -211,14 +211,14 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "string",
                         MethodName: "First",
                         ParameterList: "",
                         BodyStatement: "throw new System.Exception();"),
                     new DummyMethodData(
                         AccessibilityKeyword: "internal",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "int",
                         MethodName: "Second",
                         ParameterList: "int x",
@@ -254,7 +254,7 @@ public class DummyImplementationEmitterTests
                 {
                     new DummyMethodData(
                         AccessibilityKeyword: "public",
-                        StaticModifier: "",
+                        MethodModifiers: "partial",
                         ReturnTypeName: "int",
                         MethodName: "GetValue",
                         ParameterList: "",
