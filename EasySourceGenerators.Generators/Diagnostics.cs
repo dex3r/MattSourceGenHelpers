@@ -1,3 +1,4 @@
+using EasySourceGenerators.Abstractions;
 using Microsoft.CodeAnalysis;
 
 namespace EasySourceGenerators.Generators;
@@ -17,7 +18,7 @@ internal static class GeneratesMethodGeneratorDiagnostics
     internal static readonly DiagnosticDescriptor GeneratorMethodMustBeStaticError = new(
         id: "MSGH002",
         title: "Generator method must be static",
-        messageFormat: "Method '{0}' marked with [MethodBodyGenerator] must be static",
+        messageFormat: $"Method '{{0}}' marked with [{nameof(MethodBodyGenerator)}] must be static",
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
@@ -28,7 +29,7 @@ internal static class GeneratesMethodGeneratorDiagnostics
         messageFormat: "Generating implementation for partial method '{0}' in class '{1}' using generator '{2}'",
         category: Category,
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: false);
+        isEnabledByDefault: true);
 
     internal static readonly DiagnosticDescriptor GeneratorMethodExecutionError = new(
         id: "MSGH004",
@@ -37,27 +38,19 @@ internal static class GeneratesMethodGeneratorDiagnostics
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
-
-    internal static readonly DiagnosticDescriptor GeneratorMethodTooManyParametersError = new(
-        id: "MSGH005",
-        title: "Generator method has too many parameters",
-        messageFormat: "Method '{0}' marked with [MethodBodyGenerator] and [SwitchCase] has {1} parameter(s), but only methods with zero or one parameter are supported. Remove extra parameters or use the fluent API for more complex scenarios.",
-        category: Category,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
-
-    internal static readonly DiagnosticDescriptor SwitchCaseArgumentTypeMismatchError = new(
-        id: "MSGH006",
-        title: "SwitchCase argument type mismatch",
-        messageFormat: "SwitchCase argument type '{0}' does not match the method parameter type '{1}'",
-        category: Category,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
     
     internal static readonly DiagnosticDescriptor CannotUseRuntimeParameterForCompileTimeGeneratorError = new(
         id: "MSGH007",
         title: "Cannot use runtime parameter for compile-time generator",
         messageFormat: "Method generators cannot have any parameters, as they will be run at compile time to generate the method output value. Use MethodTemplate if you want to emit method body instead of single value.",
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+    
+    internal static readonly DiagnosticDescriptor MethodBodyGeneratorInvalidReturnType = new(
+        id: "MSGH008",
+        title: "MethodBodyGenerator has invalid return type",
+        messageFormat: $"Method '{{0}}' marked with [{nameof(MethodBodyGenerator)}] must return either IMethodBodyGenerator (for fluent API builder) or the exact type the target method returns (for compile type const return body)",
         category: Category,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
