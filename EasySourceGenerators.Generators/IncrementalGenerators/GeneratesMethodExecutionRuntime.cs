@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 
-namespace EasySourceGenerators.Generators.OldGenerators;
+namespace EasySourceGenerators.Generators.IncrementalGenerators;
 
 internal sealed record SwitchBodyData(
     IReadOnlyList<(object key, string value)> CasePairs,

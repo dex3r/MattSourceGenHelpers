@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static EasySourceGenerators.Generators.Consts;
 
-namespace EasySourceGenerators.Generators.OldGenerators;
+namespace EasySourceGenerators.Generators.IncrementalGenerators;
 
 internal static class GeneratesMethodGenerationPipeline
 {

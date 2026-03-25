@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static EasySourceGenerators.Generators.Consts;
 
-namespace EasySourceGenerators.Generators.OldGenerators;
+namespace EasySourceGenerators.Generators.IncrementalGenerators;
 
 internal sealed record GeneratesMethodGenerationTarget(
     MethodDeclarationSyntax Syntax,

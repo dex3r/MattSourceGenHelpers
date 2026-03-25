@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using System.Reflection;
 using EasySourceGenerators.Abstractions;
 using EasySourceGenerators.Generators;
-using EasySourceGenerators.Generators.OldGenerators;
+using EasySourceGenerators.Generators.IncrementalGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

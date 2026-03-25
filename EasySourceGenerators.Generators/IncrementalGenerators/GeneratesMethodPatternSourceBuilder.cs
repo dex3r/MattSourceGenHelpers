@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace EasySourceGenerators.Generators.OldGenerators;
+namespace EasySourceGenerators.Generators.IncrementalGenerators;
 
 internal static class GeneratesMethodPatternSourceBuilder
 {
