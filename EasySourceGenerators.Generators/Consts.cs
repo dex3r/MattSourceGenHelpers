@@ -1,7 +1,7 @@
 ﻿using EasySourceGenerators.Abstractions;
 using EasySourceGenerators.Generators.DataBuilding;
 
-// ReSharper disable InconsistentNaming - names like IFoo are neede here
+// ReSharper disable InconsistentNaming - names like IFoo are needed here
 
 namespace EasySourceGenerators.Generators;
 

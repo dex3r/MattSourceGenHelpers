@@ -1,11 +1,9 @@
+using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using EasySourceGenerators.Abstractions;
-using System.Text;
-using static EasySourceGenerators.Generators.Consts;
 
-namespace EasySourceGenerators.Generators;
+namespace EasySourceGenerators.Generators.OldGenerators;
 
 internal static class GeneratesMethodPatternSourceBuilder
 {

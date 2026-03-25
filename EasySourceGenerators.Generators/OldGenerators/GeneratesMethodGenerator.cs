@@ -1,11 +1,11 @@
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading;
+using EasySourceGenerators.Abstractions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Immutable;
-using EasySourceGenerators.Abstractions;
 
-namespace EasySourceGenerators.Generators;
-
-#pragma warning disable RS1041 // This generator will only work with dotnet 8 to 10
+namespace EasySourceGenerators.Generators.OldGenerators;
 
 [Generator]
 public sealed class GeneratesMethodGenerator : IIncrementalGenerator

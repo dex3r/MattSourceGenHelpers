@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using EasySourceGenerators.Abstractions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using EasySourceGenerators.Abstractions;
-using System.Collections.Immutable;
 using static EasySourceGenerators.Generators.Consts;
 
-namespace EasySourceGenerators.Generators;
+namespace EasySourceGenerators.Generators.OldGenerators;
 
 internal sealed record GeneratesMethodGenerationTarget(
     MethodDeclarationSyntax Syntax,

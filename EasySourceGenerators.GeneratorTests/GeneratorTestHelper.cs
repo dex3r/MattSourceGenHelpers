@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using EasySourceGenerators.Generators;
+using EasySourceGenerators.Generators.OldGenerators;
 
 namespace EasySourceGenerators.GeneratorTests;
 
