@@ -1,5 +1,4 @@
-﻿using System.Text;
-using EasySourceGenerators.Abstractions;
+﻿using EasySourceGenerators.Abstractions;
 // ReSharper disable InconsistentNaming
 // ReSharper disable RedundantIfElseBlock
 // ReSharper disable ConvertSwitchStatementToSwitchExpression
@@ -108,7 +107,7 @@ public class DelegateBodyTests
                               {
                                   public static partial int PartialMethod(int someParam)
                                   {
-                                      int interResult = 0;
+                                      int interResult;
                                       
                                       switch (someParam)
                                       {
@@ -200,7 +199,7 @@ public static partial class DelegateBodyTestClass_WithComplexBody
             .ForMethod().WithReturnType<int>().WithParameter<int>()
             .UseProvidedBody(someParam =>
             {
-                int interResult = 0;
+                int interResult;
                 
                 switch (someParam)
                 {
