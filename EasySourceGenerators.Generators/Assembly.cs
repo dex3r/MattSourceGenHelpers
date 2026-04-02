@@ -1,3 +1,4 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("EasySourceGenerators.GeneratorTests")]
+[assembly: InternalsVisibleTo("EasySourceGenerators.Tests.GeneratorsUnitTests")]
+[assembly: InternalsVisibleTo("EasySourceGenerators.Tests.Generation.Failing")]

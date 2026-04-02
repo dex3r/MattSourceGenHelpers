@@ -1,0 +1,179 @@
+// Fluent switch body generation is commented out pending replacement with a data-driven approach.
+// Explicit SwitchCase statements will be replaced in the future.
+// See DataMethodBodyBuilders.cs for details on the planned replacement.
+
+/*
+using EasySourceGenerators.Abstractions;
+// ReSharper disable ConvertClosureToMethodGroup
+
+namespace EasySourceGenerators.Tests.Generation.Passing;
+
+[TestFixture]
+public class PiExampleFluentTests
+{
+    [TestCase(0, 3)]
+    [TestCase(1, 1)]
+    [TestCase(2, 4)]
+    [TestCase(300, 3)]
+    [TestCase(301, 7)]
+    [TestCase(302, 2)]
+    [TestCase(303, 4)]
+    [TestCase(5, 9)]
+    public void PiExampleFluentLikeGenerator_ProducesExpectedRuntimeOutput(int decimalNumber, int expectedDigit)
+    {
+        int result = TestPiFluentClass.GetPiDecimal(decimalNumber);
+
+        Assert.That(result, Is.EqualTo(expectedDigit));
+    }
+
+    [Test]
+    public void PiExampleFluentLikeGenerator_ProducesExpectedGeneratedCode()
+    {
+        string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestPiFluentClass_GetPiDecimal.g.cs");
+        string expectedCode = """
+                              namespace EasySourceGenerators.Tests.Generation.Passing;
+
+                              static partial class TestPiFluentClass
+                              {
+                                  public static partial int GetPiDecimal(int decimalNumber)
+                                  {
+                                      switch (decimalNumber)
+                                      {
+                                          case 0: return 3;
+                                          case 1: return 1;
+                                          case 2: return 4;
+                                          case 300: return 3;
+                                          case 301: return 7;
+                                          case 302: return 2;
+                                          case 303: return 4;
+                                          default: return TestSlowMath.CalculatePiDecimal(decimalNumber);
+                                      }
+                                  }
+                              }
+                              """.ReplaceLineEndings("\n").TrimEnd();
+
+        Assert.That(generatedCode, Is.EqualTo(expectedCode));
+    }
+
+    [TestCase(1, "Dog")]
+    [TestCase(2, "Cat")]
+    [TestCase(3, "Unknown")]
+    public void MapperFluentLikeGenerator_ProducesExpectedRuntimeOutput(int source, string expected)
+    {
+        string result = TestMapperFluent.MapToMammal(source);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void MapperFluentLikeGenerator_ProducesExpectedGeneratedCode()
+    {
+        string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestMapperFluent_MapToMammal.g.cs");
+        string expectedCode = """
+                              namespace EasySourceGenerators.Tests.Generation.Passing;
+
+                              static partial class TestMapperFluent
+                              {
+                                  public static partial string MapToMammal(int animalCode)
+                                  {
+                                      switch (animalCode)
+                                      {
+                                          case 1: return "Dog";
+                                          case 2: return "Cat";
+                                          default: return "Unknown";
+                                      }
+                                  }
+                              }
+                              """.ReplaceLineEndings("\n").TrimEnd();
+
+        Assert.That(generatedCode, Is.EqualTo(expectedCode));
+    }
+    [TestCase(TestFourLeggedAnimal.Dog, TestMammalAnimal.Dog)]
+    [TestCase(TestFourLeggedAnimal.Cat, TestMammalAnimal.Cat)]
+    public void MapperFluentEnumGenerator_ProducesExpectedRuntimeOutput(TestFourLeggedAnimal source, TestMammalAnimal expected)
+    {
+        TestMammalAnimal result = TestMapperFluentEnum.MapToMammal(source);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void MapperFluentEnumGenerator_ThrowsForUnmappableValue()
+    {
+        Assert.Throws<ArgumentException>(() => TestMapperFluentEnum.MapToMammal(TestFourLeggedAnimal.Lizard));
+    }
+
+    [Test]
+    public void MapperFluentEnumGenerator_ProducesExpectedGeneratedCode()
+    {
+        string generatedCode = GeneratedCodeTestHelper.ReadGeneratedCode("TestMapperFluentEnum_MapToMammal.g.cs");
+        string expectedCode = """
+                              namespace EasySourceGenerators.Tests.Generation.Passing;
+
+                              static partial class TestMapperFluentEnum
+                              {
+                                  public static partial EasySourceGenerators.Tests.TestMammalAnimal MapToMammal(EasySourceGenerators.Tests.TestFourLeggedAnimal fourLeggedAnimal)
+                                  {
+                                      switch (fourLeggedAnimal)
+                                      {
+                                          case EasySourceGenerators.Tests.TestFourLeggedAnimal.Dog: return EasySourceGenerators.Tests.TestMammalAnimal.Dog;
+                                          case EasySourceGenerators.Tests.TestFourLeggedAnimal.Cat: return EasySourceGenerators.Tests.TestMammalAnimal.Cat;
+                                          default: throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a mammal");
+                                      }
+                                  }
+                              }
+                              """.ReplaceLineEndings("\n").TrimEnd();
+
+        Assert.That(generatedCode, Is.EqualTo(expectedCode));
+    }
+}
+
+public enum TestFourLeggedAnimal { Dog, Cat, Lizard }
+
+public enum TestMammalAnimal { Dog, Cat }
+
+public static partial class TestMapperFluentEnum
+{
+    public static partial TestMammalAnimal MapToMammal(TestFourLeggedAnimal fourLeggedAnimal);
+
+    [MethodBodyGenerator(nameof(MapToMammal))]
+    static IMethodBodyGenerator MapToMammal_Generator() =>
+        Generate
+            .MethodBody().WithParameter<TestFourLeggedAnimal>().WithReturnType<TestMammalAnimal>()
+            .GenerateSwitchBody()
+            .ForCases(GetFourLeggedAnimalsThatAreAlsoMammal()).ReturnConstantValue(a => Enum.Parse<TestMammalAnimal>(a.ToString(), true))
+            .ForDefaultCase().UseBody(fourLeggedAnimal => () => throw new ArgumentException($"Cannot map {fourLeggedAnimal} to a mammal"));
+
+    static TestFourLeggedAnimal[] GetFourLeggedAnimalsThatAreAlsoMammal() =>
+        Enum.GetValues<TestFourLeggedAnimal>()
+            .Where(a => Enum.TryParse(typeof(TestMammalAnimal), a.ToString(), true, out _))
+            .ToArray();
+}
+
+public static partial class TestPiFluentClass
+{
+    public static partial int GetPiDecimal(int decimalNumber);
+
+    [MethodBodyGenerator(nameof(GetPiDecimal))]
+    static IMethodBodyGenerator GetPiDecimal_Generator() =>
+        Generate
+            .MethodBody().WithParameter<int>().WithReturnType<int>()
+            .GenerateSwitchBody()
+            .ForCases(0, 1, 2, new[]{300, 301, 302, 303}).ReturnConstantValue(decimalNumber => TestSlowMath.CalculatePiDecimal(decimalNumber))
+            .ForDefaultCase().UseBody(decimalNumber => () => TestSlowMath.CalculatePiDecimal(decimalNumber));
+}
+
+public static partial class TestMapperFluent
+{
+    public static partial string MapToMammal(int animalCode);
+
+    [MethodBodyGenerator(nameof(MapToMammal))]
+    static IMethodBodyGenerator MapToMammal_Generator() =>
+        Generate
+            .MethodBody().WithParameter<int>().WithReturnType<string>()
+            .GenerateSwitchBody()
+            .ForCases(1).ReturnConstantValue(_ => "Dog")
+            .ForCases(2).ReturnConstantValue(_ => "Cat")
+            .ForDefaultCase().UseBody(_ => () => "Unknown");
+}
+*/
