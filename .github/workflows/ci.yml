@@ -23,8 +23,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore EasySourceGenerators.sln
 
+      - name: Build
+        run: dotnet build EasySourceGenerators.sln --no-restore
+
       - name: Test
-        run: dotnet test EasySourceGenerators.sln --no-restore --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFilePrefix=test-results" --results-directory ./coverage
+        run: dotnet test EasySourceGenerators.sln --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFilePrefix=test-results" --results-directory ./coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
